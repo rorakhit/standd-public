@@ -28,19 +28,6 @@ pnpm-debug.log*
 # Firecrawl scratch files
 .firecrawl/
 
-# data pipeline scripts (private)
-scripts/
-
-# internal docs
-docs/
-
-# CI/CD workflows (private)
-.github/workflows/
-
-# Claude Code
-.claude/
-memory/
-
 # editor
 .vscode/
 .idea/

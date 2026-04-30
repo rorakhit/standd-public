@@ -1,0 +1,32 @@
+---
+interface Props {
+  name: string;
+}
+const { name } = Astro.props;
+
+const broadcasters: Record<string, { label: string; url: string; colorClass: string }> = {
+  'CBS Sports':     { label: 'CBS Sports',    url: 'https://www.cbssports.com/watch/nwsl',                          colorClass: 'bg-[#003791] text-white' },
+  'ION':            { label: 'ION',           url: 'https://tubitv.com/live/682634/ion',                            colorClass: 'bg-[#009E60] text-white' },
+  'Prime Video':    { label: 'Prime Video',   url: 'https://www.amazon.com/gp/video/sports',                        colorClass: 'bg-[#00A8E1] text-white' },
+  'ABC':            { label: 'ABC',           url: 'https://abc.com/watch-live/',                                   colorClass: 'bg-[#0A2342] text-white' },
+  'ESPN':           { label: 'ESPN',          url: 'https://www.espn.com/watch/',                                   colorClass: 'bg-[#CC0000] text-white' },
+  'ESPN2':          { label: 'ESPN2',         url: 'https://www.espn.com/watch/',                                   colorClass: 'bg-[#CC0000] text-white' },
+  'ESPN App':       { label: 'ESPN App',      url: 'https://www.espn.com/watch/',                                   colorClass: 'bg-[#CC0000] text-white' },
+  'ESPN Deportes':  { label: 'ESPN Deportes', url: 'https://espndeportes.espn.com/watch/',                          colorClass: 'bg-[#CC0000] text-white' },
+  'Disney+':        { label: 'Disney+',       url: 'https://www.disneyplus.com',                                    colorClass: 'bg-[#0063E5] text-white' },
+  'NWSL+':          { label: 'NWSL+',         url: 'https://plus.nwslsoccer.com/',                                  colorClass: 'bg-[#7C3AED] text-white' },
+  'Victory+':       { label: 'Victory+',      url: 'https://victoryplus.com/hub/NWSL?source=navigation_link',       colorClass: 'bg-black text-white' },
+};
+
+const config = broadcasters[name];
+---
+
+{config ? (
+  <a href={config.url} target="_blank" rel="noopener noreferrer" class={`inline-flex items-center ${config.colorClass} text-[10px] font-bold uppercase tracking-wide rounded px-2 py-0.5 h-6 whitespace-nowrap`}>
+    {config.label}
+  </a>
+) : (
+  <span class="inline-flex items-center bg-black/10 text-[10px] font-bold uppercase tracking-wide rounded px-2 py-0.5 h-6 whitespace-nowrap">
+    {name}
+  </span>
+)}

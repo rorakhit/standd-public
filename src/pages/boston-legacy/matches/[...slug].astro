@@ -1,0 +1,130 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Header from '../../../components/Header.astro';
+import Footer from '../../../components/Footer.astro';
+
+export async function getStaticPaths() {
+  // Tolerate an empty matches collection — when no recap markdown files exist yet,
+  // this route simply doesn't generate any pages.
+  try {
+    const matches = await getCollection('matches');
+    return matches.map(match => ({
+      params: { slug: match.id },
+      props: { match },
+    }));
+  } catch {
+    return [];
+  }
+}
+
+const { match } = Astro.props;
+const { Content } = await render(match);
+
+const formattedDate = new Date(match.data.date.toISOString().slice(0, 10) + 'T12:00:00Z').toLocaleDateString('en-US', {
+  weekday: 'long',
+  month: 'long',
+  day: 'numeric',
+  year: 'numeric',
+});
+
+const result = (() => {
+  if (match.data.bostonScore === match.data.opponentScore) return 'Draw';
+  return match.data.bostonScore > match.data.opponentScore ? 'Win' : 'Loss';
+})();
+
+const resultColor = (() => {
+  if (result === 'Win') return 'text-accent';
+  if (result === 'Loss') return 'text-primary/50';
+  return 'text-primary';
+})();
+
+const title = match.data.title
+  ?? `Boston Legacy ${match.data.homeAway === 'home' ? 'vs' : 'at'} ${match.data.opponent} — ${formattedDate}`;
+const description = match.data.description
+  ?? `Match recap: Boston Legacy ${match.data.homeAway === 'home' ? 'vs' : 'at'} ${match.data.opponent}, ${match.data.bostonScore}-${match.data.opponentScore}.`;
+---
+
+<BaseLayout title={title} description={description}>
+  <Header />
+
+  <main class="flex-1 max-w-3xl mx-auto px-6 py-12">
+    <article>
+      <header class="mb-5 pb-4 border-b border-primary/15">
+        <p class="text-sm font-medium text-muted uppercase tracking-wider mb-3">
+          NWSL · Match Recap · {formattedDate}
+        </p>
+        <h1 class="font-display font-bold text-4xl md:text-5xl text-primary leading-[1.1] mb-3">
+          Boston Legacy {match.data.homeAway === 'home' ? 'vs' : 'at'} {match.data.opponent}
+        </h1>
+        <div class="flex flex-col gap-4">
+          <span class={`font-display font-bold text-7xl tabular ${resultColor}`}>
+            {match.data.bostonScore}–{match.data.opponentScore}
+          </span>
+          <p class="text-sm text-muted">{result} · {match.data.venue}</p>
+        </div>
+      </header>
+
+      <div class="prose-recap text-primary/85 text-lg leading-relaxed">
+        <Content />
+      </div>
+
+      <footer class="mt-16 pt-8 border-t border-primary/15 text-sm text-muted">
+        <p>← <a href="/boston-legacy" class="text-primary hover:text-accent transition-colors">Back to Boston Legacy tracker</a></p>
+      </footer>
+    </article>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .prose-recap :global(h2) {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-weight: 700;
+    color: var(--color-primary);
+    font-size: 1.5rem;
+    margin-top: 2.5rem;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.02em;
+  }
+  .prose-recap :global(h3) {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-weight: 700;
+    color: var(--color-primary);
+    font-size: 1.25rem;
+    margin-top: 2rem;
+    margin-bottom: 0.5rem;
+  }
+  .prose-recap :global(p) {
+    margin-bottom: 1.25rem;
+  }
+  .prose-recap :global(ul) {
+    margin-bottom: 1.25rem;
+    padding-left: 1.5rem;
+  }
+  .prose-recap :global(li) {
+    list-style: disc;
+    margin-bottom: 0.5rem;
+  }
+  .prose-recap :global(blockquote) {
+    border-left: 3px solid var(--color-accent);
+    padding-left: 1rem;
+    margin: 1.5rem 0;
+    font-style: italic;
+    color: var(--color-primary);
+  }
+  .prose-recap :global(a) {
+    color: var(--color-primary);
+    text-decoration: underline;
+    text-decoration-color: var(--color-accent);
+    text-underline-offset: 3px;
+  }
+  .prose-recap :global(a:hover) {
+    color: var(--color-accent);
+  }
+  .prose-recap :global(strong) {
+    color: var(--color-primary);
+    font-weight: 700;
+  }
+</style>

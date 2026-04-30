@@ -1,0 +1,89 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { matches } from '../../data/boston-legacy';
+
+const allMatches = [...matches].sort((a, b) => a.date.localeCompare(b.date));
+
+function formatDate(iso: string): string {
+  const d = new Date(iso + 'T12:00:00Z');
+  return d.toLocaleDateString('en-US', {
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+  });
+}
+
+const title = 'How to watch Boston Legacy 2026 — broadcast info, streaming, TV schedule';
+const description = "Where every Boston Legacy NWSL match airs in 2026. Paramount+, ESPN+, and free TV options for every fixture this season.";
+---
+
+<BaseLayout title={title} description={description}>
+  <Header />
+
+  <main class="flex-1 max-w-3xl mx-auto px-6 py-12">
+    <header class="mb-10">
+      <p class="text-sm font-medium text-muted uppercase tracking-wider mb-3">Boston Legacy · 2026 Season</p>
+      <h1 class="font-display font-bold text-4xl md:text-5xl text-primary leading-[1.1] mb-6">
+        How to watch Boston Legacy
+      </h1>
+      <p class="text-lg leading-relaxed text-primary/80">
+        Every NWSL match in 2026 is broadcast somewhere — but "somewhere" is split across three services. Here's where to find Boston Legacy specifically, by service and by match.
+      </p>
+    </header>
+
+    <section class="mb-12">
+      <h2 class="font-display font-bold text-2xl text-primary mb-4">Streaming services that carry NWSL</h2>
+      <ul class="space-y-3">
+        <li class="p-5 border border-primary/15 rounded-lg">
+          <h3 class="font-display font-bold text-lg text-primary">Paramount+</h3>
+          <p class="text-primary/80 mt-1">The bulk of NWSL matches, including most Boston home games. ~$8/month or $12/month with Showtime add-on. Free trial available.</p>
+        </li>
+        <li class="p-5 border border-primary/15 rounded-lg">
+          <h3 class="font-display font-bold text-lg text-primary">ESPN+</h3>
+          <p class="text-primary/80 mt-1">A subset of NWSL fixtures. ~$12/month, also includes UFC + select college sports.</p>
+        </li>
+        <li class="p-5 border border-primary/15 rounded-lg">
+          <h3 class="font-display font-bold text-lg text-primary">CBS (free, over-the-air)</h3>
+          <p class="text-primary/80 mt-1">Marquee matchups, often Sunday afternoons. Free if you have a TV antenna; included in cable packages.</p>
+        </li>
+      </ul>
+    </section>
+
+    <section class="mb-12">
+      <h2 class="font-display font-bold text-2xl text-primary mb-4">Match-by-match broadcast schedule</h2>
+      <div class="overflow-x-auto bg-neutral border border-primary/15 rounded-xl">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="border-b border-primary/15 text-primary/60 text-left">
+              <th class="px-4 py-3 font-medium">Date</th>
+              <th class="px-4 py-3 font-medium">Match</th>
+              <th class="px-4 py-3 font-medium">Where</th>
+            </tr>
+          </thead>
+          <tbody>
+            {allMatches.map(match => (
+              <tr class="border-b border-primary/10 last:border-0">
+                <td class="px-4 py-3 tabular text-primary">{formatDate(match.date)}</td>
+                <td class="px-4 py-3 text-primary">
+                  {match.homeAway === 'home' ? 'vs' : 'at'} {match.opponent}
+                </td>
+                <td class="px-4 py-3 text-muted">{match.broadcast.join(', ')}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-4 text-xs text-muted">
+        Broadcast assignments can change with short notice — verify on NWSLsoccer.com or the broadcaster's site closer to kickoff.
+      </p>
+    </section>
+
+    <footer class="mt-16 pt-8 border-t border-primary/15 text-sm text-muted">
+      <p>← <a href="/boston-legacy" class="text-primary hover:text-accent transition-colors">Back to Boston Legacy tracker</a></p>
+    </footer>
+  </main>
+
+  <Footer />
+</BaseLayout>

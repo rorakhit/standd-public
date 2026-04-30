@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 240" width="640" height="240">
+  <rect width="640" height="240" fill="#FAF6F0"/>
+  <text x="50" y="160" font-family="Georgia, Times New Roman, serif" font-weight="700" font-size="160" fill="#0F2A2D" letter-spacing="-6">stan</text>
+  <text x="362" y="160" font-family="Georgia, Times New Roman, serif" font-weight="700" font-size="160" fill="#FF6B2C" letter-spacing="-6">dd</text>
+  <line x1="50" y1="190" x2="590" y2="190" stroke="#0F2A2D" stroke-width="3"/>
+  <text x="50" y="220" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-weight="500" font-size="22" fill="#0F2A2D" letter-spacing="2">B — EDITORIAL SERIF (masthead with rule)</text>
+</svg>

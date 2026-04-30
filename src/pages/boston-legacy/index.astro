@@ -1,0 +1,426 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import Stat from '../../components/Stat.astro';
+import Broadcaster from '../../components/Broadcaster.astro';
+import EmailSignup from '../../components/EmailSignup.astro';
+import {
+  matches,
+  nwslStandings,
+  standingsLastUpdated,
+} from '../../data/boston-legacy';
+
+const playedMatches = matches.filter(m => m.result);
+const upcomingMatches = matches.filter(m => !m.result);
+const lastThreeResults = playedMatches.slice(-3).reverse();
+const nextThreeFixtures = upcomingMatches.slice(0, 3);
+const homeFixtures = upcomingMatches.filter(m => m.homeAway === 'home');
+
+const lastUpdated = standingsLastUpdated;
+
+// Form guide: last 5 played matches (most recent first)
+const lastFiveResults = playedMatches.slice(-5).reverse();
+
+const nextMatch = upcomingMatches[0];
+
+const bostonRow = nwslStandings.find(r => r.team === 'Boston Legacy')!;
+const seasonRecord = bostonRow;
+const position = bostonRow.rank;
+const goalDiff = bostonRow.goalsFor - bostonRow.goalsAgainst;
+
+// NWSL 2026 playoff format: top 8 teams qualify
+const PLAYOFF_LINE = 8;
+
+// Look up which played matches have published recaps so we can link them.
+// Tolerant of an empty collection (no recap markdown files yet) — that's fine,
+// just means no recap links will render in the "Last 3 results" cards.
+let recapByDate = new Map<string, string>();
+try {
+  const recaps = await getCollection('matches');
+  recapByDate = new Map(
+    recaps.map(r => [r.data.date.toISOString().slice(0, 10), r.id])
+  );
+} catch {
+  // Empty collection — no recaps published yet. Tracker still renders fine.
+}
+
+function recapHref(match: typeof playedMatches[number]): string | null {
+  const slug = recapByDate.get(match.date);
+  return slug ? `/boston-legacy/matches/${slug}` : null;
+}
+
+function formatDate(iso: string): string {
+  const d = new Date(iso + 'T12:00:00Z');
+  return d.toLocaleDateString('en-US', {
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+  });
+}
+
+function formatScore(match: typeof playedMatches[number]): string {
+  if (!match.result) return '—';
+  return `${match.result.bostonScore}–${match.result.opponentScore}`;
+}
+
+function resultBadge(match: typeof playedMatches[number]): { label: string; color: string } {
+  if (!match.result) return { label: '—', color: 'bg-muted/20 text-muted' };
+  const { bostonScore, opponentScore } = match.result;
+  if (bostonScore > opponentScore) return { label: 'W', color: 'bg-accent text-primary' };
+  if (bostonScore < opponentScore) return { label: 'L', color: 'bg-primary text-neutral' };
+  return { label: 'D', color: 'bg-primary/20 text-primary' };
+}
+
+const title = 'Boston Legacy 2026 Season Tracker — Standd';
+const description = 'Boston Legacy NWSL 2026 inaugural season tracker — match results, fixtures, standings, broadcast info. Updated weekly by a season ticket holder.';
+---
+
+<BaseLayout title={title} description={description}>
+  <Header />
+
+  <main class="flex-1">
+    <!-- Editorial intro on cream -->
+    <section class="bg-neutral pt-12 pb-12 border-b-[12px] border-accent">
+      <div class="max-w-3xl mx-auto px-6">
+        <p class="text-sm font-bold text-accent uppercase tracking-[0.2em] mb-3">NWSL · Inaugural Season</p>
+        <h1 class="font-display font-bold text-5xl md:text-7xl text-primary leading-[1.0] mb-8">
+          Boston Legacy 2026 Season Tracker
+        </h1>
+        <p class="text-lg md:text-xl leading-relaxed text-primary/85">
+          It's the first NWSL season for Boston, and it's been a season of growing into the league. Below: every match this year, what's coming up, where the team sits in the table, and how to watch. I'm a season ticket holder writing this between trips to Gillette and the new Centreville Bank Stadium — the data is updated daily, the takes are mine.
+        </p>
+        <div class="mt-6 flex items-end justify-between gap-6 flex-wrap">
+          {nextMatch && (
+            <div id="match-countdown" data-date={nextMatch.date} data-time={nextMatch.time ?? ''}>
+              <p class="text-xs text-muted font-bold uppercase tracking-wider mb-2">
+                Next match · {nextMatch.homeAway === 'home' ? 'vs' : 'at'} {nextMatch.opponent}
+              </p>
+              <div class="flex items-center gap-2">
+                <div class="flex items-end gap-1">
+                  <span id="cd-days" class="font-display font-bold text-3xl text-primary tabular-nums leading-none">—</span>
+                  <span class="text-xs text-muted font-bold uppercase tracking-wider mb-0.5">d</span>
+                </div>
+                <span class="text-primary/30 font-bold text-xl leading-none mb-0.5">:</span>
+                <div class="flex items-end gap-1">
+                  <span id="cd-hours" class="font-display font-bold text-3xl text-primary tabular-nums leading-none">—</span>
+                  <span class="text-xs text-muted font-bold uppercase tracking-wider mb-0.5">h</span>
+                </div>
+                <span class="text-primary/30 font-bold text-xl leading-none mb-0.5">:</span>
+                <div class="flex items-end gap-1">
+                  <span id="cd-minutes" class="font-display font-bold text-3xl text-primary tabular-nums leading-none">—</span>
+                  <span class="text-xs text-muted font-bold uppercase tracking-wider mb-0.5">m</span>
+                </div>
+              </div>
+            </div>
+          )}
+          {lastFiveResults.length > 0 && (
+            <div class="flex flex-col items-end gap-2">
+              <span class="text-xs text-muted uppercase tracking-wider font-bold">Form</span>
+              <div class="flex items-center gap-1.5">
+                {lastFiveResults.map(m => {
+                  const b = resultBadge(m);
+                  return (
+                    <span class={`inline-flex items-center justify-center w-7 h-7 rounded-full text-xs font-bold ${b.color}`}>
+                      {b.label}
+                    </span>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+        </div>
+        <p class="mt-4 text-sm text-muted">Last updated {lastUpdated}</p>
+      </div>
+    </section>
+
+    <!-- Season-to-date stats — fixed alignment, softer treatment -->
+    <section class="bg-primary py-16">
+      <div class="max-w-3xl mx-auto px-6">
+        <h2 class="font-display font-bold text-3xl text-accent mb-8 uppercase tracking-wider">Season to date</h2>
+        <div class="grid grid-cols-3 md:grid-cols-6 gap-px bg-neutral/10 rounded-2xl overflow-hidden">
+          <Stat label="Played" value={String(seasonRecord.played)} />
+          <Stat label="Wins" value={String(seasonRecord.wins)} />
+          <Stat label="Draws" value={String(seasonRecord.draws)} />
+          <Stat label="Losses" value={String(seasonRecord.losses)} />
+          <Stat label="Goal diff" value={`${goalDiff > 0 ? '+' : ''}${goalDiff}`} />
+          <Stat label="Position" value={`#${position}`} highlight={true} />
+        </div>
+      </div>
+    </section>
+
+    <!-- Next + Last on cream, equal-height cards -->
+    <section class="bg-neutral py-16">
+      <div class="max-w-5xl mx-auto px-6">
+        <div class="grid md:grid-cols-2 gap-10">
+          <div>
+            <h2 class="font-display font-bold text-3xl text-primary mb-6">Next 3 fixtures</h2>
+            <ul class="space-y-3">
+              {nextThreeFixtures.map(match => {
+                const isHome = match.homeAway === 'home';
+                return (
+                  <li class={`overflow-hidden rounded-xl flex min-h-[140px] ${isHome ? 'bg-primary text-neutral' : 'bg-neutral border-2 border-primary text-primary'}`}>
+                    <div class={`w-1.5 flex-shrink-0 ${isHome ? 'bg-accent' : 'bg-primary/20'}`} />
+                    <div class="flex flex-col gap-2 p-5 flex-1">
+                      <div class="flex items-center justify-between">
+                        <span class={`font-display font-bold tabular text-lg ${isHome ? 'text-accent' : 'text-primary'}`}>{formatDate(match.date)}</span>
+                        <span class={`text-xs uppercase tracking-wider font-bold px-2 py-1 rounded ${isHome ? 'bg-neutral/10 text-neutral/60' : 'bg-primary/10 text-primary/50'}`}>
+                          {isHome ? 'HOME' : 'AWAY'}
+                        </span>
+                      </div>
+                      <p class="font-display font-bold text-xl leading-tight">
+                        {isHome ? 'vs' : 'at'} {match.opponent}
+                      </p>
+                      <div class="mt-auto flex flex-col gap-2">
+                        <div class="flex flex-wrap items-center gap-1.5">
+                          <span class={`text-sm ${isHome ? 'text-neutral/70' : 'text-muted'}`}>{match.venue} ·</span>
+                          {match.broadcast.map(b => <Broadcaster name={b} />)}
+                        </div>
+                        <a
+                          href="https://www.ticketmaster.com/boston-legacy-fc-tickets/artist/4084719"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="self-start text-xs font-bold bg-accent text-primary px-3 py-1 rounded-full hover:bg-neutral hover:text-primary transition-colors"
+                        >
+                          Get tickets →
+                        </a>
+                      </div>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+
+          <div>
+            <h2 class="font-display font-bold text-3xl text-primary mb-6">Last 3 results</h2>
+            <ul class="space-y-3">
+              {lastThreeResults.map(match => {
+                const href = recapHref(match);
+                const badge = resultBadge(match);
+                return (
+                  <li class="bg-neutral border-2 border-primary p-5 rounded-xl flex flex-col gap-2 min-h-[140px]">
+                    <div class="flex items-center justify-between">
+                      <span class="font-display font-bold tabular text-primary text-lg">{formatDate(match.date)}</span>
+                      <div class="flex items-center gap-2">
+                        <span class={`text-xs font-display font-bold px-2 py-1 rounded ${badge.color}`}>
+                          {badge.label}
+                        </span>
+                        <span class="font-display font-bold tabular text-2xl text-primary">
+                          {formatScore(match)}
+                        </span>
+                      </div>
+                    </div>
+                    <p class="font-display font-bold text-xl text-primary leading-tight">
+                      {match.homeAway === 'home' ? 'vs' : 'at'} {match.opponent}
+                    </p>
+                    <div class="mt-auto flex flex-col gap-2">
+                      <span class="text-sm text-muted">{match.venue}</span>
+                      {href && (
+                        <a href={href} class="self-start text-xs font-bold bg-primary/80 text-neutral px-3 py-1 rounded-full hover:bg-primary hover:text-neutral transition-colors">
+                          Read recap →
+                        </a>
+                      )}
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- NWSL Standings: with playoff line + color treatment -->
+    <section class="bg-neutral py-16">
+      <div class="max-w-5xl mx-auto px-6">
+        <h2 class="font-display font-bold text-3xl text-primary mb-2">NWSL standings</h2>
+        <p class="text-muted text-sm mb-6">Top 8 teams qualify for playoffs. Boston's row is highlighted.</p>
+        <div class="overflow-x-auto bg-neutral border-2 border-primary rounded-2xl">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="bg-primary text-neutral text-left">
+                <th class="px-4 py-3 font-bold tabular w-12">#</th>
+                <th class="px-4 py-3 font-bold">Team</th>
+                <th class="px-3 py-3 font-bold tabular text-right">P</th>
+                <th class="px-3 py-3 font-bold tabular text-right">W</th>
+                <th class="px-3 py-3 font-bold tabular text-right">D</th>
+                <th class="px-3 py-3 font-bold tabular text-right">L</th>
+                <th class="px-3 py-3 font-bold tabular text-right">GD</th>
+                <th class="px-4 py-3 font-bold tabular text-right">PTS</th>
+              </tr>
+            </thead>
+            <tbody>
+              {nwslStandings.map((row, i) => {
+                const position = i + 1;
+                const isBoston = row.team === 'Boston Legacy';
+                const isPlayoff = position <= PLAYOFF_LINE;
+                const gd = row.goalsFor - row.goalsAgainst;
+                const isPlayoffCutoff = position === PLAYOFF_LINE;
+                return (
+                  <>
+                    <tr class={`border-b border-primary/10 ${isBoston ? 'bg-accent/15 font-bold' : isPlayoff ? 'bg-primary/[0.03]' : ''}`}>
+                      <td class="px-4 py-3 tabular">
+                        <span class={`inline-flex items-center justify-center w-7 h-7 rounded-full font-bold text-xs ${isPlayoff ? 'bg-accent text-primary' : 'bg-muted/15 text-muted'}`}>
+                          {position}
+                        </span>
+                      </td>
+                      <td class="px-4 py-3 text-primary">{row.team}</td>
+                      <td class="px-3 py-3 tabular text-right">{row.played}</td>
+                      <td class="px-3 py-3 tabular text-right">{row.wins}</td>
+                      <td class="px-3 py-3 tabular text-right">{row.draws}</td>
+                      <td class="px-3 py-3 tabular text-right">{row.losses}</td>
+                      <td class="px-3 py-3 tabular text-right text-muted">{gd > 0 ? '+' : ''}{gd}</td>
+                      <td class="px-4 py-3 tabular text-right font-bold text-primary">{row.points}</td>
+                    </tr>
+                    {isPlayoffCutoff && (
+                      <tr aria-hidden="true">
+                        <td colspan="8" class="bg-accent text-primary text-xs font-bold uppercase tracking-[0.2em] px-4 py-2 text-center">
+                          ↑ Playoff line · ↓ Outside the playoffs
+                        </td>
+                      </tr>
+                    )}
+                  </>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Full remaining schedule (collapsed behind toggle) -->
+    <section class="bg-neutral py-16">
+      <div class="max-w-5xl mx-auto px-6">
+        <div class="flex items-center gap-3 mb-2">
+          <h2 class="font-display font-bold text-3xl text-primary">Full remaining schedule</h2>
+          <button
+            id="schedule-toggle"
+            aria-expanded="false"
+            aria-controls="schedule-list"
+            aria-label="Toggle full schedule"
+            class="text-accent hover:text-accent/70 transition-colors"
+          >
+            <span id="schedule-toggle-icon" class="block text-4xl leading-none" style="transition: transform 0.3s ease;">↓</span>
+          </button>
+        </div>
+        <p class="text-muted text-sm mb-6">All upcoming Boston Legacy fixtures this season.</p>
+        <ul id="schedule-list" class="space-y-3 overflow-hidden" style="max-height: 0; transition: max-height 0.4s ease;">
+          {upcomingMatches.map(match => {
+            const isHome = match.homeAway === 'home';
+            return (
+              <li class={`overflow-hidden rounded-xl flex min-h-[140px] ${isHome ? 'bg-primary text-neutral' : 'bg-neutral border-2 border-primary text-primary'}`}>
+                <div class={`w-1.5 flex-shrink-0 ${isHome ? 'bg-accent' : 'bg-primary/20'}`} />
+                <div class="flex flex-col gap-2 p-5 flex-1">
+                  <div class="flex items-center justify-between">
+                    <span class={`font-display font-bold tabular text-lg ${isHome ? 'text-accent' : 'text-primary'}`}>{formatDate(match.date)}</span>
+                    <span class={`text-xs uppercase tracking-wider font-bold px-2 py-1 rounded ${isHome ? 'bg-neutral/10 text-neutral/60' : 'bg-primary/10 text-primary/50'}`}>
+                      {isHome ? 'HOME' : 'AWAY'}
+                    </span>
+                  </div>
+                  <p class="font-display font-bold text-xl leading-tight">
+                    {isHome ? 'vs' : 'at'} {match.opponent}
+                  </p>
+                  <div class="mt-auto flex flex-col gap-2">
+                    <div class="flex flex-col gap-0.5">
+                      <span class={`text-sm ${isHome ? 'text-neutral/70' : 'text-muted'}`}>{match.venue}</span>
+                      <span class={`text-sm ${isHome ? 'text-neutral/50' : 'text-muted/70'}`}>{match.broadcast.join(', ')}</span>
+                    </div>
+                    <a
+                      href="https://www.ticketmaster.com/boston-legacy-fc-tickets/artist/4084719"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="self-start text-xs font-bold bg-accent text-primary px-3 py-1 rounded-full hover:bg-neutral hover:text-primary transition-colors"
+                    >
+                      Get tickets →
+                    </a>
+                  </div>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    </section>
+
+    <EmailSignup />
+
+    <!-- Closer -->
+    <section class="bg-neutral py-12">
+      <div class="max-w-5xl mx-auto px-6">
+        <p class="text-sm text-muted leading-relaxed max-w-2xl">
+          Data sourced from NWSLsoccer.com and bostonlegacyfc.com, and verified by attending the matches. If you spot something wrong, email <a href="mailto:ro@standd.fan" class="text-accent font-bold hover:underline">ro@standd.fan</a>.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<!-- Stat sub-component, defined inline to keep the page self-contained -->
+<script>
+  const countdownEl = document.getElementById('match-countdown') as HTMLElement | null;
+  if (countdownEl) {
+    const matchDate = countdownEl.dataset.date!;
+    const matchTime = countdownEl.dataset.time!;
+    const daysEl = document.getElementById('cd-days')!;
+    const hoursEl = document.getElementById('cd-hours')!;
+    const minutesEl = document.getElementById('cd-minutes')!;
+
+    function buildTarget(): Date {
+      if (matchTime) {
+        const [time, ampm] = matchTime.split(' ');
+        let [h, m] = time.split(':').map(Number);
+        if (ampm === 'PM' && h !== 12) h += 12;
+        if (ampm === 'AM' && h === 12) h = 0;
+        const hh = String(h).padStart(2, '0');
+        const mm = String(m).padStart(2, '0');
+        return new Date(`${matchDate}T${hh}:${mm}:00-04:00`);
+      }
+      return new Date(matchDate + 'T00:00:00');
+    }
+
+    const target = buildTarget();
+    const pad = (n: number) => String(n).padStart(2, '0');
+
+    const IN_PROGRESS_MS = 999 * 60 * 60 * 1000; // 2 hours
+
+    function updateCountdown() {
+      const diff = target.getTime() - Date.now();
+
+      if (diff <= 0 && Math.abs(diff) < IN_PROGRESS_MS) {
+        countdownEl!.querySelector('p')!.textContent = 'Match in progress';
+        daysEl.textContent = '—';
+        hoursEl.textContent = '—';
+        minutesEl.textContent = '—';
+        return;
+      }
+
+      if (diff <= 0) return; // Past the 2hr window — next rebuild will advance to next match
+
+      daysEl.textContent = String(Math.floor(diff / 86400000));
+      hoursEl.textContent = pad(Math.floor((diff % 86400000) / 3600000));
+      minutesEl.textContent = pad(Math.floor((diff % 3600000) / 60000));
+    }
+
+    updateCountdown();
+    setInterval(updateCountdown, 60000);
+  }
+
+  const btn = document.getElementById('schedule-toggle');
+  const list = document.getElementById('schedule-list') as HTMLElement | null;
+  const icon = document.getElementById('schedule-toggle-icon') as HTMLElement | null;
+
+  btn?.addEventListener('click', () => {
+    const expanded = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', String(!expanded));
+    if (list) {
+      list.style.maxHeight = expanded ? '0' : `${list.scrollHeight}px`;
+    }
+    if (icon) {
+      icon.style.transform = expanded ? '' : 'rotate(180deg)';
+    }
+  });
+</script>

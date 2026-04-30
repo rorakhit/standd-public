@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 240" width="640" height="240">
+  <rect width="640" height="240" fill="#FAF6F0"/>
+  <text x="50" y="170" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-weight="900" font-size="150" fill="#0F2A2D" letter-spacing="-7">stan</text>
+  <rect x="362" y="58" width="234" height="132" rx="22" fill="#0F2A2D"/>
+  <text x="479" y="170" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-weight="900" font-size="150" fill="#FF6B2C" text-anchor="middle" letter-spacing="-7">dd</text>
+  <text x="50" y="220" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-weight="500" font-size="22" fill="#0F2A2D" letter-spacing="2">A — BADGED dd (favicon embedded in wordmark)</text>
+</svg>

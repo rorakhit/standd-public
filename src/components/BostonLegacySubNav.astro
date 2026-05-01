@@ -1,0 +1,26 @@
+---
+const { pathname } = Astro.url;
+
+const items = [
+  { href: '/boston-legacy', label: 'Tracker' },
+  { href: '/boston-legacy/how-to-watch', label: 'How to Watch' },
+  { href: '/boston-legacy/free-tv', label: 'Watch Free' },
+  { href: '/boston-legacy/roster', label: 'Squad' },
+];
+---
+
+<nav class="border-b border-primary/10 bg-neutral">
+  <div class="max-w-5xl mx-auto px-6 flex items-center gap-6 text-sm font-medium">
+    {items.map(item => {
+      const active = pathname === item.href || (item.href !== '/boston-legacy' && pathname.startsWith(item.href));
+      return (
+        <a
+          href={item.href}
+          class={`py-3 border-b-2 transition-colors ${active ? 'border-accent text-primary' : 'border-transparent text-primary/50 hover:text-primary'}`}
+        >
+          {item.label}
+        </a>
+      );
+    })}
+  </div>
+</nav>

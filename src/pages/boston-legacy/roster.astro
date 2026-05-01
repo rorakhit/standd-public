@@ -1,0 +1,78 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import BostonLegacySubNav from '../../components/BostonLegacySubNav.astro';
+import Footer from '../../components/Footer.astro';
+import { roster } from '../../data/boston-legacy';
+import type { Position } from '../../data/boston-legacy';
+
+const title = 'Boston Legacy FC 2026 Roster — NWSL';
+const description = 'Full Boston Legacy FC roster for the 2026 NWSL season. Players, positions, and squad numbers.';
+
+const groups: { label: string; position: Position; }[] = [
+  { label: 'Goalkeepers', position: 'GK' },
+  { label: 'Defenders',   position: 'DEF' },
+  { label: 'Midfielders', position: 'MID' },
+  { label: 'Forwards',    position: 'FWD' },
+];
+---
+
+<BaseLayout title={title} description={description}>
+  <Header />
+  <BostonLegacySubNav />
+
+  <main class="flex-1 max-w-5xl mx-auto px-6 py-12">
+    <header class="mb-10">
+      <p class="text-sm font-medium text-muted uppercase tracking-wider mb-3">Boston Legacy · 2026 Season</p>
+      <h1 class="font-display font-bold text-4xl md:text-5xl text-primary leading-[1.1]">
+        Squad
+      </h1>
+    </header>
+
+    <div class="space-y-12">
+      {groups.map(group => {
+        const players = roster
+          .filter(p => p.position === group.position)
+          .sort((a, b) => a.number - b.number);
+        return (
+          <section>
+            <h2 class="font-display font-bold text-xs uppercase tracking-[0.2em] text-muted mb-4">{group.label}</h2>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+              {players.map(player => (
+                <div class="group relative bg-primary rounded-xl p-4 flex flex-col gap-1 cursor-default">
+                  {player.countryCode && (
+                    <img
+                      src={`https://flagcdn.com/w40/${player.countryCode}.png`}
+                      alt={player.countryCode.toUpperCase()}
+                      width="20"
+                      height="15"
+                      class="absolute top-3 right-3 rounded-sm opacity-80"
+                    />
+                  )}
+                  <span class="font-display font-bold text-3xl text-accent leading-none tabular-nums">
+                    {player.number}
+                  </span>
+                  <span class="font-display font-bold text-base text-neutral leading-tight mt-1">
+                    {player.name}
+                  </span>
+                  <span class="text-xs text-neutral/50">{player.hometown}</span>
+                  {player.notable && (
+                    <span class="mt-1 text-xs font-bold text-accent/80">{player.notable}</span>
+                  )}
+                </div>
+              ))}
+            </div>
+          </section>
+        );
+      })}
+    </div>
+
+    <p class="mt-8 text-xs text-muted">Flag indicates senior international cap.</p>
+
+    <footer class="mt-6 pt-8 border-t border-primary/15 text-xs text-muted">
+      Roster sourced from <a href="https://bostonlegacyfc.com/pages/roster" target="_blank" rel="noopener noreferrer" class="hover:text-primary transition-colors">bostonlegacyfc.com</a>. Subject to change due to trades, injuries, and roster moves.
+    </footer>
+  </main>
+
+  <Footer />
+</BaseLayout>

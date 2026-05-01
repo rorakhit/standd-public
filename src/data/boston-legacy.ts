@@ -317,3 +317,51 @@ export const nwslStandings: StandingsRow[] = [
 
 // Set automatically by scripts/fetch-standings.ts on each successful update
 export const standingsLastUpdated = 'April 27, 2026';
+
+// ============================================================================
+// ROSTER — update as trades/injuries occur
+// Source: bostonlegacyfc.com/pages/roster
+// ============================================================================
+
+export type Position = 'GK' | 'DEF' | 'MID' | 'FWD';
+
+export interface Player {
+  number: number;
+  name: string;
+  position: Position;
+  hometown: string;
+  countryCode?: string; // ISO 3166-1 alpha-2, only for capped internationals
+  notable?: string;
+}
+
+export const roster: Player[] = [
+  // Goalkeepers
+  { number: 1,  name: 'Casey Murphy',      position: 'GK',  hometown: 'Bridgewater, NJ', countryCode: 'us', notable: 'Olympic Gold Medalist' },
+  { number: 18, name: 'Laurel Ivory',       position: 'GK',  hometown: 'Atlanta, GA' },
+  { number: 87, name: 'Hannah Stambaugh',   position: 'GK',  hometown: 'Tokyo, Japan',    countryCode: 'jp' },
+  // Defenders
+  { number: 3,  name: 'Kaká',              position: 'DEF', hometown: 'Brasília, Brazil',  countryCode: 'br' },
+  { number: 4,  name: 'Emerson Elgin',     position: 'DEF', hometown: 'Franklin Lakes, NJ' },
+  { number: 16, name: 'Jorelyn Carabalí',  position: 'DEF', hometown: 'Jamundí, Colombia', countryCode: 'co' },
+  { number: 20, name: 'Nicki Hernandez',   position: 'DEF', hometown: 'Naperville, IL',    countryCode: 'mx' },
+  { number: 23, name: 'Sam Angel',         position: 'DEF', hometown: 'St. Charles, MO' },
+  { number: 24, name: 'Laís Araújo',       position: 'DEF', hometown: 'Salvador, Brazil' },
+  { number: 34, name: 'Laurel Ansbrow',    position: 'DEF', hometown: 'Cary, NC' },
+  { number: 53, name: 'Bianca St-Georges', position: 'DEF', hometown: 'Quebec, Canada',    countryCode: 'ca' },
+  // Midfielders
+  { number: 5,  name: 'Josefine Hasbo',    position: 'MID', hometown: 'Copenhagen, Denmark', countryCode: 'dk' },
+  { number: 6,  name: 'Annie Karich',      position: 'MID', hometown: 'Surfside, CA' },
+  { number: 11, name: 'Chloe Ricketts',    position: 'MID', hometown: 'Dexter, MI' },
+  { number: 15, name: 'Aleigh Gambone',    position: 'MID', hometown: 'Clifton, VA' },
+  { number: 21, name: 'Barbara Olivieri',  position: 'MID', hometown: 'Katy, TX',           countryCode: 've' },
+  { number: 25, name: 'Sophia Lowenberg',  position: 'MID', hometown: 'Trumbull, CT' },
+  { number: 26, name: 'Alba Caño',         position: 'MID', hometown: 'Catalonia, Spain',   countryCode: 'es' },
+  // Forwards
+  { number: 7,  name: 'Amanda Allen',      position: 'FWD', hometown: 'Mississauga, Canada', countryCode: 'ca' },
+  { number: 8,  name: 'Sammy Smith',       position: 'FWD', hometown: 'Hanson, MA' },
+  { number: 9,  name: 'Amanda Gutierres',  position: 'FWD', hometown: 'Brazil',              countryCode: 'br', notable: '2025 Ballon d\'Or Féminin nominee' },
+  { number: 10, name: 'Ella Stevens',      position: 'FWD', hometown: 'Snellville, GA' },
+  { number: 12, name: 'Nichelle Prince',   position: 'FWD', hometown: 'Ajax, Canada',        countryCode: 'ca' },
+  { number: 13, name: 'Fauzia Najjemba',   position: 'FWD', hometown: 'Nagalama, Uganda',    countryCode: 'ug' },
+  { number: 14, name: 'Aïssata Traoré',   position: 'FWD', hometown: 'Bamako, Mali',        countryCode: 'ml' },
+];

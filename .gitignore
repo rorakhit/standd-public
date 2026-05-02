@@ -37,6 +37,9 @@ specs/
 # Firecrawl scratch files
 .firecrawl/
 
+# Playwright MCP screenshots/snapshots
+.playwright-mcp/
+
 # editor
 .vscode/
 .idea/

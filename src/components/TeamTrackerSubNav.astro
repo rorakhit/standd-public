@@ -1,0 +1,35 @@
+---
+interface Props {
+  leagueSlug: string;
+  teamSlug: string;
+  showFreeTV?: boolean;
+}
+
+const { leagueSlug, teamSlug, showFreeTV = true } = Astro.props;
+const { pathname } = Astro.url;
+
+const base = `/${leagueSlug}/${teamSlug}`;
+
+const items = [
+  { href: base, label: 'Tracker' },
+  { href: `${base}/how-to-watch`, label: 'How to Watch' },
+  ...(showFreeTV ? [{ href: `${base}/free-tv`, label: 'Watch Free' }] : []),
+  { href: `${base}/roster`, label: 'Squad' },
+];
+---
+
+<nav class="border-b border-primary/10 bg-neutral">
+  <div class="max-w-5xl mx-auto px-6 flex items-center gap-6 text-sm font-medium">
+    {items.map(item => {
+      const active = pathname === item.href || (item.href !== base && pathname.startsWith(item.href));
+      return (
+        <a
+          href={item.href}
+          class={`py-3 border-b-2 transition-colors ${active ? 'border-accent text-primary' : 'border-transparent text-primary/50 hover:text-primary'}`}
+        >
+          {item.label}
+        </a>
+      );
+    })}
+  </div>
+</nav>

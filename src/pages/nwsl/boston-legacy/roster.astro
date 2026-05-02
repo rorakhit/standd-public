@@ -1,11 +1,12 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import Header from '../../components/Header.astro';
-import BostonLegacySubNav from '../../components/BostonLegacySubNav.astro';
-import Footer from '../../components/Footer.astro';
-import PlayerBioModal from '../../components/PlayerBioModal.astro';
-import { roster, playerSlug } from '../../data/boston-legacy';
-import type { Position } from '../../data/boston-legacy';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Header from '../../../components/Header.astro';
+import TeamTrackerSubNav from '../../../components/TeamTrackerSubNav.astro';
+import Footer from '../../../components/Footer.astro';
+import PlayerBioModal from '../../../components/PlayerBioModal.astro';
+import { roster } from '../../../data/teams/nwsl/boston-legacy';
+import { playerSlug } from '../../../data/shared/types';
+import type { Position } from '../../../data/shared/types';
 
 const title = 'Boston Legacy FC 2026 Roster — NWSL';
 const description = 'Full Boston Legacy FC roster for the 2026 NWSL season. Players, positions, and squad numbers.';
@@ -35,7 +36,7 @@ const rosterData = JSON.stringify(
 
 <BaseLayout title={title} description={description}>
   <Header />
-  <BostonLegacySubNav />
+  <TeamTrackerSubNav leagueSlug="nwsl" teamSlug="boston-legacy" />
 
   <main class="flex-1 max-w-5xl mx-auto px-6 py-12">
     <header class="mb-10">
@@ -104,10 +105,6 @@ const rosterData = JSON.stringify(
 </BaseLayout>
 
 <script>
-  // ============================================================
-  // Player Bio Modal — vanilla JS
-  // ============================================================
-
   type PlayerData = {
     number: number;
     name: string;
@@ -157,11 +154,9 @@ const rosterData = JSON.stringify(
     currentIndex = index;
     isOpen = true;
 
-    // Required fields
     nameEl.textContent = player.name;
     numberEl.textContent = `#${player.number}`;
 
-    // Optional fields
     setVisible(posEl, !!player.position);
     posEl.textContent = player.position ?? '';
 
@@ -186,7 +181,6 @@ const rosterData = JSON.stringify(
       setVisible(socialEl, false);
     }
 
-    // Photo vs initials
     if (player.photo) {
       setVisible(photoEl, true);
       setVisible(initialsEl, false);
@@ -199,15 +193,11 @@ const rosterData = JSON.stringify(
       initialsEl.textContent = `${parts[0]?.[0] ?? ''}${parts[parts.length - 1]?.[0] ?? ''}`.toUpperCase();
     }
 
-    // Show modal
     setVisible(backdrop, true);
     backdrop.removeAttribute('aria-hidden');
     document.body.style.overflow = 'hidden';
 
-    // Hash
     history.replaceState(null, '', `#player-${player.slug}`);
-
-    // Focus
     closeBtn.focus();
   }
 
@@ -229,7 +219,6 @@ const rosterData = JSON.stringify(
     openModal(next);
   }
 
-  // Card click + keyboard handlers
   const cards = document.querySelectorAll<HTMLElement>('[data-player-slug]');
   cards.forEach((card, index) => {
     card.addEventListener('click', () => openModal(index, card));
@@ -241,17 +230,14 @@ const rosterData = JSON.stringify(
     });
   });
 
-  // Modal controls
   closeBtn.addEventListener('click', closeModal);
   prevBtn.addEventListener('click', () => navigateModal('prev'));
   nextBtn.addEventListener('click', () => navigateModal('next'));
 
-  // Backdrop click — close only when clicking outside the modal panel
   backdrop.addEventListener('click', (e: MouseEvent) => {
     if (e.target === backdrop) closeModal();
   });
 
-  // Keyboard — includes focus trap
   document.addEventListener('keydown', (e: KeyboardEvent) => {
     if (!isOpen) return;
     if (e.key === 'Escape')      { e.preventDefault(); closeModal(); return; }
@@ -277,7 +263,6 @@ const rosterData = JSON.stringify(
     }
   });
 
-  // Deep-link on load — deferred so the browser has committed the hash to window.location
   setTimeout(() => {
     const hashMatch = window.location.hash.match(/^#player-([a-z0-9-]+)$/);
     if (hashMatch) {

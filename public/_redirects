@@ -1,0 +1,2 @@
+/boston-legacy /nwsl/boston-legacy 301
+/boston-legacy/* /nwsl/boston-legacy/:splat 301

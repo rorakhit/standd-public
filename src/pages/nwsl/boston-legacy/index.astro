@@ -1,17 +1,14 @@
 ---
 import { getCollection } from 'astro:content';
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import Header from '../../components/Header.astro';
-import BostonLegacySubNav from '../../components/BostonLegacySubNav.astro';
-import Footer from '../../components/Footer.astro';
-import Stat from '../../components/Stat.astro';
-import Broadcaster from '../../components/Broadcaster.astro';
-import EmailSignup from '../../components/EmailSignup.astro';
-import {
-  matches,
-  nwslStandings,
-  standingsLastUpdated,
-} from '../../data/boston-legacy';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Header from '../../../components/Header.astro';
+import TeamTrackerSubNav from '../../../components/TeamTrackerSubNav.astro';
+import Footer from '../../../components/Footer.astro';
+import Stat from '../../../components/Stat.astro';
+import Broadcaster from '../../../components/Broadcaster.astro';
+import EmailSignup from '../../../components/EmailSignup.astro';
+import { matches } from '../../../data/teams/nwsl/boston-legacy';
+import { nwslStandings, standingsLastUpdated } from '../../../data/leagues/nwsl/standings';
 
 const playedMatches = matches.filter(m => m.result);
 const upcomingMatches = matches.filter(m => !m.result);
@@ -35,8 +32,6 @@ const goalDiff = bostonRow.goalsFor - bostonRow.goalsAgainst;
 const PLAYOFF_LINE = 8;
 
 // Look up which played matches have published recaps so we can link them.
-// Tolerant of an empty collection (no recap markdown files yet) — that's fine,
-// just means no recap links will render in the "Last 3 results" cards.
 let recapByDate = new Map<string, string>();
 try {
   const recaps = await getCollection('matches');
@@ -44,12 +39,12 @@ try {
     recaps.map(r => [r.data.date.toISOString().slice(0, 10), r.id])
   );
 } catch {
-  // Empty collection — no recaps published yet. Tracker still renders fine.
+  // Empty collection — no recaps published yet.
 }
 
 function recapHref(match: typeof playedMatches[number]): string | null {
   const slug = recapByDate.get(match.date);
-  return slug ? `/boston-legacy/matches/${slug}` : null;
+  return slug ? `/nwsl/boston-legacy/matches/${slug}` : null;
 }
 
 function formatDate(iso: string): string {
@@ -80,7 +75,7 @@ const description = 'Boston Legacy NWSL 2026 inaugural season tracker — match 
 
 <BaseLayout title={title} description={description}>
   <Header />
-  <BostonLegacySubNav />
+  <TeamTrackerSubNav leagueSlug="nwsl" teamSlug="boston-legacy" />
 
   <main class="flex-1">
     <!-- Editorial intro on cream -->
@@ -137,7 +132,7 @@ const description = 'Boston Legacy NWSL 2026 inaugural season tracker — match 
       </div>
     </section>
 
-    <!-- Season-to-date stats — fixed alignment, softer treatment -->
+    <!-- Season-to-date stats -->
     <section class="bg-primary py-16">
       <div class="max-w-3xl mx-auto px-6">
         <h2 class="font-display font-bold text-3xl text-accent mb-8 uppercase tracking-wider">Season to date</h2>
@@ -234,7 +229,7 @@ const description = 'Boston Legacy NWSL 2026 inaugural season tracker — match 
       </div>
     </section>
 
-    <!-- NWSL Standings: with playoff line + color treatment -->
+    <!-- NWSL Standings -->
     <section class="bg-neutral py-16">
       <div class="max-w-5xl mx-auto px-6">
         <h2 class="font-display font-bold text-3xl text-primary mb-2">NWSL standings</h2>
@@ -255,17 +250,17 @@ const description = 'Boston Legacy NWSL 2026 inaugural season tracker — match 
             </thead>
             <tbody>
               {nwslStandings.map((row, i) => {
-                const position = i + 1;
+                const pos = i + 1;
                 const isBoston = row.team === 'Boston Legacy';
-                const isPlayoff = position <= PLAYOFF_LINE;
+                const isPlayoff = pos <= PLAYOFF_LINE;
                 const gd = row.goalsFor - row.goalsAgainst;
-                const isPlayoffCutoff = position === PLAYOFF_LINE;
+                const isPlayoffCutoff = pos === PLAYOFF_LINE;
                 return (
                   <>
                     <tr class={`border-b border-primary/10 ${isBoston ? 'bg-accent/15 font-bold' : isPlayoff ? 'bg-primary/[0.03]' : ''}`}>
                       <td class="px-4 py-3 tabular">
                         <span class={`inline-flex items-center justify-center w-7 h-7 rounded-full font-bold text-xs ${isPlayoff ? 'bg-accent text-primary' : 'bg-muted/15 text-muted'}`}>
-                          {position}
+                          {pos}
                         </span>
                       </td>
                       <td class="px-4 py-3 text-primary">{row.team}</td>
@@ -361,7 +356,6 @@ const description = 'Boston Legacy NWSL 2026 inaugural season tracker — match 
   <Footer />
 </BaseLayout>
 
-<!-- Stat sub-component, defined inline to keep the page self-contained -->
 <script>
   const countdownEl = document.getElementById('match-countdown') as HTMLElement | null;
   if (countdownEl) {
@@ -370,6 +364,7 @@ const description = 'Boston Legacy NWSL 2026 inaugural season tracker — match 
     const daysEl = document.getElementById('cd-days')!;
     const hoursEl = document.getElementById('cd-hours')!;
     const minutesEl = document.getElementById('cd-minutes')!;
+    const labelEl = countdownEl.querySelector('p')!;
 
     function buildTarget(): Date {
       if (matchTime) {
@@ -386,21 +381,21 @@ const description = 'Boston Legacy NWSL 2026 inaugural season tracker — match 
 
     const target = buildTarget();
     const pad = (n: number) => String(n).padStart(2, '0');
-
-    const IN_PROGRESS_MS = 999 * 60 * 60 * 1000; // 2 hours
+    const IN_PROGRESS_MS = 2 * 60 * 60 * 1000; // 2 hours
 
     function updateCountdown() {
       const diff = target.getTime() - Date.now();
 
       if (diff <= 0 && Math.abs(diff) < IN_PROGRESS_MS) {
-        countdownEl!.querySelector('p')!.textContent = 'Match in progress';
-        daysEl.textContent = '—';
-        hoursEl.textContent = '—';
-        minutesEl.textContent = '—';
+        labelEl.textContent = 'Up the Swans!';
+        daysEl.closest('.flex.items-end')!.classList.add('hidden');
+        hoursEl.closest('.flex.items-end')!.classList.add('hidden');
+        minutesEl.closest('.flex.items-end')!.classList.add('hidden');
+        (document.querySelectorAll('#match-countdown .text-primary\\/30') as NodeListOf<HTMLElement>).forEach(el => el.classList.add('hidden'));
         return;
       }
 
-      if (diff <= 0) return; // Past the 2hr window — next rebuild will advance to next match
+      if (diff <= 0) return;
 
       daysEl.textContent = String(Math.floor(diff / 86400000));
       hoursEl.textContent = pad(Math.floor((diff % 86400000) / 3600000));

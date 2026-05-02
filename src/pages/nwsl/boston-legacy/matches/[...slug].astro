@@ -1,13 +1,11 @@
 ---
 import { getCollection, render } from 'astro:content';
-import BaseLayout from '../../../layouts/BaseLayout.astro';
-import Header from '../../../components/Header.astro';
-import BostonLegacySubNav from '../../../components/BostonLegacySubNav.astro';
-import Footer from '../../../components/Footer.astro';
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import Header from '../../../../components/Header.astro';
+import TeamTrackerSubNav from '../../../../components/TeamTrackerSubNav.astro';
+import Footer from '../../../../components/Footer.astro';
 
 export async function getStaticPaths() {
-  // Tolerate an empty matches collection — when no recap markdown files exist yet,
-  // this route simply doesn't generate any pages.
   try {
     const matches = await getCollection('matches');
     return matches.map(match => ({
@@ -48,7 +46,7 @@ const description = match.data.description
 
 <BaseLayout title={title} description={description}>
   <Header />
-  <BostonLegacySubNav />
+  <TeamTrackerSubNav leagueSlug="nwsl" teamSlug="boston-legacy" />
 
   <main class="flex-1 max-w-3xl mx-auto px-6 py-12">
     <article>
@@ -72,7 +70,7 @@ const description = match.data.description
       </div>
 
       <footer class="mt-16 pt-8 border-t border-primary/15 text-sm text-muted">
-        <p>← <a href="/boston-legacy" class="text-primary hover:text-accent transition-colors">Back to Boston Legacy tracker</a></p>
+        <p>← <a href="/nwsl/boston-legacy" class="text-primary hover:text-accent transition-colors">Back to Boston Legacy tracker</a></p>
       </footer>
     </article>
   </main>

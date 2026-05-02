@@ -1,9 +1,9 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import Header from '../../components/Header.astro';
-import BostonLegacySubNav from '../../components/BostonLegacySubNav.astro';
-import Footer from '../../components/Footer.astro';
-import { matches } from '../../data/boston-legacy';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Header from '../../../components/Header.astro';
+import TeamTrackerSubNav from '../../../components/TeamTrackerSubNav.astro';
+import Footer from '../../../components/Footer.astro';
+import { matches } from '../../../data/teams/nwsl/boston-legacy';
 
 const allMatches = [...matches].sort((a, b) => a.date.localeCompare(b.date));
 const today = new Date().toISOString().slice(0, 10);
@@ -94,7 +94,7 @@ const services = [
 
 <BaseLayout title={title} description={description}>
   <Header />
-  <BostonLegacySubNav />
+  <TeamTrackerSubNav leagueSlug="nwsl" teamSlug="boston-legacy" />
 
   <main class="flex-1 max-w-3xl mx-auto px-6 py-12">
     <header class="mb-10">
@@ -103,14 +103,14 @@ const services = [
         How to watch Boston Legacy
       </h1>
       <p class="text-lg leading-relaxed text-primary/80">
-        Every Boston Legacy match in 2026 is broadcast somewhere — but that "somewhere" is spread across seven different services. Here's the full breakdown, plus a match-by-match schedule. Several games are on free over-the-air channels — <a href="/boston-legacy/free-tv" class="text-accent hover:underline">see our guide to watching without cable</a>.
+        Every Boston Legacy match in 2026 is broadcast somewhere — but that "somewhere" is spread across seven different services. Here's the full breakdown, plus a match-by-match schedule. Several games are on free over-the-air channels — <a href="/nwsl/boston-legacy/free-tv" class="text-accent hover:underline">see our guide to watching without cable</a>.
       </p>
     </header>
 
     <section class="mb-12">
       <h2 class="font-display font-bold text-2xl text-primary mb-4">Where to watch</h2>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 items-start" id="services-grid">
-        {services.map((service, i) => (
+        {services.map((service) => (
           <div class="service-card border border-primary/15 rounded-lg overflow-hidden">
             <button class="service-toggle w-full flex items-center justify-between p-4 text-left hover:bg-primary/5 transition-colors">
               <div class="flex items-center gap-2 flex-wrap">
@@ -175,7 +175,7 @@ const services = [
     </section>
 
     <footer class="mt-16 pt-8 border-t border-primary/15 text-sm text-muted">
-      <p>← <a href="/boston-legacy" class="text-primary hover:text-accent transition-colors">Back to Boston Legacy tracker</a></p>
+      <p>← <a href="/nwsl/boston-legacy" class="text-primary hover:text-accent transition-colors">Back to Boston Legacy tracker</a></p>
     </footer>
   </main>
 

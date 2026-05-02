@@ -1,8 +1,8 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import Header from '../../components/Header.astro';
-import BostonLegacySubNav from '../../components/BostonLegacySubNav.astro';
-import Footer from '../../components/Footer.astro';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Header from '../../../components/Header.astro';
+import TeamTrackerSubNav from '../../../components/TeamTrackerSubNav.astro';
+import Footer from '../../../components/Footer.astro';
 
 const title = 'How to watch Boston Legacy for free — no cable required';
 const description = 'Several Boston Legacy games air on free over-the-air channels. Here\'s how to watch without cable: TV antennas, Tablo, and live TV streaming options explained.';
@@ -10,7 +10,7 @@ const description = 'Several Boston Legacy games air on free over-the-air channe
 
 <BaseLayout title={title} description={description}>
   <Header />
-  <BostonLegacySubNav />
+  <TeamTrackerSubNav leagueSlug="nwsl" teamSlug="boston-legacy" />
 
   <main class="flex-1 max-w-3xl mx-auto px-6 py-12">
     <header class="mb-10">
@@ -120,7 +120,7 @@ const description = 'Several Boston Legacy games air on free over-the-air channe
     </div>
 
     <footer class="mt-8 pt-8 border-t border-primary/15 text-sm text-muted">
-      <p>← <a href="/boston-legacy/how-to-watch" class="text-primary hover:text-accent transition-colors">Back to full broadcast schedule</a></p>
+      <p>← <a href="/nwsl/boston-legacy/how-to-watch" class="text-primary hover:text-accent transition-colors">Back to full broadcast schedule</a></p>
     </footer>
   </main>
 

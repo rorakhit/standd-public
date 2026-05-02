@@ -3,7 +3,8 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../../components/Header.astro';
 import BostonLegacySubNav from '../../components/BostonLegacySubNav.astro';
 import Footer from '../../components/Footer.astro';
-import { roster } from '../../data/boston-legacy';
+import PlayerBioModal from '../../components/PlayerBioModal.astro';
+import { roster, playerSlug } from '../../data/boston-legacy';
 import type { Position } from '../../data/boston-legacy';
 
 const title = 'Boston Legacy FC 2026 Roster — NWSL';
@@ -15,6 +16,21 @@ const groups: { label: string; position: Position; }[] = [
   { label: 'Midfielders', position: 'MID' },
   { label: 'Forwards',    position: 'FWD' },
 ];
+
+// Build ordered roster array matching DOM card order (GK→DEF→MID→FWD, sorted by number within group)
+const orderedRoster = groups.flatMap(group =>
+  roster
+    .filter(p => p.position === group.position)
+    .sort((a, b) => a.number - b.number)
+);
+
+// Serialize player data with computed slugs for JS runtime
+const rosterData = JSON.stringify(
+  orderedRoster.map(p => ({
+    ...p,
+    slug: playerSlug(p, roster),
+  }))
+);
 ---
 
 <BaseLayout title={title} description={description}>
@@ -39,7 +55,13 @@ const groups: { label: string; position: Position; }[] = [
             <h2 class="font-display font-bold text-xs uppercase tracking-[0.2em] text-muted mb-4">{group.label}</h2>
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
               {players.map(player => (
-                <div class="group relative bg-primary rounded-xl p-4 flex flex-col gap-1 cursor-default">
+                <div
+                  class="group relative bg-primary rounded-xl p-4 flex flex-col gap-1 cursor-pointer hover:bg-primary/80 transition-colors focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-black"
+                  data-player-slug={playerSlug(player, roster)}
+                  tabindex="0"
+                  role="button"
+                  aria-label={`View ${player.name} bio`}
+                >
                   {player.countryCode && (
                     <img
                       src={`https://flagcdn.com/w40/${player.countryCode}.png`}
@@ -74,5 +96,194 @@ const groups: { label: string; position: Position; }[] = [
     </footer>
   </main>
 
+  <!-- Serialized roster data for JS modal runtime -->
+  <script type="application/json" id="roster-data" set:html={rosterData}></script>
+
+  <PlayerBioModal />
   <Footer />
 </BaseLayout>
+
+<script>
+  // ============================================================
+  // Player Bio Modal — vanilla JS
+  // ============================================================
+
+  type PlayerData = {
+    number: number;
+    name: string;
+    position: string;
+    hometown: string;
+    countryCode?: string;
+    notable?: string;
+    height?: string;
+    bio?: string;
+    socialHandle?: string;
+    slug: string;
+    photo?: string;
+  };
+
+  const dataEl = document.getElementById('roster-data');
+  const players: PlayerData[] = dataEl ? JSON.parse(dataEl.textContent ?? '[]') : [];
+  const slugMap = new Map<string, number>(players.map((p, i) => [p.slug, i]));
+
+  let isOpen = false;
+  let currentIndex = 0;
+  let triggerEl: HTMLElement | null = null;
+
+  const backdrop  = document.getElementById('player-modal-backdrop') as HTMLElement;
+  const closeBtn  = document.getElementById('modal-close') as HTMLButtonElement;
+  const prevBtn   = document.getElementById('modal-prev') as HTMLButtonElement;
+  const nextBtn   = document.getElementById('modal-next') as HTMLButtonElement;
+  const nameEl    = document.querySelector('[data-modal-name]') as HTMLElement;
+  const numberEl  = document.querySelector('[data-modal-number]') as HTMLElement;
+  const posEl     = document.getElementById('modal-position') as HTMLElement;
+  const natEl     = document.getElementById('modal-nationality') as HTMLElement;
+  const heightEl  = document.getElementById('modal-height') as HTMLElement;
+  const hometownEl= document.getElementById('modal-hometown') as HTMLElement;
+  const bioEl     = document.getElementById('modal-bio') as HTMLElement;
+  const socialEl  = document.getElementById('modal-social') as HTMLAnchorElement;
+  const photoEl   = document.getElementById('modal-photo') as HTMLImageElement;
+  const initialsEl= document.getElementById('modal-initials') as HTMLElement;
+
+  function setVisible(el: HTMLElement, visible: boolean) {
+    el.classList.toggle('hidden', !visible);
+  }
+
+  function openModal(index: number, trigger?: HTMLElement) {
+    const player = players[index];
+    if (!player) return;
+
+    triggerEl = (!isOpen && trigger) ? trigger : triggerEl;
+    currentIndex = index;
+    isOpen = true;
+
+    // Required fields
+    nameEl.textContent = player.name;
+    numberEl.textContent = `#${player.number}`;
+
+    // Optional fields
+    setVisible(posEl, !!player.position);
+    posEl.textContent = player.position ?? '';
+
+    setVisible(natEl, !!player.countryCode);
+    natEl.textContent = player.countryCode ? player.countryCode.toUpperCase() : '';
+
+    setVisible(heightEl, !!player.height);
+    heightEl.textContent = player.height ?? '';
+
+    setVisible(hometownEl, !!player.hometown);
+    hometownEl.textContent = player.hometown ?? '';
+
+    setVisible(bioEl, !!player.bio);
+    bioEl.textContent = player.bio ?? '';
+
+    if (player.socialHandle) {
+      setVisible(socialEl, true);
+      socialEl.textContent = `@${player.socialHandle}`;
+      socialEl.href = `https://instagram.com/${player.socialHandle}`;
+      socialEl.setAttribute('aria-label', `${player.name} on Instagram (opens in new tab)`);
+    } else {
+      setVisible(socialEl, false);
+    }
+
+    // Photo vs initials
+    if (player.photo) {
+      setVisible(photoEl, true);
+      setVisible(initialsEl, false);
+      photoEl.src = player.photo;
+      photoEl.alt = player.name;
+    } else {
+      setVisible(photoEl, false);
+      setVisible(initialsEl, true);
+      const parts = player.name.trim().split(/\s+/);
+      initialsEl.textContent = `${parts[0]?.[0] ?? ''}${parts[parts.length - 1]?.[0] ?? ''}`.toUpperCase();
+    }
+
+    // Show modal
+    setVisible(backdrop, true);
+    backdrop.removeAttribute('aria-hidden');
+    document.body.style.overflow = 'hidden';
+
+    // Hash
+    history.replaceState(null, '', `#player-${player.slug}`);
+
+    // Focus
+    closeBtn.focus();
+  }
+
+  function closeModal() {
+    isOpen = false;
+    setVisible(backdrop, false);
+    backdrop.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    history.replaceState(null, '', window.location.pathname);
+    const el = triggerEl;
+    triggerEl = null;
+    el?.focus();
+  }
+
+  function navigateModal(direction: 'prev' | 'next') {
+    const next = direction === 'next'
+      ? (currentIndex + 1) % players.length
+      : (currentIndex - 1 + players.length) % players.length;
+    openModal(next);
+  }
+
+  // Card click + keyboard handlers
+  const cards = document.querySelectorAll<HTMLElement>('[data-player-slug]');
+  cards.forEach((card, index) => {
+    card.addEventListener('click', () => openModal(index, card));
+    card.addEventListener('keydown', (e: KeyboardEvent) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        openModal(index, card);
+      }
+    });
+  });
+
+  // Modal controls
+  closeBtn.addEventListener('click', closeModal);
+  prevBtn.addEventListener('click', () => navigateModal('prev'));
+  nextBtn.addEventListener('click', () => navigateModal('next'));
+
+  // Backdrop click — close only when clicking outside the modal panel
+  backdrop.addEventListener('click', (e: MouseEvent) => {
+    if (e.target === backdrop) closeModal();
+  });
+
+  // Keyboard — includes focus trap
+  document.addEventListener('keydown', (e: KeyboardEvent) => {
+    if (!isOpen) return;
+    if (e.key === 'Escape')      { e.preventDefault(); closeModal(); return; }
+    if (e.key === 'ArrowLeft')   { e.preventDefault(); navigateModal('prev'); return; }
+    if (e.key === 'ArrowRight')  { e.preventDefault(); navigateModal('next'); return; }
+
+    if (e.key === 'Tab') {
+      const modal = document.getElementById('player-modal') as HTMLElement;
+      const focusable = Array.from(
+        modal.querySelectorAll<HTMLElement>('button, a[href], [tabindex="0"]')
+      ).filter(el => !el.closest('.hidden') && !el.hasAttribute('disabled'));
+
+      if (focusable.length === 0) { e.preventDefault(); return; }
+
+      const first = focusable[0];
+      const last  = focusable[focusable.length - 1];
+
+      if (e.shiftKey) {
+        if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+      } else {
+        if (document.activeElement === last)  { e.preventDefault(); first.focus(); }
+      }
+    }
+  });
+
+  // Deep-link on load — deferred so the browser has committed the hash to window.location
+  setTimeout(() => {
+    const hashMatch = window.location.hash.match(/^#player-([a-z0-9-]+)$/);
+    if (hashMatch) {
+      const slugFromHash = hashMatch[1];
+      const idx = slugMap.get(slugFromHash);
+      if (idx !== undefined) openModal(idx);
+    }
+  }, 0);
+</script>

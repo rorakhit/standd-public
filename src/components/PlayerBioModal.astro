@@ -1,0 +1,89 @@
+---
+// No props — content is populated entirely by JS at runtime
+---
+
+<!-- Backdrop — click outside the panel closes modal -->
+<div
+  id="player-modal-backdrop"
+  class="hidden fixed inset-0 bg-black/70 z-50 overflow-y-auto"
+  aria-hidden="true"
+>
+  <!-- Modal panel -->
+  <div
+    id="player-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="modal-player-name"
+    class="relative bg-[#111] border border-white/10 rounded-2xl max-w-lg w-full mx-auto my-12 p-6 flex flex-col gap-4"
+  >
+    <!-- Close button — receives focus on open -->
+    <button
+      id="modal-close"
+      aria-label="Close player bio"
+      class="absolute top-4 right-4 text-white/50 hover:text-white transition-colors text-xl leading-none w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/10"
+    >✕</button>
+
+    <!-- Photo / initials avatar -->
+    <div class="flex items-center gap-4">
+      <div id="modal-photo-container" class="flex-shrink-0">
+        <img
+          id="modal-photo"
+          src=""
+          alt=""
+          class="hidden w-20 h-20 rounded-full object-cover"
+        />
+        <div
+          id="modal-initials"
+          class="hidden w-20 h-20 rounded-full bg-accent/20 border-2 border-accent/40 flex items-center justify-center font-display font-bold text-2xl text-accent"
+        ></div>
+      </div>
+
+      <!-- Name + squad number -->
+      <div class="flex flex-col gap-1 min-w-0">
+        <h2
+          id="modal-player-name"
+          data-modal-name
+          class="font-display font-bold text-2xl text-neutral leading-tight"
+        ></h2>
+        <p class="font-display font-bold text-accent text-lg tabular-nums" data-modal-number></p>
+      </div>
+    </div>
+
+    <!-- Required-when-present fields -->
+    <div class="flex flex-wrap gap-x-6 gap-y-1 text-sm text-neutral/70">
+      <span id="modal-position" data-modal-position class="hidden"></span>
+      <span id="modal-nationality" data-modal-nationality class="hidden"></span>
+      <span id="modal-height" data-modal-height class="hidden"></span>
+    </div>
+
+    <!-- Hometown -->
+    <p id="modal-hometown" data-modal-hometown class="hidden text-sm text-neutral/50"></p>
+
+    <!-- Bio blurb -->
+    <p id="modal-bio" data-modal-bio class="hidden text-sm text-neutral/80 leading-relaxed"></p>
+
+    <!-- Social handle -->
+    <a
+      id="modal-social"
+      data-modal-social
+      href="#"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="hidden text-sm text-accent hover:text-accent/70 transition-colors"
+    ></a>
+
+    <!-- Prev / next navigation -->
+    <div class="flex justify-between mt-2 pt-4 border-t border-white/10">
+      <button
+        id="modal-prev"
+        aria-label="Previous player"
+        class="flex items-center gap-2 text-sm text-neutral/60 hover:text-neutral transition-colors px-3 py-2 rounded-lg hover:bg-white/5"
+      >← Prev</button>
+      <button
+        id="modal-next"
+        aria-label="Next player"
+        class="flex items-center gap-2 text-sm text-neutral/60 hover:text-neutral transition-colors px-3 py-2 rounded-lg hover:bg-white/5"
+      >Next →</button>
+    </div>
+  </div>
+</div>

@@ -25,6 +25,11 @@ pnpm-debug.log*
 # Claude Code
 .claude/
 memory/
+CLAUDE.md
+
+# Speckit
+.specify/
+specs/
 
 # Serena (Claude Code MCP)
 .serena/

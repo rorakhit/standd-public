@@ -57,6 +57,7 @@ export const matches: Match[] = [
     homeAway: 'home',
     venue: 'Gillette Stadium, Foxborough, MA',
     broadcast: ['CBS Sports'],
+    result: { bostonScore: 3, opponentScore: 2 },
   },
   {
     date: '2026-05-09',

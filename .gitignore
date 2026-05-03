@@ -40,6 +40,10 @@ specs/
 # Playwright MCP screenshots/snapshots
 .playwright-mcp/
 
+# BMAD
+_bmad/
+_bmad-output/
+
 # editor
 .vscode/
 .idea/

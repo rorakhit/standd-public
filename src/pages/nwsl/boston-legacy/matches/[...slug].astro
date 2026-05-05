@@ -28,8 +28,8 @@ const formattedDate = new Date(match.data.date.toISOString().slice(0, 10) + 'T12
 });
 
 const result = (() => {
-  if (match.data.bostonScore === match.data.opponentScore) return 'Draw';
-  return match.data.bostonScore > match.data.opponentScore ? 'Win' : 'Loss';
+  if (match.data.teamScore === match.data.opponentScore) return 'Draw';
+  return match.data.teamScore > match.data.opponentScore ? 'Win' : 'Loss';
 })();
 
 const resultColor = (() => {
@@ -41,12 +41,12 @@ const resultColor = (() => {
 const title = match.data.title
   ?? `Boston Legacy ${match.data.homeAway === 'home' ? 'vs' : 'at'} ${match.data.opponent} — ${formattedDate}`;
 const description = match.data.description
-  ?? `Match recap: Boston Legacy ${match.data.homeAway === 'home' ? 'vs' : 'at'} ${match.data.opponent}, ${match.data.bostonScore}-${match.data.opponentScore}.`;
+  ?? `Match recap: Boston Legacy ${match.data.homeAway === 'home' ? 'vs' : 'at'} ${match.data.opponent}, ${match.data.teamScore}-${match.data.opponentScore}.`;
 ---
 
 <BaseLayout title={title} description={description}>
   <Header />
-  <TeamTrackerSubNav leagueSlug="nwsl" teamSlug="boston-legacy" />
+  <TeamTrackerSubNav leagueSlug="nwsl" teamSlug="boston-legacy" showHowToWatch showFreeTV showSquad />
 
   <main class="flex-1 max-w-3xl mx-auto px-6 py-12">
     <article>
@@ -55,11 +55,11 @@ const description = match.data.description
           NWSL · Match Recap · {formattedDate}
         </p>
         <h1 class="font-display font-bold text-4xl md:text-5xl text-primary leading-[1.1] mb-3">
-          Boston Legacy {match.data.homeAway === 'home' ? 'vs' : 'at'} {match.data.opponent}
+          Boston Legacy {match.data.homeAway === 'home' ? 'vs' : 'at'}{' '}{match.data.opponent}
         </h1>
         <div class="flex flex-col gap-4">
           <span class={`font-display font-bold text-7xl tabular ${resultColor}`}>
-            {match.data.bostonScore}–{match.data.opponentScore}
+            {match.data.teamScore}–{match.data.opponentScore}
           </span>
           <p class="text-sm text-muted">{result} · {match.data.venue}</p>
         </div>

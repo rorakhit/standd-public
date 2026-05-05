@@ -19,7 +19,7 @@
     <!-- Close button — receives focus on open -->
     <button
       id="modal-close"
-      aria-label="Close player bio"
+      aria-label="Close player profile"
       class="absolute top-4 right-4 text-white/50 hover:text-white transition-colors text-xl leading-none w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/10"
     >✕</button>
 
@@ -52,12 +52,14 @@
     <!-- Required-when-present fields -->
     <div class="flex flex-wrap gap-x-6 gap-y-1 text-sm text-neutral/70">
       <span id="modal-position" data-modal-position class="hidden"></span>
-      <span id="modal-nationality" data-modal-nationality class="hidden"></span>
       <span id="modal-height" data-modal-height class="hidden"></span>
     </div>
 
-    <!-- Hometown -->
-    <p id="modal-hometown" data-modal-hometown class="hidden text-sm text-neutral/50"></p>
+    <!-- Flag + Hometown -->
+    <div id="modal-hometown-row" class="hidden flex items-center gap-2">
+      <img id="modal-flag" src="" alt="" class="hidden rounded-sm" width="20" height="15" />
+      <p id="modal-hometown" data-modal-hometown class="text-sm text-neutral/50"></p>
+    </div>
 
     <!-- Bio blurb -->
     <p id="modal-bio" data-modal-bio class="hidden text-sm text-neutral/80 leading-relaxed"></p>

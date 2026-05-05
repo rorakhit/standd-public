@@ -1,0 +1,61 @@
+language: en-US
+
+reviews:
+  profile: assertive
+  request_changes_workflow: true
+  high_level_summary: true
+  poem: false
+  review_status: true
+  path_filters:
+    - "!public/players/**"
+    - "!public/logos/**"
+    - "!public/apple-touch-icon.png"
+    - "!public/og-default.png"
+    - "!**/*.webp"
+    - "!**/*.png"
+    - "!**/*.jpg"
+    - "!**/*.jpeg"
+    - "!**/*.svg"
+    - "!package-lock.json"
+  path_instructions:
+    - path: "src/pages/**/*.astro"
+      instructions: |
+        This is an Astro 5 SSG site. Pages are static — no server-side state.
+        Check for: broken template logic, missing or wrong props passed to components,
+        hardcoded values that should reference data files, accessibility issues (alt text,
+        aria labels, semantic HTML), and SEO issues (missing meta descriptions, duplicate titles).
+        Flag any copy that sounds like AI output: em dashes in body text, phrases like
+        "significant number of", "it's worth noting", "seamless", "robust", "comprehensive".
+    - path: "src/components/**/*.astro"
+      instructions: |
+        Astro components. Check for: prop types and defaults, unused props,
+        missing aria attributes on interactive elements, and hardcoded strings
+        that should be props.
+    - path: "src/data/**/*.ts"
+      instructions: |
+        Static data files — team configs, match schedules, rosters, standings.
+        Check for: type correctness, missing required fields, inconsistent field naming
+        (bostonScore should now be teamScore everywhere), malformed dates (must be YYYY-MM-DD),
+        broadcaster values that don't match the canonical set (ION, Victory+, NWSL+, ESPN,
+        ESPN2, ESPN App, ESPN Deportes, CBS Sports, Prime Video, ABC, Disney+,
+        NBC10, NBC Sports Boston).
+    - path: "src/data/teams/nwsl/*.ts"
+      instructions: |
+        NWSL team data files. Each must have a valid TeamConfig export (name, slug, color,
+        badge, standingsKey, officialUrl, ticketsUrl) and a matches array. Result fields
+        must use teamScore/opponentScore, not bostonScore. Dates must be YYYY-MM-DD.
+        Flag any match with a past date that has no result field.
+    - path: "scripts/**/*.ts"
+      instructions: |
+        Data fetch and parse scripts may run in prebuild and locally (skip with SKIP_DATA_FETCH=1).
+        Check for: error handling on network calls, safe file-path writes for build-time output,
+        regex patterns that could silently fail or produce garbage values, and any hardcoded
+        team-specific logic that should be generic.
+    - path: "src/layouts/**/*.astro"
+      instructions: |
+        Base layouts. Check for: canonical URL correctness, OG tags, missing or
+        hardcoded meta fields that should accept props, and accessibility (lang attribute,
+        skip nav, landmark regions).
+
+chat:
+  auto_reply: true

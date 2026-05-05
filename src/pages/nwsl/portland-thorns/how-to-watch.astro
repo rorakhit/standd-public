@@ -1,0 +1,205 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Header from '../../../components/Header.astro';
+import TeamTrackerSubNav from '../../../components/TeamTrackerSubNav.astro';
+import Footer from '../../../components/Footer.astro';
+import { matches } from '../../../data/teams/nwsl/portland-thorns';
+
+const allMatches = [...matches].sort((a, b) => a.date.localeCompare(b.date));
+const today = new Date().toISOString().slice(0, 10);
+const upcomingMatches = allMatches.filter(m => m.date >= today);
+const visibleMatches = upcomingMatches.slice(0, 5);
+const hiddenMatches = [...allMatches.filter(m => m.date < today), ...upcomingMatches.slice(5)];
+const hiddenCount = hiddenMatches.length;
+
+function formatDate(iso: string): string {
+  const d = new Date(iso + 'T12:00:00Z');
+  return d.toLocaleDateString('en-US', {
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+  });
+}
+
+const title = 'How to watch Portland Thorns 2026 — broadcast info, streaming, TV schedule';
+const description = "Where every Portland Thorns NWSL match airs in 2026. CBS Sports (7 games), ION (7), and Prime Video carry the most games this season — full schedule and pricing below.";
+
+const services = [
+  {
+    name: 'Victory+',
+    badge: 'Free',
+    badgeClass: 'bg-accent text-primary',
+    description: 'Victory+ picks up 4 games this season. Free, no subscription required — worth having bookmarked.',
+    link: 'https://victoryplus.com/hub/NWSL',
+    linkLabel: 'Watch on Victory+ →',
+  },
+  {
+    name: 'ION',
+    badge: 'Free',
+    badgeClass: 'bg-accent text-primary',
+    description: 'ION has 7 of 30 this season, the largest share of the schedule. Free on TV antenna, cable, and satellite. Check your local listings for the channel number.',
+    link: null,
+    linkLabel: null,
+  },
+  {
+    name: 'NWSL+',
+    badge: 'Free',
+    badgeClass: 'bg-accent text-primary',
+    description: "NWSL+ has 1 game this season. The league's own free service covers games that don't land on national TV, and blacks out anything that does.",
+    link: 'https://www.nwslsoccer.com/plus',
+    linkLabel: 'Watch on NWSL+ →',
+  },
+  {
+    name: 'ESPN / ESPN App',
+    badge: 'Cable or $12.99+/mo',
+    badgeClass: 'bg-primary/10 text-primary',
+    description: 'ESPN is a major broadcaster here — 6 games across ESPN and ESPN2 this season. Stream via the ESPN App with a cable TV provider login. ESPN Select is $12.99/month; ESPN Unlimited (with live TV) is $29.99/month.',
+    link: 'https://plus.espn.com/',
+    linkLabel: 'See ESPN plans →',
+  },
+  {
+    name: 'Prime Video',
+    badge: '$14.99/mo',
+    badgeClass: 'bg-primary/10 text-primary',
+    description: 'Amazon has 5 games this season. Included with a regular Prime subscription at $14.99/month, no sports add-on needed.',
+    link: 'https://www.amazon.com/amazonprime',
+    linkLabel: 'See Prime plans →',
+  },
+
+  {
+    name: 'CBS Sports',
+    badge: 'Cable / satellite',
+    badgeClass: 'bg-primary/10 text-primary',
+    description: 'CBS Sports Network is a major broadcaster here — 7 of 30 this season. Cable and satellite only; some matches may also stream at cbssports.com with a TV provider login.',
+    link: 'https://www.cbssports.com',
+    linkLabel: 'Visit CBS Sports →',
+  },
+  {
+    name: 'ABC / Disney+',
+    badge: 'Free OTA or $11.99+/mo',
+    badgeClass: 'bg-primary/10 text-primary',
+    description: 'Marquee NWSL fixtures occasionally air on ABC with a simulcast on Disney+. None are currently scheduled for this team this season. Disney+ standalone starts at $11.99/month.',
+    link: 'https://help.disneyplus.com/article/disneyplus-price',
+    linkLabel: 'See Disney+ plans →',
+  },
+];
+---
+
+<BaseLayout title={title} description={description}>
+  <Header />
+  <TeamTrackerSubNav leagueSlug="nwsl" teamSlug="portland-thorns" showHowToWatch showFreeTV showSquad />
+
+  <main class="flex-1 max-w-3xl mx-auto px-6 py-12">
+    <header class="mb-10">
+      <p class="text-sm font-medium text-muted uppercase tracking-wider mb-3">Portland Thorns · 2026 Season</p>
+      <h1 class="font-display font-bold text-4xl md:text-5xl text-primary leading-[1.1] mb-6">
+        How to watch Portland Thorns
+      </h1>
+      <p class="text-lg leading-relaxed text-primary/80">
+        Portland Thorns are split three ways: CBS Sports and ION lead at 7 each, Prime Video has 5, and ESPN picks up 6 games across ESPN and ESPN2. Several games are on free over-the-air channels; <a href="/nwsl/portland-thorns/free-tv" class="text-accent hover:underline">see our guide to watching without cable</a>.
+      </p>
+    </header>
+
+    <section class="mb-12">
+      <h2 class="font-display font-bold text-2xl text-primary mb-4">Where to watch</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 items-start" id="services-grid">
+        {services.map((service) => (
+          <div class="service-card border border-primary/15 rounded-lg overflow-hidden">
+            <button class="service-toggle w-full flex items-center justify-between p-4 text-left hover:bg-primary/5 transition-colors">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="font-display font-bold text-base text-primary">{service.name}</span>
+                <span class={`text-xs font-bold uppercase tracking-wide px-2 py-0.5 rounded-full ${service.badgeClass}`}>{service.badge}</span>
+              </div>
+              <span class="service-chevron text-muted flex-shrink-0 ml-2 transition-transform duration-300">↓</span>
+            </button>
+            <div class="service-details" style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease;">
+              <div class="px-4 pb-4 pt-1 border-t border-primary/10">
+                <p class="text-sm text-primary/80 leading-relaxed">{service.description}</p>
+                {service.link && (
+                  <a href={service.link} target="_blank" rel="noopener noreferrer"
+                    class="inline-block mt-3 text-xs font-bold text-accent hover:underline">
+                    {service.linkLabel}
+                  </a>
+                )}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <h2 class="font-display font-bold text-2xl text-primary mb-4">Match-by-match broadcast schedule</h2>
+      <div class="overflow-x-auto bg-neutral border border-primary/15 rounded-xl">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="border-b border-primary/15 text-primary/60 text-left">
+              <th class="px-4 py-3 font-medium">Date</th>
+              <th class="px-4 py-3 font-medium">Match</th>
+              <th class="px-4 py-3 font-medium">Where</th>
+            </tr>
+          </thead>
+          <tbody>
+            {visibleMatches.map(match => (
+              <tr class="border-b border-primary/10">
+                <td class="px-4 py-3 tabular text-primary">{formatDate(match.date)}</td>
+                <td class="px-4 py-3 text-primary">{match.homeAway === 'home' ? 'vs' : 'at'}{' '}{match.opponent}</td>
+                <td class="px-4 py-3 text-muted">{match.broadcast.join(', ')}</td>
+              </tr>
+            ))}
+          </tbody>
+          <tbody id="hidden-matches" style="display: none;">
+            {hiddenMatches.map(match => (
+              <tr class="border-b border-primary/10 last:border-0">
+                <td class="px-4 py-3 tabular text-primary">{formatDate(match.date)}</td>
+                <td class="px-4 py-3 text-primary">{match.homeAway === 'home' ? 'vs' : 'at'}{' '}{match.opponent}</td>
+                <td class="px-4 py-3 text-muted">{match.broadcast.join(', ')}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <button id="show-more-btn" class="mt-3 text-sm font-bold text-primary/60 hover:text-primary transition-colors">
+        Show all {hiddenCount} more matches ↓
+      </button>
+      <p class="mt-3 text-xs text-muted">
+        Broadcast assignments can change. Double-check on NWSLsoccer.com or the broadcaster's site closer to kickoff.
+      </p>
+    </section>
+
+    <footer class="mt-16 pt-8 border-t border-primary/15 text-sm text-muted">
+      <p>← <a href="/nwsl/portland-thorns" class="text-primary hover:text-accent transition-colors">Back to Portland Thorns tracker</a></p>
+    </footer>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<script>
+  document.querySelectorAll('.service-toggle').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const card = btn.closest('.service-card') as HTMLElement;
+      const details = card.querySelector('.service-details') as HTMLElement;
+      const chevron = btn.querySelector('.service-chevron') as HTMLElement;
+      const isOpen = details.style.maxHeight !== '0px' && details.style.maxHeight !== '';
+      if (isOpen) {
+        details.style.maxHeight = '0';
+        chevron.style.transform = 'rotate(0deg)';
+      } else {
+        details.style.maxHeight = details.scrollHeight + 'px';
+        chevron.style.transform = 'rotate(180deg)';
+      }
+    });
+  });
+
+  const showMoreBtn = document.getElementById('show-more-btn') as HTMLElement;
+  const hiddenMatches = document.getElementById('hidden-matches') as HTMLElement;
+  const hiddenCount = hiddenMatches.querySelectorAll('tr').length;
+  showMoreBtn?.addEventListener('click', () => {
+    const isHidden = hiddenMatches.style.display === 'none';
+    hiddenMatches.style.display = isHidden ? '' : 'none';
+    showMoreBtn.textContent = isHidden
+      ? 'Show fewer ↑'
+      : `Show all ${hiddenCount} more matches ↓`;
+  });
+</script>

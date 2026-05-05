@@ -1,0 +1,274 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Header from '../../../components/Header.astro';
+import TeamTrackerSubNav from '../../../components/TeamTrackerSubNav.astro';
+import Footer from '../../../components/Footer.astro';
+import PlayerBioModal from '../../../components/PlayerBioModal.astro';
+import { roster } from '../../../data/teams/nwsl/washington-spirit';
+import { playerSlug } from '../../../data/shared/types';
+import type { Position } from '../../../data/shared/types';
+
+const title = 'Washington Spirit 2026 Roster — NWSL';
+const description = 'Full Washington Spirit roster for the 2026 NWSL season. Players, positions, and squad numbers.';
+
+const groups: { label: string; position: Position; }[] = [
+  { label: 'Goalkeepers', position: 'GK' },
+  { label: 'Defenders',   position: 'DEF' },
+  { label: 'Midfielders', position: 'MID' },
+  { label: 'Forwards',    position: 'FWD' },
+];
+
+// Build ordered roster array matching DOM card order (GK→DEF→MID→FWD, sorted by number within group)
+const orderedRoster = groups.flatMap(group =>
+  roster
+    .filter(p => p.position === group.position)
+    .sort((a, b) => a.number - b.number)
+);
+
+// Serialize player data with computed slugs for JS runtime
+const rosterData = JSON.stringify(
+  orderedRoster.map(p => ({
+    ...p,
+    slug: playerSlug(p, roster),
+  }))
+);
+---
+
+<BaseLayout title={title} description={description}>
+  <Header />
+  <TeamTrackerSubNav leagueSlug="nwsl" teamSlug="washington-spirit" showSquad />
+
+  <main class="flex-1 max-w-5xl mx-auto px-6 py-12">
+    <header class="mb-10">
+      <p class="text-sm font-medium text-muted uppercase tracking-wider mb-3">Washington Spirit · 2026 Season</p>
+      <h1 class="font-display font-bold text-4xl md:text-5xl text-primary leading-[1.1]">
+        Squad
+      </h1>
+    </header>
+
+    <div class="space-y-12">
+      {groups.map(group => {
+        const players = roster
+          .filter(p => p.position === group.position)
+          .sort((a, b) => a.number - b.number);
+        return (
+          <section>
+            <h2 class="font-display font-bold text-xs uppercase tracking-[0.2em] text-muted mb-4">{group.label}</h2>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+              {players.map(player => (
+                <div
+                  class="group relative bg-primary rounded-xl p-4 flex flex-col gap-1 cursor-pointer hover:bg-primary/80 transition-colors focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-black"
+                  data-player-slug={playerSlug(player, roster)}
+                  tabindex="0"
+                  role="button"
+                  aria-label={`View ${player.name} profile`}
+                >
+                  {player.countryCode && (
+                    <img
+                      src={`https://flagcdn.com/w40/${player.countryCode}.png`}
+                      alt={player.countryCode.toUpperCase()}
+                      width="20"
+                      height="15"
+                      class="absolute top-3 right-3 rounded-sm opacity-80"
+                    />
+                  )}
+                  <span class="font-display font-bold text-3xl text-accent leading-none tabular-nums">
+                    {player.number}
+                  </span>
+                  <span class="font-display font-bold text-base text-neutral leading-tight mt-1">
+                    {player.name}
+                  </span>
+                  <span class="text-xs text-neutral/50">{player.hometown}</span>
+                  {player.notable && (
+                    <span class="mt-1 text-xs font-bold text-accent/80">{player.notable}</span>
+                  )}
+                </div>
+              ))}
+            </div>
+          </section>
+        );
+      })}
+    </div>
+
+
+    <footer class="mt-6 pt-8 border-t border-primary/15 text-xs text-muted">
+      Roster sourced from <a href="https://nwslsoccer.com" target="_blank" rel="noopener noreferrer" class="hover:text-primary transition-colors">nwslsoccer.com</a>. Subject to change due to trades, injuries, and roster moves.
+    </footer>
+  </main>
+
+  <!-- Serialized roster data for JS modal runtime -->
+  <script type="application/json" id="roster-data" set:html={rosterData}></script>
+
+  <PlayerBioModal />
+  <Footer />
+</BaseLayout>
+
+<script>
+  type PlayerData = {
+    number: number;
+    name: string;
+    position: string;
+    hometown: string;
+    countryCode?: string;
+    notable?: string;
+    height?: string;
+    bio?: string;
+    socialHandle?: string;
+    slug: string;
+    photo?: string;
+  };
+
+  const dataEl = document.getElementById('roster-data');
+  const players: PlayerData[] = dataEl ? JSON.parse(dataEl.textContent ?? '[]') : [];
+  const slugMap = new Map<string, number>(players.map((p, i) => [p.slug, i]));
+
+  let isOpen = false;
+  let currentIndex = 0;
+  let triggerEl: HTMLElement | null = null;
+
+  const backdrop  = document.getElementById('player-modal-backdrop') as HTMLElement;
+  const closeBtn  = document.getElementById('modal-close') as HTMLButtonElement;
+  const prevBtn   = document.getElementById('modal-prev') as HTMLButtonElement;
+  const nextBtn   = document.getElementById('modal-next') as HTMLButtonElement;
+  const nameEl    = document.querySelector('[data-modal-name]') as HTMLElement;
+  const numberEl  = document.querySelector('[data-modal-number]') as HTMLElement;
+  const posEl     = document.getElementById('modal-position') as HTMLElement;
+  const hometownRowEl = document.getElementById('modal-hometown-row') as HTMLElement;
+  const flagEl     = document.getElementById('modal-flag') as HTMLImageElement;
+  const hometownEl = document.getElementById('modal-hometown') as HTMLElement;
+  const heightEl  = document.getElementById('modal-height') as HTMLElement;
+  const bioEl     = document.getElementById('modal-bio') as HTMLElement;
+  const socialEl  = document.getElementById('modal-social') as HTMLAnchorElement;
+  const photoEl   = document.getElementById('modal-photo') as HTMLImageElement;
+  const initialsEl= document.getElementById('modal-initials') as HTMLElement;
+
+  function setVisible(el: HTMLElement, visible: boolean) {
+    el.classList.toggle('hidden', !visible);
+  }
+
+  function openModal(index: number, trigger?: HTMLElement) {
+    const player = players[index];
+    if (!player) return;
+
+    triggerEl = (!isOpen && trigger) ? trigger : triggerEl;
+    currentIndex = index;
+    isOpen = true;
+
+    nameEl.textContent = player.name;
+    numberEl.textContent = `#${player.number}`;
+
+    setVisible(posEl, !!player.position);
+    posEl.textContent = player.position ?? '';
+
+    setVisible(hometownRowEl, !!player.hometown || !!player.countryCode);
+    if (player.countryCode) { setVisible(flagEl, true); flagEl.src = `https://flagcdn.com/w40/${player.countryCode}.png`; flagEl.alt = player.countryCode.toUpperCase(); } else { setVisible(flagEl, false); }
+
+    setVisible(heightEl, !!player.height);
+    heightEl.textContent = player.height ?? '';
+
+
+    hometownEl.textContent = player.hometown ?? '';
+
+    setVisible(bioEl, !!player.bio);
+    bioEl.textContent = player.bio ?? '';
+
+    if (player.socialHandle) {
+      setVisible(socialEl, true);
+      socialEl.textContent = `@${player.socialHandle}`;
+      socialEl.href = `https://instagram.com/${player.socialHandle}`;
+      socialEl.setAttribute('aria-label', `${player.name} on Instagram (opens in new tab)`);
+    } else {
+      setVisible(socialEl, false);
+    }
+
+    if (player.photo) {
+      setVisible(photoEl, true);
+      setVisible(initialsEl, false);
+      photoEl.src = player.photo;
+      photoEl.alt = player.name;
+    } else {
+      setVisible(photoEl, false);
+      setVisible(initialsEl, true);
+      const parts = player.name.trim().split(/\s+/);
+      initialsEl.textContent = `${parts[0]?.[0] ?? ''}${parts[parts.length - 1]?.[0] ?? ''}`.toUpperCase();
+    }
+
+    setVisible(backdrop, true);
+    backdrop.removeAttribute('aria-hidden');
+    document.body.style.overflow = 'hidden';
+
+    history.replaceState(null, '', `#player-${player.slug}`);
+    closeBtn.focus();
+  }
+
+  function closeModal() {
+    isOpen = false;
+    setVisible(backdrop, false);
+    backdrop.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    history.replaceState(null, '', window.location.pathname);
+    const el = triggerEl;
+    triggerEl = null;
+    el?.focus();
+  }
+
+  function navigateModal(direction: 'prev' | 'next') {
+    const next = direction === 'next'
+      ? (currentIndex + 1) % players.length
+      : (currentIndex - 1 + players.length) % players.length;
+    openModal(next);
+  }
+
+  const cards = document.querySelectorAll<HTMLElement>('[data-player-slug]');
+  cards.forEach((card, index) => {
+    card.addEventListener('click', () => openModal(index, card));
+    card.addEventListener('keydown', (e: KeyboardEvent) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        openModal(index, card);
+      }
+    });
+  });
+
+  closeBtn.addEventListener('click', closeModal);
+  prevBtn.addEventListener('click', () => navigateModal('prev'));
+  nextBtn.addEventListener('click', () => navigateModal('next'));
+
+  backdrop.addEventListener('click', (e: MouseEvent) => {
+    if (e.target === backdrop) closeModal();
+  });
+
+  document.addEventListener('keydown', (e: KeyboardEvent) => {
+    if (!isOpen) return;
+    if (e.key === 'Escape')      { e.preventDefault(); closeModal(); return; }
+    if (e.key === 'ArrowLeft')   { e.preventDefault(); navigateModal('prev'); return; }
+    if (e.key === 'ArrowRight')  { e.preventDefault(); navigateModal('next'); return; }
+
+    if (e.key === 'Tab') {
+      const modal = document.getElementById('player-modal') as HTMLElement;
+      const focusable = Array.from(
+        modal.querySelectorAll<HTMLElement>('button, a[href], [tabindex="0"]')
+      ).filter(el => !el.closest('.hidden') && !el.hasAttribute('disabled'));
+
+      if (focusable.length === 0) { e.preventDefault(); return; }
+
+      const first = focusable[0];
+      const last  = focusable[focusable.length - 1];
+
+      if (e.shiftKey) {
+        if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+      } else {
+        if (document.activeElement === last)  { e.preventDefault(); first.focus(); }
+      }
+    }
+  });
+
+  setTimeout(() => {
+    const hashMatch = window.location.hash.match(/^#player-([a-z0-9-]+)$/);
+    if (hashMatch) {
+      const slugFromHash = hashMatch[1];
+      const idx = slugMap.get(slugFromHash);
+      if (idx !== undefined) openModal(idx);
+    }
+  }, 0);
+</script>

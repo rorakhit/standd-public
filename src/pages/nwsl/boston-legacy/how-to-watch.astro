@@ -22,7 +22,7 @@ function formatDate(iso: string): string {
 }
 
 const title = 'How to watch Boston Legacy 2026 — broadcast info, streaming, TV schedule';
-const description = "Where every Boston Legacy NWSL match airs in 2026. Victory+, ION, NWSL+, ESPN, Prime Video, CBS Sports, and ABC/Disney+ — what each service carries and what it costs.";
+const description = "Where every Boston Legacy NWSL match airs in 2026. ION, NBC Sports Boston, NWSL+, Victory+, and ESPN carry the most games this season — full schedule and pricing below.";
 
 const services = [
   {
@@ -37,7 +37,7 @@ const services = [
     name: 'ION',
     badge: 'Free',
     badgeClass: 'bg-accent text-primary',
-    description: 'A free broadcast channel available via TV antenna, cable, and satellite. Carries a significant share of NWSL matches this season. Check your local listings for channel number.',
+    description: 'A free broadcast channel on TV antenna, cable, and satellite. ION has a big chunk of NWSL matches this season. Check your local listings for the channel number.',
     link: null,
     linkLabel: null,
   },
@@ -45,7 +45,7 @@ const services = [
     name: 'NWSL+',
     badge: 'Free',
     badgeClass: 'bg-accent text-primary',
-    description: "The league's own streaming service — and it's free for US fans. Covers games not on national TV, but blacks out matches that are on Victory+, ION, ESPN, etc. A useful complement to the other services, not a replacement.",
+    description: "The league's own streaming service, free for US fans. Covers games that aren't on national TV, but blacks out anything that is on Victory+, ION, ESPN, etc. Good for filling in gaps, not a cable replacement.",
     link: 'https://www.nwslsoccer.com/plus',
     linkLabel: 'Watch on NWSL+ →',
   },
@@ -61,7 +61,7 @@ const services = [
     name: 'Prime Video',
     badge: '$14.99/mo',
     badgeClass: 'bg-primary/10 text-primary',
-    description: 'Amazon carries select NWSL fixtures. Included with an Amazon Prime subscription at $14.99/month — no additional sports add-on required.',
+    description: 'Amazon carries select NWSL matches. Included with a regular Prime subscription at $14.99/month, no sports add-on needed.',
     link: 'https://www.amazon.com/amazonprime',
     linkLabel: 'See Prime plans →',
   },
@@ -77,7 +77,7 @@ const services = [
     name: 'CBS Sports',
     badge: 'Cable / satellite',
     badgeClass: 'bg-primary/10 text-primary',
-    description: 'CBS Sports Network is a cable and satellite channel — availability depends on your TV provider and package. Some matches may also stream at cbssports.com with a TV provider login.',
+    description: 'CBS Sports Network is a cable and satellite channel. Availability depends on your TV provider and package. Some matches may also stream at cbssports.com with a TV provider login.',
     link: 'https://www.cbssports.com',
     linkLabel: 'Visit CBS Sports →',
   },
@@ -94,7 +94,7 @@ const services = [
 
 <BaseLayout title={title} description={description}>
   <Header />
-  <TeamTrackerSubNav leagueSlug="nwsl" teamSlug="boston-legacy" />
+  <TeamTrackerSubNav leagueSlug="nwsl" teamSlug="boston-legacy" showHowToWatch showFreeTV showSquad />
 
   <main class="flex-1 max-w-3xl mx-auto px-6 py-12">
     <header class="mb-10">
@@ -103,7 +103,7 @@ const services = [
         How to watch Boston Legacy
       </h1>
       <p class="text-lg leading-relaxed text-primary/80">
-        Every Boston Legacy match in 2026 is broadcast somewhere — but that "somewhere" is spread across seven different services. Here's the full breakdown, plus a match-by-match schedule. Several games are on free over-the-air channels — <a href="/nwsl/boston-legacy/free-tv" class="text-accent hover:underline">see our guide to watching without cable</a>.
+        Boston Legacy have the most complex broadcast picture in the league. ION leads with 7 of 30 games, but there's also a 13-game regional TV deal with NBC Sports Boston, plus NWSL+, Victory+, CBS Sports, ESPN, and Prime Video all picking up games. Several games are on free over-the-air channels; <a href="/nwsl/boston-legacy/free-tv" class="text-accent hover:underline">see our guide to watching without cable</a>.
       </p>
     </header>
 
@@ -150,7 +150,7 @@ const services = [
             {visibleMatches.map(match => (
               <tr class="border-b border-primary/10">
                 <td class="px-4 py-3 tabular text-primary">{formatDate(match.date)}</td>
-                <td class="px-4 py-3 text-primary">{match.homeAway === 'home' ? 'vs' : 'at'} {match.opponent}</td>
+                <td class="px-4 py-3 text-primary">{match.homeAway === 'home' ? 'vs' : 'at'}{' '}{match.opponent}</td>
                 <td class="px-4 py-3 text-muted">{match.broadcast.join(', ')}</td>
               </tr>
             ))}
@@ -159,7 +159,7 @@ const services = [
             {hiddenMatches.map(match => (
               <tr class="border-b border-primary/10 last:border-0">
                 <td class="px-4 py-3 tabular text-primary">{formatDate(match.date)}</td>
-                <td class="px-4 py-3 text-primary">{match.homeAway === 'home' ? 'vs' : 'at'} {match.opponent}</td>
+                <td class="px-4 py-3 text-primary">{match.homeAway === 'home' ? 'vs' : 'at'}{' '}{match.opponent}</td>
                 <td class="px-4 py-3 text-muted">{match.broadcast.join(', ')}</td>
               </tr>
             ))}
@@ -170,7 +170,7 @@ const services = [
         Show all {hiddenCount} more matches ↓
       </button>
       <p class="mt-3 text-xs text-muted">
-        Broadcast assignments can change with short notice — verify on NWSLsoccer.com or the broadcaster's site closer to kickoff.
+        Broadcast assignments can change. Double-check on NWSLsoccer.com or the broadcaster's site closer to kickoff.
       </p>
     </section>
 

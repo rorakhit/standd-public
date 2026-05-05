@@ -1,3 +1,13 @@
+export interface TeamConfig {
+  name: string;
+  slug: string;
+  color: string;
+  badge?: string;
+  standingsKey: string;
+  officialUrl: string;
+  ticketsUrl: string;
+}
+
 export interface MatchResult {
   bostonScore: number;
   opponentScore: number;

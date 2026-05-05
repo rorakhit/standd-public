@@ -1,4 +1,14 @@
-import type { Match, Player } from '../../shared/types';
+import type { Match, Player, TeamConfig } from '../../shared/types';
+
+export const team: TeamConfig = {
+  name: 'Boston Legacy',
+  slug: 'boston-legacy',
+  color: '#5CE88A',
+  badge: 'https://images.nwslsoccer.com/image/private/t_q-best/v1749431607/prd/assets/teams/bos-nation-fc.png',
+  standingsKey: 'Boston Legacy',
+  officialUrl: 'https://bostonlegacyfc.com/',
+  ticketsUrl: 'https://seatgeek.com/boston-legacy-fc-tickets',
+};
 
 export const matches: Match[] = [
   {
@@ -7,7 +17,7 @@ export const matches: Match[] = [
     homeAway: 'home',
     venue: 'Gillette Stadium, Foxborough, MA',
     broadcast: ['ABC', 'ESPN App', 'Disney+'],
-    result: { bostonScore: 0, opponentScore: 1 },
+    result: { teamScore: 0, opponentScore: 1 },
   },
   {
     date: '2026-03-21',
@@ -15,7 +25,7 @@ export const matches: Match[] = [
     homeAway: 'away',
     venue: 'Shell Energy Stadium, Houston, TX',
     broadcast: ['ION'],
-    result: { bostonScore: 0, opponentScore: 3 },
+    result: { teamScore: 0, opponentScore: 3 },
   },
   {
     date: '2026-03-28',
@@ -23,7 +33,7 @@ export const matches: Match[] = [
     homeAway: 'home',
     venue: 'Gillette Stadium, Foxborough, MA',
     broadcast: ['ESPN2', 'ESPN Deportes', 'ESPN App'],
-    result: { bostonScore: 1, opponentScore: 2 },
+    result: { teamScore: 1, opponentScore: 2 },
   },
   {
     date: '2026-04-03',
@@ -31,7 +41,7 @@ export const matches: Match[] = [
     homeAway: 'home',
     venue: 'Gillette Stadium, Foxborough, MA',
     broadcast: ['NWSL+'],
-    result: { bostonScore: 0, opponentScore: 1 },
+    result: { teamScore: 0, opponentScore: 1 },
   },
   {
     date: '2026-04-25',
@@ -39,7 +49,7 @@ export const matches: Match[] = [
     homeAway: 'away',
     venue: 'Northwestern Medicine Field at Martin Stadium, Evanston, IL',
     broadcast: ['ION'],
-    result: { bostonScore: 0, opponentScore: 2 },
+    result: { teamScore: 0, opponentScore: 2 },
   },
   {
     date: '2026-04-29',
@@ -48,7 +58,7 @@ export const matches: Match[] = [
     homeAway: 'home',
     venue: 'Gillette Stadium, Foxborough, MA',
     broadcast: ['Victory+'],
-    result: { bostonScore: 2, opponentScore: 2 },
+    result: { teamScore: 2, opponentScore: 2 },
   },
   {
     date: '2026-05-03',
@@ -57,7 +67,7 @@ export const matches: Match[] = [
     homeAway: 'home',
     venue: 'Gillette Stadium, Foxborough, MA',
     broadcast: ['CBS Sports'],
-    result: { bostonScore: 3, opponentScore: 2 },
+    result: { teamScore: 3, opponentScore: 2 },
   },
   {
     date: '2026-05-09',
@@ -257,7 +267,7 @@ export const roster: Player[] = [
   {
     number: 18, name: 'Laurel Ivory', position: 'GK', hometown: 'Atlanta, GA',
     leagueSlug: 'nwsl', teamSlug: 'boston-legacy', teamName: 'Boston Legacy',
-    height: "5'7", photo: '/players/laurel-ivory.webp', socialHandle: 'laurelivory12',
+    countryCode: 'us', height: "5'7", photo: '/players/laurel-ivory.webp', socialHandle: 'laurelivory12',
     bio: "Laurel Ivory comes to Boston with a strong background of excellence in NWSL, helping to win the NWSL Shield with the Washington Spirit in 2021 and the NWSL Championship with Gotham in 2023. In 2024, she was on loan at Racing Louisville before returning to Gotham FC for the 2025 season. Ivory was named to the NWSL Team of the Month for May and September 2024. She attended the University of California, Berkeley, where she played from 2017 to 2020.",
   },
   {
@@ -277,7 +287,7 @@ export const roster: Player[] = [
   {
     number: 4, name: 'Emerson Elgin', position: 'DEF', hometown: 'Franklin Lakes, NJ',
     leagueSlug: 'nwsl', teamSlug: 'boston-legacy', teamName: 'Boston Legacy',
-    height: "5'5", photo: '/players/emerson-elgin.webp', socialHandle: 'emerson_elgin_',
+    countryCode: 'us', height: "5'5", photo: '/players/emerson-elgin.webp', socialHandle: 'emerson_elgin_',
     bio: "Emerson Elgin most recently played for Gainbridge Super League side Tampa Bay Sun on loan from the Legacy. A New Jersey native and former University of Virginia standout, Elgin was selected in the 2024 NWSL Draft and brings tenacity and energy to the back line.",
   },
   {
@@ -297,7 +307,7 @@ export const roster: Player[] = [
   {
     number: 23, name: 'Sam Angel', position: 'DEF', hometown: 'St. Charles, MO',
     leagueSlug: 'nwsl', teamSlug: 'boston-legacy', teamName: 'Boston Legacy',
-    height: "5'8", photo: '/players/sam-angel.webp', socialHandle: 'sam.angel00',
+    countryCode: 'us', height: "5'8", photo: '/players/sam-angel.webp', socialHandle: 'sam.angel00',
     bio: "Angel was initially drafted by Racing Louisville in the fourth round of the 2024 NWSL draft before signing with Boston Legacy. A former University of Notre Dame defender, Angel spent the 2025 season on loan at Tampa Bay Sun in the Gainbridge Super League. Her versatility allows her to play across the back line.",
   },
   {
@@ -310,11 +320,11 @@ export const roster: Player[] = [
   {
     number: 34, name: 'Laurel Ansbrow', position: 'DEF', hometown: 'Cary, NC',
     leagueSlug: 'nwsl', teamSlug: 'boston-legacy', teamName: 'Boston Legacy',
-    height: "5'9", photo: '/players/laurel-ansbrow.webp', socialHandle: 'laurelansbrow',
+    countryCode: 'us', height: "5'9", photo: '/players/laurel-ansbrow.webp', socialHandle: 'laurelansbrow',
     bio: "Laurel Ansbrow played for four years at Wake Forest, appearing in the 2024 NCAA championship game against UCLA. The Cary, NC native was selected by Boston Legacy in the 2025 NWSL Draft and brings an aerial presence and range of passing that belie her rookie status.",
   },
   {
-    number: 53, name: 'Bianca St-Georges', position: 'DEF', hometown: 'Quebec, Canada',
+    number: 53, name: 'Bianca St-Georges', position: 'DEF', hometown: 'Saint-Charles-Borromée, Quebec',
     leagueSlug: 'nwsl', teamSlug: 'boston-legacy', teamName: 'Boston Legacy',
     countryCode: 'ca', height: "5'4", photo: '/players/bianca-st-georges.webp',
     socialHandle: 'biancastgeorges',
@@ -331,19 +341,19 @@ export const roster: Player[] = [
   {
     number: 6, name: 'Annie Karich', position: 'MID', hometown: 'Surfside, CA',
     leagueSlug: 'nwsl', teamSlug: 'boston-legacy', teamName: 'Boston Legacy',
-    height: "5'9", photo: '/players/annie-karich.webp', socialHandle: 'anniekarich',
+    countryCode: 'us', height: "5'9", photo: '/players/annie-karich.webp', socialHandle: 'anniekarich',
     bio: "Annie Karich comes to Boston from Frauen-Bundesliga club SC Freiburg as a free agent, where Karich was a consistent starter for three seasons. A former University of Virginia Cavalier, Karich was selected in the 2022 NWSL Draft before heading to Germany. Her engine in midfield and ability to win the ball back quickly make her a key piece of Boston's press.",
   },
   {
     number: 11, name: 'Chloe Ricketts', position: 'MID', hometown: 'Dexter, MI',
     leagueSlug: 'nwsl', teamSlug: 'boston-legacy', teamName: 'Boston Legacy',
-    height: "5'0", photo: '/players/chloe-ricketts.webp', socialHandle: '_chloericketts39',
+    countryCode: 'us', height: "5'0", photo: '/players/chloe-ricketts.webp', socialHandle: '_chloericketts39',
     bio: "Chloe Ricketts turned professional at just 15 years old and quickly emerged as one of the league's standout young players. A Michigan native, Ricketts played youth soccer for the NWSL's academy system before earning her first professional contract. Despite her stature, her technical ability and creativity in tight spaces make her a constant threat.",
   },
   {
     number: 15, name: 'Aleigh Gambone', position: 'MID', hometown: 'Clifton, VA',
     leagueSlug: 'nwsl', teamSlug: 'boston-legacy', teamName: 'Boston Legacy',
-    height: "5'3", photo: '/players/aleigh-gambone.webp', socialHandle: 'aleigh_gambone',
+    countryCode: 'us', height: "5'3", photo: '/players/aleigh-gambone.webp', socialHandle: 'aleigh_gambone',
     bio: "Aleigh Gambone played four years for the University of North Carolina Tar Heels, where she helped UNC win the 2022 ACC Championship. A Virginia native, Gambone was drafted by Boston Legacy in the 2025 NWSL College Draft. Her technical passing and vision in the middle third drew comparisons to some of UNC's greatest midfielders.",
   },
   {
@@ -356,7 +366,7 @@ export const roster: Player[] = [
   {
     number: 25, name: 'Sophia Lowenberg', position: 'MID', hometown: 'Trumbull, CT',
     leagueSlug: 'nwsl', teamSlug: 'boston-legacy', teamName: 'Boston Legacy',
-    height: "5'7", photo: '/players/sophia-lowenberg.webp', socialHandle: 'ssophlow',
+    countryCode: 'us', height: "5'7", photo: '/players/sophia-lowenberg.webp', socialHandle: 'ssophlow',
     bio: "Sophia Lowenberg was Boston Legacy FC's first ever college player signing from a local university. She attended Northeastern University in Boston, where she was a four-year starter and team captain. Lowenberg brings local pride and a tireless work rate to midfield, and her familiarity with New England makes her an instant fan favorite.",
   },
   {
@@ -377,11 +387,11 @@ export const roster: Player[] = [
   {
     number: 8, name: 'Sammy Smith', position: 'FWD', hometown: 'Hanson, MA',
     leagueSlug: 'nwsl', teamSlug: 'boston-legacy', teamName: 'Boston Legacy',
-    height: "5'6", photo: '/players/sammy-smith.webp', socialHandle: 'sammysmlth',
+    countryCode: 'us', height: "5'6", photo: '/players/sammy-smith.webp', socialHandle: 'sammysmlth',
     bio: "Sammy Smith joins Boston Legacy from first-division Icelandic club Breiðablik, having helped them win the Úrvalsdeild kvenna in 2024. A Massachusetts native from Hanson, Smith is a homecoming story — playing for her home-state club in front of New England fans. She brings a direct style and a nose for goal developed over several seasons abroad.",
   },
   {
-    number: 9, name: 'Amanda Gutierres', position: 'FWD', hometown: 'Brazil',
+    number: 9, name: 'Amanda Gutierres', position: 'FWD', hometown: 'Santa Cruz do Monte Castelo, Brazil',
     leagueSlug: 'nwsl', teamSlug: 'boston-legacy', teamName: 'Boston Legacy',
     countryCode: 'br', notable: "2025 Ballon d'Or Féminin nominee",
     height: "5'7", photo: '/players/amanda-gutierres.webp', socialHandle: 'amandaa_gutierres',
@@ -390,7 +400,7 @@ export const roster: Player[] = [
   {
     number: 10, name: 'Ella Stevens', position: 'FWD', hometown: 'Snellville, GA',
     leagueSlug: 'nwsl', teamSlug: 'boston-legacy', teamName: 'Boston Legacy',
-    height: "5'8", photo: '/players/ella-stevens.webp', socialHandle: 'ellahstevens',
+    countryCode: 'us', height: "5'8", photo: '/players/ella-stevens.webp', socialHandle: 'ellahstevens',
     bio: "Ella Stevens joined the Legacy from 2025 NWSL national champions Gotham FC, where she made 32 appearances over two seasons. A Georgia native, Stevens played college soccer at Florida State before being selected in the NWSL Draft. Her combination of size, technical ability, and finishing make her a versatile threat across the forward line.",
   },
   {

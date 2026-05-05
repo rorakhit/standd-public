@@ -7,9 +7,50 @@ import Footer from '../../../components/Footer.astro';
 import Stat from '../../../components/Stat.astro';
 import Broadcaster from '../../../components/Broadcaster.astro';
 import EmailSignup from '../../../components/EmailSignup.astro';
-import { matches } from '../../../data/teams/nwsl/boston-legacy';
-import { nwslStandings, standingsLastUpdated } from '../../../data/leagues/nwsl/standings';
+import { matches, team } from '../../../data/teams/nwsl/boston-legacy';
+import { nwslStandings, standingsLastUpdated, standingsDisplayName } from '../../../data/leagues/nwsl/standings';
+import { team as bostonLegacy } from '../../../data/teams/nwsl/boston-legacy';
+import { team as portlandThorns } from '../../../data/teams/nwsl/portland-thorns';
+import { team as sanDiegoWave } from '../../../data/teams/nwsl/san-diego-wave';
+import { team as washingtonSpirit } from '../../../data/teams/nwsl/washington-spirit';
+import { team as gothamFc } from '../../../data/teams/nwsl/gotham-fc';
+import { team as seattleReign } from '../../../data/teams/nwsl/seattle-reign';
+import { team as houstonDash } from '../../../data/teams/nwsl/houston-dash';
+import { team as utahRoyals } from '../../../data/teams/nwsl/utah-royals';
+import { team as angelCity } from '../../../data/teams/nwsl/angel-city';
+import { team as northCarolinaCourage } from '../../../data/teams/nwsl/north-carolina-courage';
+import { team as orlandoPride } from '../../../data/teams/nwsl/orlando-pride';
+import { team as denverSummit } from '../../../data/teams/nwsl/denver-summit';
+import { team as bayFc } from '../../../data/teams/nwsl/bay-fc';
+import { team as kansasCityCurrent } from '../../../data/teams/nwsl/kansas-city-current';
+import { team as chicagoStars } from '../../../data/teams/nwsl/chicago-stars';
+import { team as racingLouisville } from '../../../data/teams/nwsl/racing-louisville';
 
+
+const allNwslTeams = [
+  bostonLegacy, portlandThorns, sanDiegoWave, washingtonSpirit,
+  gothamFc, seattleReign, houstonDash, utahRoyals, angelCity,
+  northCarolinaCourage, orlandoPride, denverSummit, bayFc,
+  kansasCityCurrent, chicagoStars, racingLouisville,
+];
+const teamByStandingsKey = new Map(allNwslTeams.map(t => [t.standingsKey, t]));
+// Match opponent name string → team badge (handles name variants like "NJ/NY Gotham FC" → gothamFc)
+const opponentBadgeMap = new Map<string, string | undefined>();
+for (const t of allNwslTeams) {
+  if (t.badge) {
+    opponentBadgeMap.set(t.name, t.badge);
+    opponentBadgeMap.set(t.name.replace(' FC', '').replace(' fc', ''), t.badge);
+  }
+}
+// Extra aliases for schedule opponent name variants
+opponentBadgeMap.set('NJ/NY Gotham FC', gothamFc.badge);
+opponentBadgeMap.set('Portland Thorns FC', portlandThorns.badge);
+opponentBadgeMap.set('San Diego Wave FC', sanDiegoWave.badge);
+opponentBadgeMap.set('Utah Royals FC', utahRoyals.badge);
+opponentBadgeMap.set('Racing Louisville FC', racingLouisville.badge);
+function opponentBadge(opponent: string): string | undefined {
+  return opponentBadgeMap.get(opponent);
+}
 const playedMatches = matches.filter(m => m.result);
 const upcomingMatches = matches.filter(m => !m.result);
 const lastThreeResults = playedMatches.slice(-3).reverse();
@@ -23,7 +64,7 @@ const lastFiveResults = playedMatches.slice(-5).reverse();
 
 const nextMatch = upcomingMatches[0];
 
-const bostonRow = nwslStandings.find(r => r.team === 'Boston Legacy')!;
+const bostonRow = nwslStandings.find(r => r.team === team.standingsKey)!;
 const seasonRecord = bostonRow;
 const position = bostonRow.rank;
 const goalDiff = bostonRow.goalsFor - bostonRow.goalsAgainst;
@@ -58,14 +99,14 @@ function formatDate(iso: string): string {
 
 function formatScore(match: typeof playedMatches[number]): string {
   if (!match.result) return '—';
-  return `${match.result.bostonScore}–${match.result.opponentScore}`;
+  return `${match.result.teamScore}–${match.result.opponentScore}`;
 }
 
-function resultBadge(match: typeof playedMatches[number]): { label: string; color: string } {
+function resultBadge(match: typeof playedMatches[number]): { label: string; color: string; style?: string } {
   if (!match.result) return { label: '—', color: 'bg-muted/20 text-muted' };
-  const { bostonScore, opponentScore } = match.result;
-  if (bostonScore > opponentScore) return { label: 'W', color: 'bg-accent text-primary' };
-  if (bostonScore < opponentScore) return { label: 'L', color: 'bg-primary text-neutral' };
+  const { teamScore, opponentScore } = match.result;
+  if (teamScore > opponentScore) return { label: 'W', color: 'text-primary', style: 'background-color: var(--team-color)' };
+  if (teamScore < opponentScore) return { label: 'L', color: 'bg-primary text-neutral' };
   return { label: 'D', color: 'bg-primary/20 text-primary' };
 }
 
@@ -73,26 +114,30 @@ const title = 'Boston Legacy 2026 Season Tracker — Standd';
 const description = 'Boston Legacy NWSL 2026 inaugural season tracker — match results, fixtures, standings, broadcast info. Updated weekly by a season ticket holder.';
 ---
 
+<style define:vars={{ teamColor: team.color }}>
+  .tracker-body { --team-color: var(--teamColor); }
+</style>
+
 <BaseLayout title={title} description={description}>
   <Header />
-  <TeamTrackerSubNav leagueSlug="nwsl" teamSlug="boston-legacy" />
+  <TeamTrackerSubNav leagueSlug="nwsl" teamSlug="boston-legacy" showHowToWatch showFreeTV showSquad />
 
-  <main class="flex-1">
+  <main class="tracker-body flex-1">
     <!-- Editorial intro on cream -->
-    <section class="bg-neutral pt-12 pb-12 border-b-[12px] border-accent">
+    <section class="bg-neutral pt-12 pb-12 border-b-[12px]" style="border-color: var(--team-color)">
       <div class="max-w-3xl mx-auto px-6">
-        <p class="text-sm font-bold text-accent uppercase tracking-[0.2em] mb-3">NWSL · Inaugural Season</p>
+        <p class="text-sm font-bold uppercase tracking-[0.2em] mb-3" style="color: var(--team-color)">NWSL · Inaugural Season</p>
         <h1 class="font-display font-bold text-5xl md:text-7xl text-primary leading-[1.0] mb-8">
           Boston Legacy 2026 Season Tracker
         </h1>
         <p class="text-lg md:text-xl leading-relaxed text-primary/85">
-          It's the first NWSL season for Boston, and it's been a season of growing into the league. Below: every match this year, what's coming up, where the team sits in the table, and how to watch. I'm a season ticket holder writing this between trips to Gillette and the new Centreville Bank Stadium — the data is updated daily, the takes are mine.
+          It's the first NWSL season for Boston, and it's been a season of growing into the league. Below: every match this year, what's coming up, where the team sits in the table, and how to watch. I'm a season ticket holder writing this between trips to Gillette and the new Centreville Bank Stadium. The data is updated daily, the takes are mine.
         </p>
         <div class="mt-6 flex items-end justify-between gap-6 flex-wrap">
           {nextMatch && (
             <div id="match-countdown" data-date={nextMatch.date} data-time={nextMatch.time ?? ''}>
               <p class="text-xs text-muted font-bold uppercase tracking-wider mb-2">
-                Next match · {nextMatch.homeAway === 'home' ? 'vs' : 'at'} {nextMatch.opponent}
+                Next match · {nextMatch.homeAway === 'home' ? 'vs' : 'at'}{' '}{nextMatch.opponent}
               </p>
               <div class="flex items-center gap-2">
                 <div class="flex items-end gap-1">
@@ -119,7 +164,7 @@ const description = 'Boston Legacy NWSL 2026 inaugural season tracker — match 
                 {lastFiveResults.map(m => {
                   const b = resultBadge(m);
                   return (
-                    <span class={`inline-flex items-center justify-center w-7 h-7 rounded-full text-xs font-bold ${b.color}`}>
+                    <span class={`inline-flex items-center justify-center w-7 h-7 rounded-full text-xs font-bold ${b.color}`} style={b.style ?? ''}>
                       {b.label}
                     </span>
                   );
@@ -135,14 +180,14 @@ const description = 'Boston Legacy NWSL 2026 inaugural season tracker — match 
     <!-- Season-to-date stats -->
     <section class="bg-primary py-16">
       <div class="max-w-3xl mx-auto px-6">
-        <h2 class="font-display font-bold text-3xl text-accent mb-8 uppercase tracking-wider">Season to date</h2>
+        <h2 class="font-display font-bold text-3xl mb-8 uppercase tracking-wider" style="color: var(--team-color)">Season to date</h2>
         <div class="grid grid-cols-3 md:grid-cols-6 gap-px bg-neutral/10 rounded-2xl overflow-hidden">
-          <Stat label="Played" value={String(seasonRecord.played)} />
-          <Stat label="Wins" value={String(seasonRecord.wins)} />
-          <Stat label="Draws" value={String(seasonRecord.draws)} />
-          <Stat label="Losses" value={String(seasonRecord.losses)} />
-          <Stat label="Goal diff" value={`${goalDiff > 0 ? '+' : ''}${goalDiff}`} />
-          <Stat label="Position" value={`#${position}`} highlight={true} />
+          <Stat label="Played" value={String(seasonRecord.played)} color="var(--team-color)" />
+          <Stat label="Wins" value={String(seasonRecord.wins)} color="var(--team-color)" />
+          <Stat label="Draws" value={String(seasonRecord.draws)} color="var(--team-color)" />
+          <Stat label="Losses" value={String(seasonRecord.losses)} color="var(--team-color)" />
+          <Stat label="Goal diff" value={`${goalDiff > 0 ? '+' : ''}${goalDiff}`} color="var(--team-color)" />
+          <Stat label="Position" value={`#${position}`} highlight={true} color="var(--team-color)" />
         </div>
       </div>
     </section>
@@ -158,16 +203,16 @@ const description = 'Boston Legacy NWSL 2026 inaugural season tracker — match 
                 const isHome = match.homeAway === 'home';
                 return (
                   <li class={`overflow-hidden rounded-xl flex min-h-[140px] ${isHome ? 'bg-primary text-neutral' : 'bg-neutral border-2 border-primary text-primary'}`}>
-                    <div class={`w-1.5 flex-shrink-0 ${isHome ? 'bg-accent' : 'bg-primary/20'}`} />
+                    <div class={`w-1.5 flex-shrink-0 ${isHome ? '' : 'bg-primary/20'}`} style={isHome ? 'background-color: var(--team-color)' : ''} />
                     <div class="flex flex-col gap-2 p-5 flex-1">
                       <div class="flex items-center justify-between">
-                        <span class={`font-display font-bold tabular text-lg ${isHome ? 'text-accent' : 'text-primary'}`}>{formatDate(match.date)}</span>
+                        <span class={`font-display font-bold tabular text-lg ${isHome ? '' : 'text-primary'}`} style={isHome ? 'color: var(--team-color)' : ''}>{formatDate(match.date)}</span>
                         <span class={`text-xs uppercase tracking-wider font-bold px-2 py-1 rounded ${isHome ? 'bg-neutral/10 text-neutral/60' : 'bg-primary/10 text-primary/50'}`}>
                           {isHome ? 'HOME' : 'AWAY'}
                         </span>
                       </div>
                       <p class="font-display font-bold text-xl leading-tight">
-                        {isHome ? 'vs' : 'at'} {match.opponent}
+                        {isHome ? 'vs' : 'at'}{' '}{match.opponent}
                       </p>
                       <div class="mt-auto flex flex-col gap-2">
                         <div class="flex flex-wrap items-center gap-1.5">
@@ -175,10 +220,11 @@ const description = 'Boston Legacy NWSL 2026 inaugural season tracker — match 
                           {match.broadcast.map(b => <Broadcaster name={b} />)}
                         </div>
                         <a
-                          href="https://www.ticketmaster.com/boston-legacy-fc-tickets/artist/4084719"
+                          href={team.ticketsUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          class="self-start text-xs font-bold bg-accent text-primary px-3 py-1 rounded-full hover:bg-neutral hover:text-primary transition-colors"
+                          class="self-start text-xs font-bold text-primary px-3 py-1 rounded-full hover:opacity-80 transition-opacity"
+                          style="background-color: var(--team-color)"
                         >
                           Get tickets →
                         </a>
@@ -201,7 +247,7 @@ const description = 'Boston Legacy NWSL 2026 inaugural season tracker — match 
                     <div class="flex items-center justify-between">
                       <span class="font-display font-bold tabular text-primary text-lg">{formatDate(match.date)}</span>
                       <div class="flex items-center gap-2">
-                        <span class={`text-xs font-display font-bold px-2 py-1 rounded ${badge.color}`}>
+                        <span class={`text-xs font-display font-bold px-2 py-1 rounded ${badge.color}`} style={badge.style ?? ''}>
                           {badge.label}
                         </span>
                         <span class="font-display font-bold tabular text-2xl text-primary">
@@ -210,7 +256,7 @@ const description = 'Boston Legacy NWSL 2026 inaugural season tracker — match 
                       </div>
                     </div>
                     <p class="font-display font-bold text-xl text-primary leading-tight">
-                      {match.homeAway === 'home' ? 'vs' : 'at'} {match.opponent}
+                      {match.homeAway === 'home' ? 'vs' : 'at'}{' '}{match.opponent}
                     </p>
                     <div class="mt-auto flex flex-col gap-2">
                       <span class="text-sm text-muted">{match.venue}</span>
@@ -238,48 +284,55 @@ const description = 'Boston Legacy NWSL 2026 inaugural season tracker — match 
           <table class="w-full text-sm">
             <thead>
               <tr class="bg-primary text-neutral text-left">
-                <th class="px-4 py-3 font-bold tabular w-12">#</th>
+                <th class="px-2 py-3 font-bold tabular w-10">#</th>
                 <th class="px-4 py-3 font-bold">Team</th>
-                <th class="px-3 py-3 font-bold tabular text-right">P</th>
-                <th class="px-3 py-3 font-bold tabular text-right">W</th>
-                <th class="px-3 py-3 font-bold tabular text-right">D</th>
-                <th class="px-3 py-3 font-bold tabular text-right">L</th>
-                <th class="px-3 py-3 font-bold tabular text-right">GD</th>
-                <th class="px-4 py-3 font-bold tabular text-right">PTS</th>
+                <th class="px-2 py-3 font-bold tabular text-right w-8">P</th>
+                <th class="px-2 py-3 font-bold tabular text-right w-8">W</th>
+                <th class="px-2 py-3 font-bold tabular text-right w-8">D</th>
+                <th class="px-2 py-3 font-bold tabular text-right w-8">L</th>
+                <th class="px-2 py-3 font-bold tabular text-right w-8">GD</th>
+                <th class="px-3 py-3 font-bold tabular text-right w-12">PTS</th>
               </tr>
             </thead>
             <tbody>
               {nwslStandings.map((row, i) => {
                 const pos = i + 1;
-                const isBoston = row.team === 'Boston Legacy';
-                const isPlayoff = pos <= PLAYOFF_LINE;
+                const isBoston = row.team === team.standingsKey;
+                const inPlayoffs = pos !== Math.max(pos, PLAYOFF_LINE + 1);
                 const gd = row.goalsFor - row.goalsAgainst;
-                const isPlayoffCutoff = pos === PLAYOFF_LINE;
-                return (
-                  <>
-                    <tr class={`border-b border-primary/10 ${isBoston ? 'bg-accent/15 font-bold' : isPlayoff ? 'bg-primary/[0.03]' : ''}`}>
-                      <td class="px-4 py-3 tabular">
-                        <span class={`inline-flex items-center justify-center w-7 h-7 rounded-full font-bold text-xs ${isPlayoff ? 'bg-accent text-primary' : 'bg-muted/15 text-muted'}`}>
-                          {pos}
-                        </span>
+                const atCutoff = pos === PLAYOFF_LINE;
+                const trClass = `border-b border-primary/10 ${isBoston ? 'font-bold' : inPlayoffs ? 'bg-primary/[0.03]' : ''}`;
+                const trStyle = isBoston ? 'background-color: color-mix(in srgb, var(--team-color) 15%, transparent)' : undefined;
+                const rankClass = `inline-flex items-center justify-center w-7 h-7 rounded-full font-bold text-xs ${inPlayoffs ? 'text-primary' : 'bg-muted/15 text-muted'}`;
+                const rankStyle = inPlayoffs ? 'background-color: var(--team-color)' : undefined;
+                return [
+                  <tr class={trClass} style={trStyle}>
+                    <td class="px-2 py-3 tabular">
+                      <span class={rankClass} style={rankStyle}>
+                        {pos}
+                      </span>
+                    </td>
+                    <td class="px-4 py-3 text-primary">
+                      <div class="flex items-center gap-2">
+                        {(() => { const tc = teamByStandingsKey.get(row.team); return tc?.badge ? <img src={tc.badge} alt="" width="18" height="18" class="flex-shrink-0 object-contain" /> : null; })()}
+                        {standingsDisplayName(row.team)}
+                      </div>
+                    </td>
+                    <td class="px-2 py-3 tabular text-right">{row.played}</td>
+                    <td class="px-2 py-3 tabular text-right">{row.wins}</td>
+                    <td class="px-2 py-3 tabular text-right">{row.draws}</td>
+                    <td class="px-2 py-3 tabular text-right">{row.losses}</td>
+                    <td class="px-2 py-3 tabular text-right text-muted">{gd > 0 ? '+' : ''}{gd}</td>
+                    <td class="px-4 py-3 tabular text-right font-bold text-primary">{row.points}</td>
+                  </tr>,
+                  atCutoff && (
+                    <tr aria-hidden="true">
+                      <td colspan="8" class="text-primary text-xs font-bold uppercase tracking-[0.2em] px-4 py-2 text-center" style="background-color: var(--team-color)">
+                        ↑ Playoff line · ↓ Outside the playoffs
                       </td>
-                      <td class="px-4 py-3 text-primary">{row.team}</td>
-                      <td class="px-3 py-3 tabular text-right">{row.played}</td>
-                      <td class="px-3 py-3 tabular text-right">{row.wins}</td>
-                      <td class="px-3 py-3 tabular text-right">{row.draws}</td>
-                      <td class="px-3 py-3 tabular text-right">{row.losses}</td>
-                      <td class="px-3 py-3 tabular text-right text-muted">{gd > 0 ? '+' : ''}{gd}</td>
-                      <td class="px-4 py-3 tabular text-right font-bold text-primary">{row.points}</td>
                     </tr>
-                    {isPlayoffCutoff && (
-                      <tr aria-hidden="true">
-                        <td colspan="8" class="bg-accent text-primary text-xs font-bold uppercase tracking-[0.2em] px-4 py-2 text-center">
-                          ↑ Playoff line · ↓ Outside the playoffs
-                        </td>
-                      </tr>
-                    )}
-                  </>
-                );
+                  ),
+                ];
               })}
             </tbody>
           </table>
@@ -297,7 +350,8 @@ const description = 'Boston Legacy NWSL 2026 inaugural season tracker — match 
             aria-expanded="false"
             aria-controls="schedule-list"
             aria-label="Toggle full schedule"
-            class="text-accent hover:text-accent/70 transition-colors"
+            class="hover:opacity-70 transition-opacity"
+            style="color: var(--team-color)"
           >
             <span id="schedule-toggle-icon" class="block text-4xl leading-none" style="transition: transform 0.3s ease;">↓</span>
           </button>
@@ -308,16 +362,16 @@ const description = 'Boston Legacy NWSL 2026 inaugural season tracker — match 
             const isHome = match.homeAway === 'home';
             return (
               <li class={`overflow-hidden rounded-xl flex min-h-[140px] ${isHome ? 'bg-primary text-neutral' : 'bg-neutral border-2 border-primary text-primary'}`}>
-                <div class={`w-1.5 flex-shrink-0 ${isHome ? 'bg-accent' : 'bg-primary/20'}`} />
+                <div class={`w-1.5 flex-shrink-0 ${isHome ? '' : 'bg-primary/20'}`} style={isHome ? 'background-color: var(--team-color)' : ''} />
                 <div class="flex flex-col gap-2 p-5 flex-1">
                   <div class="flex items-center justify-between">
-                    <span class={`font-display font-bold tabular text-lg ${isHome ? 'text-accent' : 'text-primary'}`}>{formatDate(match.date)}</span>
+                    <span class={`font-display font-bold tabular text-lg ${isHome ? '' : 'text-primary'}`} style={isHome ? 'color: var(--team-color)' : ''}>{formatDate(match.date)}</span>
                     <span class={`text-xs uppercase tracking-wider font-bold px-2 py-1 rounded ${isHome ? 'bg-neutral/10 text-neutral/60' : 'bg-primary/10 text-primary/50'}`}>
                       {isHome ? 'HOME' : 'AWAY'}
                     </span>
                   </div>
                   <p class="font-display font-bold text-xl leading-tight">
-                    {isHome ? 'vs' : 'at'} {match.opponent}
+                    {isHome ? 'vs' : 'at'}{' '}{match.opponent}
                   </p>
                   <div class="mt-auto flex flex-col gap-2">
                     <div class="flex flex-col gap-0.5">
@@ -325,10 +379,11 @@ const description = 'Boston Legacy NWSL 2026 inaugural season tracker — match 
                       <span class={`text-sm ${isHome ? 'text-neutral/50' : 'text-muted/70'}`}>{match.broadcast.join(', ')}</span>
                     </div>
                     <a
-                      href="https://www.ticketmaster.com/boston-legacy-fc-tickets/artist/4084719"
+                      href={team.ticketsUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      class="self-start text-xs font-bold bg-accent text-primary px-3 py-1 rounded-full hover:bg-neutral hover:text-primary transition-colors"
+                      class="self-start text-xs font-bold text-primary px-3 py-1 rounded-full hover:opacity-80 transition-opacity"
+                      style="background-color: var(--team-color)"
                     >
                       Get tickets →
                     </a>
@@ -347,7 +402,7 @@ const description = 'Boston Legacy NWSL 2026 inaugural season tracker — match 
     <section class="bg-neutral py-12">
       <div class="max-w-5xl mx-auto px-6">
         <p class="text-sm text-muted leading-relaxed max-w-2xl">
-          Data sourced from NWSLsoccer.com and bostonlegacyfc.com, and verified by attending the matches. If you spot something wrong, email <a href="mailto:ro@standd.fan" class="text-accent font-bold hover:underline">ro@standd.fan</a>.
+          Data sourced from NWSLsoccer.com and <a href={team.officialUrl} target="_blank" rel="noopener noreferrer" class="font-bold hover:underline" style="color: var(--team-color)">{new URL(team.officialUrl).hostname.replace('www.', '')}</a>. Boston Legacy data verified by attending the matches. If you spot something wrong, email <a href="mailto:ro@standd.fan" class="font-bold hover:underline" style="color: var(--team-color)">ro@standd.fan</a>.
         </p>
       </div>
     </section>

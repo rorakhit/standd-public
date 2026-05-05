@@ -21,3 +21,11 @@ export const nwslStandings: StandingsRow[] = [
 
 // Set automatically by scripts/fetch-standings.ts on each successful update
 export const standingsLastUpdated = 'May 2, 2026';
+
+const DISPLAY_NAMES: Record<string, string> = {
+  'Bay': 'Bay FC',
+};
+
+export function standingsDisplayName(team: string): string {
+  return DISPLAY_NAMES[team] ?? team;
+}

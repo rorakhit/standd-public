@@ -36,7 +36,7 @@ const rosterData = JSON.stringify(
 
 <BaseLayout title={title} description={description}>
   <Header />
-  <TeamTrackerSubNav leagueSlug="nwsl" teamSlug="boston-legacy" />
+  <TeamTrackerSubNav leagueSlug="nwsl" teamSlug="boston-legacy" showHowToWatch showFreeTV showSquad />
 
   <main class="flex-1 max-w-5xl mx-auto px-6 py-12">
     <header class="mb-10">
@@ -61,7 +61,7 @@ const rosterData = JSON.stringify(
                   data-player-slug={playerSlug(player, roster)}
                   tabindex="0"
                   role="button"
-                  aria-label={`View ${player.name} bio`}
+                  aria-label={`View ${player.name} profile`}
                 >
                   {player.countryCode && (
                     <img
@@ -89,8 +89,6 @@ const rosterData = JSON.stringify(
         );
       })}
     </div>
-
-    <p class="mt-8 text-xs text-muted">Flag indicates senior international cap.</p>
 
     <footer class="mt-6 pt-8 border-t border-primary/15 text-xs text-muted">
       Roster sourced from <a href="https://bostonlegacyfc.com/pages/roster" target="_blank" rel="noopener noreferrer" class="hover:text-primary transition-colors">bostonlegacyfc.com</a>. Subject to change due to trades, injuries, and roster moves.
@@ -134,9 +132,10 @@ const rosterData = JSON.stringify(
   const nameEl    = document.querySelector('[data-modal-name]') as HTMLElement;
   const numberEl  = document.querySelector('[data-modal-number]') as HTMLElement;
   const posEl     = document.getElementById('modal-position') as HTMLElement;
-  const natEl     = document.getElementById('modal-nationality') as HTMLElement;
+  const hometownRowEl = document.getElementById('modal-hometown-row') as HTMLElement;
+  const flagEl     = document.getElementById('modal-flag') as HTMLImageElement;
+  const hometownEl = document.getElementById('modal-hometown') as HTMLElement;
   const heightEl  = document.getElementById('modal-height') as HTMLElement;
-  const hometownEl= document.getElementById('modal-hometown') as HTMLElement;
   const bioEl     = document.getElementById('modal-bio') as HTMLElement;
   const socialEl  = document.getElementById('modal-social') as HTMLAnchorElement;
   const photoEl   = document.getElementById('modal-photo') as HTMLImageElement;
@@ -160,13 +159,13 @@ const rosterData = JSON.stringify(
     setVisible(posEl, !!player.position);
     posEl.textContent = player.position ?? '';
 
-    setVisible(natEl, !!player.countryCode);
-    natEl.textContent = player.countryCode ? player.countryCode.toUpperCase() : '';
+    setVisible(hometownRowEl, !!player.hometown || !!player.countryCode);
+    if (player.countryCode) { setVisible(flagEl, true); flagEl.src = `https://flagcdn.com/w40/${player.countryCode}.png`; flagEl.alt = player.countryCode.toUpperCase(); } else { setVisible(flagEl, false); }
 
     setVisible(heightEl, !!player.height);
     heightEl.textContent = player.height ?? '';
 
-    setVisible(hometownEl, !!player.hometown);
+
     hometownEl.textContent = player.hometown ?? '';
 
     setVisible(bioEl, !!player.bio);

@@ -7,7 +7,10 @@
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",
-    "prebuild": "tsx scripts/fetch-standings.ts && tsx scripts/fetch-schedule.ts",
+    "prebuild": "node -e \"if(process.env.SKIP_DATA_FETCH!=='1')require('child_process').execSync('npm run refresh-data',{stdio:'inherit'})\"",
+    "refresh-data": "tsx scripts/fetch-standings.ts && tsx scripts/fetch-schedule.ts && tsx scripts/fetch-nwsl-schedule.ts && tsx scripts/parse-nwsl-schedule.ts && tsx scripts/fetch-nwsl-rosters.ts",
+    "fetch-rosters": "tsx scripts/fetch-nwsl-rosters.ts",
+    "fetch-schedules": "tsx scripts/fetch-nwsl-schedule.ts && tsx scripts/parse-nwsl-schedule.ts",
     "preview": "astro preview",
     "astro": "astro",
     "sync-public": "bash scripts/sync-public.sh"
@@ -21,6 +24,7 @@
     "tsx": "^4.21.0"
   },
   "devDependencies": {
+    "@astrojs/check": "^0.9.9",
     "bmad-mcp-server": "^3.0.1",
     "typescript": "^5.6.0"
   }

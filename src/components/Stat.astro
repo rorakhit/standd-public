@@ -3,16 +3,19 @@ interface Props {
   label: string;
   value: string;
   highlight?: boolean;
+  color?: string;
 }
 
-const { label, value, highlight = false } = Astro.props;
+const { label, value, highlight = false, color } = Astro.props;
+const colorStyle = color ? `color: ${color}` : undefined;
+const highlightBgStyle = color ? `background-color: ${color}` : undefined;
 ---
 
-<div class={`bg-primary p-5 flex flex-col items-center justify-center text-center min-h-[120px] ${highlight ? 'bg-accent text-primary' : 'text-neutral'}`}>
+<div class={`bg-primary p-5 flex flex-col items-center justify-center text-center min-h-[120px] ${highlight ? 'text-primary' : 'text-neutral'}`} style={highlight ? highlightBgStyle : undefined}>
   <span class={`text-xs uppercase tracking-[0.15em] font-bold mb-2 ${highlight ? 'text-primary/70' : 'text-neutral/60'}`}>
     {label}
   </span>
-  <span class={`font-display font-bold text-4xl md:text-5xl tabular leading-none ${highlight ? 'text-primary' : 'text-accent'}`}>
+  <span class={`font-display font-bold text-4xl md:text-5xl tabular leading-none ${highlight ? 'text-primary' : ''}`} style={highlight ? undefined : colorStyle}>
     {value}
   </span>
 </div>

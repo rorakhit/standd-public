@@ -1,0 +1,128 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Header from '../../../components/Header.astro';
+import TeamTrackerSubNav from '../../../components/TeamTrackerSubNav.astro';
+import Footer from '../../../components/Footer.astro';
+
+const title = 'How to watch Utah Royals for free — no cable required';
+const description = 'Several Utah Royals games air on free over-the-air channels. Here\'s how to watch without cable: TV antennas, Tablo, and live TV streaming options explained.';
+---
+
+<BaseLayout title={title} description={description}>
+  <Header />
+  <TeamTrackerSubNav leagueSlug="nwsl" teamSlug="utah-royals" showHowToWatch showFreeTV showSquad />
+
+  <main class="flex-1 max-w-3xl mx-auto px-6 py-12">
+    <header class="mb-10">
+      <p class="text-sm font-medium text-muted uppercase tracking-wider mb-3">Utah Royals · Free TV Guide</p>
+      <h1 class="font-display font-bold text-4xl md:text-5xl text-primary leading-[1.1] mb-6">
+        How to watch for free — no cable required
+      </h1>
+      <p class="text-lg leading-relaxed text-primary/80">
+        25 of 30 games this season are free to watch: 10 on ION, 10 on Victory+, 5 on NWSL+. Most of those are on free over-the-air TV, so an antenna covers a lot of ground. Here are three ways to watch.
+      </p>
+    </header>
+
+    <!-- Option 1: Antenna -->
+    <section class="mb-10 p-6 border border-primary/15 rounded-xl">
+      <div class="flex items-start justify-between gap-4 mb-4">
+        <h2 class="font-display font-bold text-2xl text-primary">TV Antenna</h2>
+        <span class="text-xs font-bold uppercase tracking-wide px-2 py-1 rounded-full bg-accent text-primary flex-shrink-0">~$25–50 one-time</span>
+      </div>
+      <p class="text-primary/80 leading-relaxed mb-4">
+        The simplest option. Plug a flat antenna into your TV's coaxial port, run a channel scan, and you'll get free HD broadcasts from every major network in your area: ION, CBS, and ABC. No monthly fee, ever.
+      </p>
+      <p class="text-primary/80 leading-relaxed mb-4">
+        The downside: it works on one TV at a time, and you can't stream to your phone or record. But if you mostly watch at home on one screen, it's hard to argue with free.
+      </p>
+      <div class="bg-primary/5 rounded-lg p-4 mb-4">
+        <p class="text-sm font-bold text-primary mb-1">Recommended: Mohu Leaf 50 Amplified</p>
+        <p class="text-sm text-primary/70">Wired's top pick for most homes. Flat, reversible (paintable), amplified up to 60 miles from broadcast towers. Around $25–50 depending on where you buy.</p>
+      </div>
+      <div class="bg-primary/5 rounded-lg p-4">
+        <p class="text-sm font-bold text-primary mb-1">Before you buy: check your reception</p>
+        <p class="text-sm text-primary/70">OTA signal quality depends on where you live. Visit <a href="https://www.antennaweb.org" target="_blank" rel="noopener noreferrer" class="text-accent hover:underline">antennaweb.org</a> and enter your address to see which channels and signal strengths are available at your location.</p>
+      </div>
+    </section>
+
+    <!-- Option 2: Tablo -->
+    <section class="mb-10 p-6 border border-primary/15 rounded-xl">
+      <div class="flex items-start justify-between gap-4 mb-4">
+        <h2 class="font-display font-bold text-2xl text-primary">Tablo DVR</h2>
+        <span class="text-xs font-bold uppercase tracking-wide px-2 py-1 rounded-full bg-primary/10 text-primary flex-shrink-0">$129.95 one-time, no subscription</span>
+      </div>
+      <p class="text-primary/80 leading-relaxed mb-4">
+        Tablo sits between your antenna and your screens. You still use a TV antenna to pull in free over-the-air channels, but instead of plugging it directly into your TV, you plug it into the Tablo box. Tablo then streams those channels over your home WiFi to any TV, phone, or tablet.
+      </p>
+      <p class="text-primary/80 leading-relaxed mb-4">
+        So you get genuinely free broadcast channels, watchable on any screen in your house, with a built-in DVR to record games and watch later. No monthly subscription required.
+      </p>
+      <ul class="space-y-2 mb-4">
+        {[
+          'Watch free OTA channels on any TV, phone, or tablet in your home',
+          'Record games and watch on your schedule',
+          'No monthly fee, just the one-time hardware cost',
+          'Works with Roku, Fire TV, Apple TV, Android TV, and web browser',
+          '4th Gen model: $129.95 new, or from $69.95 refurbished',
+        ].map(item => (
+          <li class="flex items-start gap-2 text-sm text-primary/80">
+            <span class="text-accent font-bold flex-shrink-0 mt-0.5">✓</span>
+            {item}
+          </li>
+        ))}
+      </ul>
+      <a href="https://www.tablotv.com" target="_blank" rel="noopener noreferrer"
+        class="inline-block text-xs font-bold text-accent hover:underline">
+        Learn more at tablotv.com →
+      </a>
+    </section>
+
+    <!-- Option 3: Live TV Streaming -->
+    <section class="mb-10 p-6 border border-primary/15 rounded-xl">
+      <div class="flex items-start justify-between gap-4 mb-4">
+        <h2 class="font-display font-bold text-2xl text-primary">Live TV Streaming</h2>
+        <span class="text-xs font-bold uppercase tracking-wide px-2 py-1 rounded-full bg-primary/10 text-primary flex-shrink-0">$83–90+/mo</span>
+      </div>
+      <p class="text-primary/80 leading-relaxed mb-4">
+        If you don't want any hardware at all, live TV streaming services carry local broadcast channels over the internet, including local NBC affiliates. They're not cheap, and they're really built for people cutting cable entirely, not just chasing a few free games.
+      </p>
+      <div class="space-y-4">
+        <div class="border border-primary/10 rounded-lg p-4">
+          <div class="flex items-center justify-between mb-1">
+            <p class="font-bold text-primary">YouTube TV</p>
+            <span class="text-sm text-muted">$82.99/mo</span>
+          </div>
+          <p class="text-sm text-primary/70 mb-2">Carries local NBC affiliates, ION, CBS, and ABC. Clean interface, unlimited DVR storage included.</p>
+          <a href="https://tv.youtube.com/welcome/#plans" target="_blank" rel="noopener noreferrer"
+            class="text-xs font-bold text-accent hover:underline">See plans at tv.youtube.com →</a>
+        </div>
+        <div class="border border-primary/10 rounded-lg p-4">
+          <div class="flex items-center justify-between mb-1">
+            <p class="font-bold text-primary">Hulu + Live TV</p>
+            <span class="text-sm text-muted">$89.99/mo</span>
+          </div>
+          <p class="text-sm text-primary/70 mb-2">Carries local broadcast channels in most markets. Includes Disney+ and ESPN Select in the base plan.</p>
+          <a href="https://www.hulu.com/live-tv" target="_blank" rel="noopener noreferrer"
+            class="text-xs font-bold text-accent hover:underline">See plans at hulu.com →</a>
+        </div>
+      </div>
+      <p class="mt-4 text-xs text-muted">
+        Local channel availability varies by market. Confirm local channel availability before subscribing - both services offer free trials.
+      </p>
+    </section>
+
+    <!-- Bottom tip -->
+    <div class="p-5 bg-primary rounded-xl text-neutral mb-10">
+      <p class="font-bold text-accent text-sm uppercase tracking-wider mb-2">Quick take</p>
+      <p class="text-sm leading-relaxed text-neutral/80">
+        If you want free games on one TV: get an antenna. If you want free games on every screen with DVR: get a Tablo. If you want to cut cable entirely and don't mind paying for it: YouTube TV or Hulu + Live TV. The antenna + Tablo combo is the best value if you watch at home a lot.
+      </p>
+    </div>
+
+    <footer class="mt-8 pt-8 border-t border-primary/15 text-sm text-muted">
+      <p>← <a href="/nwsl/utah-royals/how-to-watch" class="text-primary hover:text-accent transition-colors">Back to full broadcast schedule</a></p>
+    </footer>
+  </main>
+
+  <Footer />
+</BaseLayout>

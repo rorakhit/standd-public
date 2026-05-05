@@ -2,12 +2,37 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
-import { nwslStandings, standingsLastUpdated } from '../../data/leagues/nwsl/standings';
+import { nwslStandings, standingsLastUpdated, standingsDisplayName } from '../../data/leagues/nwsl/standings';
+import { team as bostonLegacy } from '../../data/teams/nwsl/boston-legacy';
+import { team as portlandThorns } from '../../data/teams/nwsl/portland-thorns';
+import { team as sanDiegoWave } from '../../data/teams/nwsl/san-diego-wave';
+import { team as washingtonSpirit } from '../../data/teams/nwsl/washington-spirit';
+import { team as gothamFc } from '../../data/teams/nwsl/gotham-fc';
+import { team as seattleReign } from '../../data/teams/nwsl/seattle-reign';
+import { team as houstonDash } from '../../data/teams/nwsl/houston-dash';
+import { team as utahRoyals } from '../../data/teams/nwsl/utah-royals';
+import { team as angelCity } from '../../data/teams/nwsl/angel-city';
+import { team as northCarolinaCourage } from '../../data/teams/nwsl/north-carolina-courage';
+import { team as orlandoPride } from '../../data/teams/nwsl/orlando-pride';
+import { team as denverSummit } from '../../data/teams/nwsl/denver-summit';
+import { team as bayFc } from '../../data/teams/nwsl/bay-fc';
+import { team as kansasCityCurrent } from '../../data/teams/nwsl/kansas-city-current';
+import { team as chicagoStars } from '../../data/teams/nwsl/chicago-stars';
+import { team as racingLouisville } from '../../data/teams/nwsl/racing-louisville';
+
+const allTeams = [
+  bostonLegacy, portlandThorns, sanDiegoWave, washingtonSpirit,
+  gothamFc, seattleReign, houstonDash, utahRoyals, angelCity,
+  northCarolinaCourage, orlandoPride, denverSummit, bayFc,
+  kansasCityCurrent, chicagoStars, racingLouisville,
+];
+
+const teamByStandingsKey = new Map(allTeams.map(t => [t.standingsKey, t]));
 
 const PLAYOFF_LINE = 8;
 
 const title = 'NWSL 2026 — Standd';
-const description = 'NWSL 2026 season — standings, team trackers, and more. Covering Boston Legacy and beyond.';
+const description = 'NWSL 2026 season — standings and team trackers for all 16 clubs.';
 ---
 
 <BaseLayout title={title} description={description}>
@@ -21,26 +46,32 @@ const description = 'NWSL 2026 season — standings, team trackers, and more. Co
           NWSL
         </h1>
         <p class="text-lg text-primary/80 leading-relaxed">
-          The National Women's Soccer League. 16 teams, one season. Follow the standings and dive into Boston Legacy's inaugural year.
+          The National Women's Soccer League. 16 teams, one season. Every club gets a full tracker: results, fixtures, standings, and how to watch.
         </p>
       </div>
     </section>
 
-    <!-- Team trackers -->
+    <!-- Team trackers grid -->
     <section class="bg-primary py-16">
       <div class="max-w-5xl mx-auto px-6">
         <h2 class="font-display font-bold text-3xl text-accent mb-8 uppercase tracking-wider">Team trackers</h2>
-        <a
-          href="/nwsl/boston-legacy"
-          class="flex items-center justify-between bg-neutral/10 hover:bg-neutral/20 transition-colors rounded-2xl p-6 group"
-        >
-          <div>
-            <p class="text-xs text-neutral/50 uppercase tracking-wider font-bold mb-1">Inaugural Season</p>
-            <p class="font-display font-bold text-2xl text-neutral leading-tight">Boston Legacy</p>
-            <p class="text-sm text-neutral/60 mt-1">Results · Fixtures · Roster · How to Watch</p>
-          </div>
-          <span class="text-accent text-2xl group-hover:translate-x-1 transition-transform">→</span>
-        </a>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          {allTeams.map(team => (
+            <a
+              href={`/nwsl/${team.slug}`}
+              class="flex items-center justify-between bg-neutral/10 hover:bg-neutral/20 transition-colors rounded-xl p-4 group"
+            >
+              <div class="flex items-center gap-3">
+                {team.badge
+                  ? <img src={team.badge} alt={team.name} width="28" height="28" class="flex-shrink-0 object-contain" />
+                  : <div class="w-2.5 h-2.5 rounded-full flex-shrink-0" style={`background-color: ${team.color}`} />
+                }
+                <span class="font-display font-bold text-neutral leading-tight">{team.name}</span>
+              </div>
+              <span class="text-neutral/40 group-hover:text-neutral/70 group-hover:translate-x-0.5 transition-all text-lg">→</span>
+            </a>
+          ))}
+        </div>
       </div>
     </section>
 
@@ -53,53 +84,59 @@ const description = 'NWSL 2026 season — standings, team trackers, and more. Co
           <table class="w-full text-sm">
             <thead>
               <tr class="bg-primary text-neutral text-left">
-                <th class="px-4 py-3 font-bold tabular w-12">#</th>
+                <th class="px-2 py-3 font-bold tabular w-10">#</th>
                 <th class="px-4 py-3 font-bold">Team</th>
-                <th class="px-3 py-3 font-bold tabular text-right">P</th>
-                <th class="px-3 py-3 font-bold tabular text-right">W</th>
-                <th class="px-3 py-3 font-bold tabular text-right">D</th>
-                <th class="px-3 py-3 font-bold tabular text-right">L</th>
-                <th class="px-3 py-3 font-bold tabular text-right">GD</th>
-                <th class="px-4 py-3 font-bold tabular text-right">PTS</th>
+                <th class="px-2 py-3 font-bold tabular text-right w-8">P</th>
+                <th class="px-2 py-3 font-bold tabular text-right w-8">W</th>
+                <th class="px-2 py-3 font-bold tabular text-right w-8">D</th>
+                <th class="px-2 py-3 font-bold tabular text-right w-8">L</th>
+                <th class="px-2 py-3 font-bold tabular text-right w-8">GD</th>
+                <th class="px-3 py-3 font-bold tabular text-right w-12">PTS</th>
               </tr>
             </thead>
             <tbody>
               {nwslStandings.map((row, i) => {
                 const pos = i + 1;
-                const isBoston = row.team === 'Boston Legacy';
-                const isPlayoff = pos <= PLAYOFF_LINE;
+                const inPlayoffs = pos !== Math.max(pos, PLAYOFF_LINE + 1);
+                const atCutoff = pos === PLAYOFF_LINE;
                 const gd = row.goalsFor - row.goalsAgainst;
-                const isPlayoffCutoff = pos === PLAYOFF_LINE;
-                return (
-                  <>
-                    <tr class={`border-b border-primary/10 ${isBoston ? 'bg-accent/15 font-bold' : isPlayoff ? 'bg-primary/[0.03]' : ''}`}>
-                      <td class="px-4 py-3 tabular">
-                        <span class={`inline-flex items-center justify-center w-7 h-7 rounded-full font-bold text-xs ${isPlayoff ? 'bg-accent text-primary' : 'bg-muted/15 text-muted'}`}>
-                          {pos}
-                        </span>
-                      </td>
-                      <td class="px-4 py-3 text-primary">
-                        {isBoston
-                          ? <a href="/nwsl/boston-legacy" class="hover:text-accent transition-colors">{row.team}</a>
-                          : row.team
+                const teamConfig = teamByStandingsKey.get(row.team);
+                const href = teamConfig ? `/nwsl/${teamConfig.slug}` : null;
+                const teamColor = teamConfig?.color;
+                const rowStyle = teamColor ? `background-color: color-mix(in srgb, ${teamColor} 12%, transparent)` : undefined;
+                const rankStyle = inPlayoffs && teamColor ? `background-color: ${teamColor}` : undefined;
+                const rankClass = `inline-flex items-center justify-center w-7 h-7 rounded-full font-bold text-xs ${inPlayoffs ? 'text-primary' : 'bg-muted/15 text-muted'}`;
+                return [
+                  <tr class={`border-b border-primary/10 ${inPlayoffs ? 'bg-primary/[0.03]' : ''}`} style={rowStyle}>
+                    <td class="px-2 py-3 tabular">
+                      <span class={rankClass} style={rankStyle}>
+                        {pos}
+                      </span>
+                    </td>
+                    <td class="px-4 py-3 text-primary font-medium">
+                      <div class="flex items-center gap-2">
+                        {teamConfig?.badge && <img src={teamConfig.badge} alt="" width="20" height="20" class="flex-shrink-0 object-contain" />}
+                        {href
+                          ? <a href={href} class="hover:underline">{standingsDisplayName(row.team)}</a>
+                          : standingsDisplayName(row.team)
                         }
+                      </div>
+                    </td>
+                    <td class="px-2 py-3 tabular text-right">{row.played}</td>
+                    <td class="px-2 py-3 tabular text-right">{row.wins}</td>
+                    <td class="px-2 py-3 tabular text-right">{row.draws}</td>
+                    <td class="px-2 py-3 tabular text-right">{row.losses}</td>
+                    <td class="px-2 py-3 tabular text-right text-muted">{gd > 0 ? '+' : ''}{gd}</td>
+                    <td class="px-4 py-3 tabular text-right font-bold text-primary">{row.points}</td>
+                  </tr>,
+                  atCutoff && (
+                    <tr aria-hidden="true">
+                      <td colspan="8" class="bg-accent text-primary text-xs font-bold uppercase tracking-[0.2em] px-4 py-2 text-center">
+                        ↑ Playoff line · ↓ Outside the playoffs
                       </td>
-                      <td class="px-3 py-3 tabular text-right">{row.played}</td>
-                      <td class="px-3 py-3 tabular text-right">{row.wins}</td>
-                      <td class="px-3 py-3 tabular text-right">{row.draws}</td>
-                      <td class="px-3 py-3 tabular text-right">{row.losses}</td>
-                      <td class="px-3 py-3 tabular text-right text-muted">{gd > 0 ? '+' : ''}{gd}</td>
-                      <td class="px-4 py-3 tabular text-right font-bold text-primary">{row.points}</td>
                     </tr>
-                    {isPlayoffCutoff && (
-                      <tr aria-hidden="true">
-                        <td colspan="8" class="bg-accent text-primary text-xs font-bold uppercase tracking-[0.2em] px-4 py-2 text-center">
-                          ↑ Playoff line · ↓ Outside the playoffs
-                        </td>
-                      </tr>
-                    )}
-                  </>
-                );
+                  ),
+                ];
               })}
             </tbody>
           </table>

@@ -10,7 +10,7 @@ const description = 'Several Boston Legacy games air on free over-the-air channe
 
 <BaseLayout title={title} description={description}>
   <Header />
-  <TeamTrackerSubNav leagueSlug="nwsl" teamSlug="boston-legacy" />
+  <TeamTrackerSubNav leagueSlug="nwsl" teamSlug="boston-legacy" showHowToWatch showFreeTV showSquad />
 
   <main class="flex-1 max-w-3xl mx-auto px-6 py-12">
     <header class="mb-10">
@@ -19,7 +19,7 @@ const description = 'Several Boston Legacy games air on free over-the-air channe
         How to watch for free — no cable required
       </h1>
       <p class="text-lg leading-relaxed text-primary/80">
-        A significant number of Boston Legacy games this season air on free over-the-air channels — NBC10 Boston, ION, CBS, and ABC. If you don't have cable, here are three ways to watch them.
+        19 of 30 games this season are free to watch: 7 on ION, 1 on ABC, 5 on Victory+, 6 on NWSL+. The 8 OTA games are watchable with a basic antenna. Here are three ways to watch.
       </p>
     </header>
 
@@ -30,7 +30,7 @@ const description = 'Several Boston Legacy games air on free over-the-air channe
         <span class="text-xs font-bold uppercase tracking-wide px-2 py-1 rounded-full bg-accent text-primary flex-shrink-0">~$25–50 one-time</span>
       </div>
       <p class="text-primary/80 leading-relaxed mb-4">
-        The simplest option. Plug a flat antenna into your TV's coaxial port, run a channel scan, and you'll get free HD broadcasts from every major network in your area — including NBC10 Boston, ION, CBS, and ABC. No monthly fee, ever.
+        The simplest option. Plug a flat antenna into your TV's coaxial port, run a channel scan, and you'll get free HD broadcasts from every major network in your area: ION, CBS, and ABC. No monthly fee, ever.
       </p>
       <p class="text-primary/80 leading-relaxed mb-4">
         The downside: it works on one TV at a time, and you can't stream to your phone or record. But if you mostly watch at home on one screen, it's hard to argue with free.
@@ -52,7 +52,7 @@ const description = 'Several Boston Legacy games air on free over-the-air channe
         <span class="text-xs font-bold uppercase tracking-wide px-2 py-1 rounded-full bg-primary/10 text-primary flex-shrink-0">$129.95 one-time, no subscription</span>
       </div>
       <p class="text-primary/80 leading-relaxed mb-4">
-        Tablo is the best of both worlds. You still use a TV antenna to pull in free over-the-air channels — but instead of plugging the antenna directly into your TV, you plug it into the Tablo box. Tablo then streams those channels over your home WiFi to any TV, phone, or tablet.
+        Tablo sits between your antenna and your screens. You still use a TV antenna to pull in free over-the-air channels, but instead of plugging it directly into your TV, you plug it into the Tablo box. Tablo then streams those channels over your home WiFi to any TV, phone, or tablet.
       </p>
       <p class="text-primary/80 leading-relaxed mb-4">
         So you get genuinely free broadcast channels, watchable on any screen in your house, with a built-in DVR to record games and watch later. No monthly subscription required.
@@ -61,7 +61,7 @@ const description = 'Several Boston Legacy games air on free over-the-air channe
         {[
           'Watch free OTA channels on any TV, phone, or tablet in your home',
           'Record games and watch on your schedule',
-          'No monthly fee — just the one-time hardware cost',
+          'No monthly fee, just the one-time hardware cost',
           'Works with Roku, Fire TV, Apple TV, Android TV, and web browser',
           '4th Gen model: $129.95 new, or from $69.95 refurbished',
         ].map(item => (
@@ -84,7 +84,7 @@ const description = 'Several Boston Legacy games air on free over-the-air channe
         <span class="text-xs font-bold uppercase tracking-wide px-2 py-1 rounded-full bg-primary/10 text-primary flex-shrink-0">$83–90+/mo</span>
       </div>
       <p class="text-primary/80 leading-relaxed mb-4">
-        If you don't want any hardware at all, live TV streaming services carry local broadcast channels over the internet — including NBC10 Boston in the New England market. The catch: they're not cheap, and they're designed to replace cable entirely, not just get you a few free games.
+        If you don't want any hardware at all, live TV streaming services carry local broadcast channels over the internet, including local NBC affiliates. They're not cheap, and they're really built for people cutting cable entirely, not just chasing a few free games.
       </p>
       <div class="space-y-4">
         <div class="border border-primary/10 rounded-lg p-4">
@@ -92,7 +92,7 @@ const description = 'Several Boston Legacy games air on free over-the-air channe
             <p class="font-bold text-primary">YouTube TV</p>
             <span class="text-sm text-muted">$82.99/mo</span>
           </div>
-          <p class="text-sm text-primary/70 mb-2">Carries NBC10 Boston, ION, CBS, and ABC in most New England markets. Clean interface, unlimited DVR storage included.</p>
+          <p class="text-sm text-primary/70 mb-2">Carries local NBC affiliates, ION, CBS, and ABC. Clean interface, unlimited DVR storage included.</p>
           <a href="https://tv.youtube.com/welcome/#plans" target="_blank" rel="noopener noreferrer"
             class="text-xs font-bold text-accent hover:underline">See plans at tv.youtube.com →</a>
         </div>
@@ -107,7 +107,7 @@ const description = 'Several Boston Legacy games air on free over-the-air channe
         </div>
       </div>
       <p class="mt-4 text-xs text-muted">
-        Local channel availability varies by market. Confirm NBC10 Boston is included in your area before subscribing — both services offer free trials.
+        Local channel availability varies by market. Confirm local channel availability before subscribing - both services offer free trials.
       </p>
     </section>
 
@@ -115,7 +115,7 @@ const description = 'Several Boston Legacy games air on free over-the-air channe
     <div class="p-5 bg-primary rounded-xl text-neutral mb-10">
       <p class="font-bold text-accent text-sm uppercase tracking-wider mb-2">Quick take</p>
       <p class="text-sm leading-relaxed text-neutral/80">
-        If you want free games on one TV: get an antenna. If you want free games on every screen with DVR: get a Tablo. If you want to cut cable entirely and don't mind paying for it: YouTube TV or Hulu + Live TV. The antenna + Tablo combo gives you the most for the least ongoing cost.
+        If you want free games on one TV: get an antenna. If you want free games on every screen with DVR: get a Tablo. If you want to cut cable entirely and don't mind paying for it: YouTube TV or Hulu + Live TV. The antenna + Tablo combo is the best value if you watch at home a lot.
       </p>
     </div>
 

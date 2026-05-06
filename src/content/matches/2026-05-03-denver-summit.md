@@ -5,7 +5,7 @@ venue: Gillette Stadium, Foxborough, MA
 broadcast: CBS Sports
 date: 2026-05-03
 publishedAt: 2026-05-03
-bostonScore: 3
+teamScore: 3
 opponentScore: 2
 description: "Boston Legacy's first win - a 3-2 comeback over Denver Summit, sealed by St-Georges in the 90th minute after Traoré tied it 30 seconds earlier. The most Boston first win you could possibly script."
 ---

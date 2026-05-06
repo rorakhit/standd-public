@@ -5,7 +5,7 @@ venue: Gillette Stadium, Foxborough, MA
 broadcast: NWSL+
 date: 2026-04-03
 publishedAt: 2026-04-28
-bostonScore: 0
+teamScore: 0
 opponentScore: 1
 description: "Boston held the best team in the league scoreless through 62 minutes, pressed hard, and created chances. One moment of quality from Ludmila was the difference."
 ---

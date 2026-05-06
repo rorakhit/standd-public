@@ -5,7 +5,7 @@ venue: Gillette Stadium, Foxborough, MA
 broadcast: Victory+
 date: 2026-04-29
 publishedAt: 2026-04-30
-bostonScore: 2
+teamScore: 2
 opponentScore: 2
 description: "Boston Legacy's best performance of the season — two goals in thirteen minutes from Cañó and Smith, both set up by Prince — but North Carolina battled back in the second half for a 2-2 draw. First point of the season."
 ---

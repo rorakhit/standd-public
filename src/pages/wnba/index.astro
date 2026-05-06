@@ -1,0 +1,108 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { wnbaStandings } from '../../data/leagues/wnba/standings';
+import { team as atlantaDream } from '../../data/teams/wnba/atlanta-dream';
+import { team as chicagoSky } from '../../data/teams/wnba/chicago-sky';
+import { team as connecticutSun } from '../../data/teams/wnba/connecticut-sun';
+import { team as dallasWings } from '../../data/teams/wnba/dallas-wings';
+import { team as goldenStateValkyries } from '../../data/teams/wnba/golden-state-valkyries';
+import { team as indianaFever } from '../../data/teams/wnba/indiana-fever';
+import { team as lasVegasAces } from '../../data/teams/wnba/las-vegas-aces';
+import { team as losAngelesSparks } from '../../data/teams/wnba/los-angeles-sparks';
+import { team as minnesotaLynx } from '../../data/teams/wnba/minnesota-lynx';
+import { team as newYorkLiberty } from '../../data/teams/wnba/new-york-liberty';
+import { team as phoenixMercury } from '../../data/teams/wnba/phoenix-mercury';
+import { team as seattleStorm } from '../../data/teams/wnba/seattle-storm';
+import { team as washingtonMystics } from '../../data/teams/wnba/washington-mystics';
+import { team as portlandFire } from '../../data/teams/wnba/portland-fire';
+import { team as torontoTempo } from '../../data/teams/wnba/toronto-tempo';
+
+const allTeams = [
+  atlantaDream, chicagoSky, connecticutSun, dallasWings,
+  goldenStateValkyries, indianaFever, lasVegasAces, losAngelesSparks,
+  minnesotaLynx, newYorkLiberty, phoenixMercury, portlandFire,
+  seattleStorm, torontoTempo, washingtonMystics,
+];
+
+const featuredPlayers = [
+  { name: 'Caitlin Clark', team: indianaFever, description: '2024 Rookie of the Year · 2025 scoring leader' },
+  { name: "A'ja Wilson", team: lasVegasAces, description: '3× MVP · 2× champion' },
+  { name: 'Breanna Stewart', team: newYorkLiberty, description: '2× champion · 2× WNBA MVP' },
+  { name: 'Sabrina Ionescu', team: newYorkLiberty, description: '3-point record holder · 2024 champion' },
+];
+
+const title = 'WNBA 2026 — Standd';
+const description = 'WNBA 2026 season — standings and team trackers for all 15 teams.';
+---
+
+<BaseLayout title={title} description={description}>
+  <Header />
+
+  <main class="flex-1">
+    <section class="bg-neutral pt-12 pb-12 border-b-[12px]" style="border-color: #E85D00;">
+      <div class="max-w-3xl mx-auto px-6">
+        <p class="text-sm font-bold uppercase tracking-[0.2em] mb-3" style="color: #E85D00;">2026 Season</p>
+        <h1 class="font-display font-bold text-5xl md:text-7xl text-primary leading-[1.0] mb-6">
+          WNBA
+        </h1>
+        <p class="text-lg text-primary/80 leading-relaxed">
+          The Women's National Basketball Association. 15 teams, one season. Every club gets a full tracker: schedule, broadcast info, and player pages.
+        </p>
+      </div>
+    </section>
+
+    <!-- Featured players strip -->
+    <section class="py-12" style="background-color: #E85D00;">
+      <div class="max-w-5xl mx-auto px-6">
+        <h2 class="font-display font-bold text-2xl text-neutral mb-6 uppercase tracking-wider">Players to watch</h2>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          {featuredPlayers.map(p => (
+            <a
+              href={`/wnba/${p.team.slug}`}
+              class="block bg-neutral/15 hover:bg-neutral/25 transition-colors rounded-xl p-4 group"
+            >
+              <div class="flex flex-col gap-1">
+                <span class="font-display font-bold text-neutral text-lg leading-tight group-hover:underline">{p.name}</span>
+                <span class="text-neutral/70 text-sm font-medium">{p.team.name}</span>
+                <span class="text-neutral/60 text-xs mt-1">{p.description}</span>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Team trackers grid -->
+    <section class="bg-primary py-16">
+      <div class="max-w-5xl mx-auto px-6">
+        <h2 class="font-display font-bold text-3xl mb-8 uppercase tracking-wider" style="color: #E85D00;">Team trackers</h2>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          {allTeams.map(team => (
+            <a
+              href={`/wnba/${team.slug}`}
+              class="flex items-center justify-between bg-neutral/10 hover:bg-neutral/20 transition-colors rounded-xl p-4 group"
+            >
+              <div class="flex items-center gap-3">
+                <div class="w-2.5 h-2.5 rounded-full flex-shrink-0" style={`background-color: ${team.color}`} />
+                <span class="font-display font-bold text-neutral leading-tight">{team.name}</span>
+              </div>
+              <span class="text-neutral/40 group-hover:text-neutral/70 group-hover:translate-x-0.5 transition-all text-lg">→</span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Standings -->
+    <section class="bg-neutral py-16">
+      <div class="max-w-5xl mx-auto px-6">
+        <h2 class="font-display font-bold text-3xl text-primary mb-2">Standings</h2>
+        <p class="text-muted text-sm">Standings coming soon. Check back after the season tips off.</p>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>

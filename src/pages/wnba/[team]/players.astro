@@ -1,0 +1,76 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Header from '../../../components/Header.astro';
+import TeamTrackerSubNav from '../../../components/TeamTrackerSubNav.astro';
+import Footer from '../../../components/Footer.astro';
+import { team as atlantaDream } from '../../../data/teams/wnba/atlanta-dream';
+import { team as chicagoSky } from '../../../data/teams/wnba/chicago-sky';
+import { team as connecticutSun } from '../../../data/teams/wnba/connecticut-sun';
+import { team as dallasWings } from '../../../data/teams/wnba/dallas-wings';
+import { team as goldenStateValkyries } from '../../../data/teams/wnba/golden-state-valkyries';
+import { team as indianaFever } from '../../../data/teams/wnba/indiana-fever';
+import { team as lasVegasAces } from '../../../data/teams/wnba/las-vegas-aces';
+import { team as losAngelesSparks } from '../../../data/teams/wnba/los-angeles-sparks';
+import { team as minnesotaLynx } from '../../../data/teams/wnba/minnesota-lynx';
+import { team as newYorkLiberty } from '../../../data/teams/wnba/new-york-liberty';
+import { team as phoenixMercury } from '../../../data/teams/wnba/phoenix-mercury';
+import { team as seattleStorm } from '../../../data/teams/wnba/seattle-storm';
+import { team as washingtonMystics } from '../../../data/teams/wnba/washington-mystics';
+import { team as portlandFire } from '../../../data/teams/wnba/portland-fire';
+import { team as torontoTempo } from '../../../data/teams/wnba/toronto-tempo';
+import type { TeamConfig } from '../../../data/shared/types';
+
+const allTeams: TeamConfig[] = [
+  atlantaDream, chicagoSky, connecticutSun, dallasWings,
+  goldenStateValkyries, indianaFever, lasVegasAces, losAngelesSparks,
+  minnesotaLynx, newYorkLiberty, phoenixMercury, portlandFire,
+  seattleStorm, torontoTempo, washingtonMystics,
+];
+
+export function getStaticPaths() {
+  return [
+    'atlanta-dream', 'chicago-sky', 'connecticut-sun', 'dallas-wings',
+    'golden-state-valkyries', 'indiana-fever', 'las-vegas-aces', 'los-angeles-sparks',
+    'minnesota-lynx', 'new-york-liberty', 'phoenix-mercury', 'portland-fire',
+    'seattle-storm', 'toronto-tempo', 'washington-mystics',
+  ].map(slug => ({ params: { team: slug } }));
+}
+
+const { team: teamSlug } = Astro.params;
+const team = allTeams.find(t => t.slug === teamSlug)!;
+
+const title = `${team.name} players 2026 — Standd`;
+const description = `${team.name} WNBA 2026 roster and player pages.`;
+---
+
+<BaseLayout title={title} description={description}>
+  <Header />
+  <TeamTrackerSubNav leagueSlug="wnba" teamSlug={team.slug} showHowToWatch showPlayers />
+
+  <main class="flex-1 max-w-3xl mx-auto px-6 py-12">
+    <header class="mb-10">
+      <p class="text-sm font-medium text-muted uppercase tracking-wider mb-3">{team.name} · 2026 Season</p>
+      <h1 class="font-display font-bold text-4xl md:text-5xl text-primary leading-[1.1] mb-4">
+        Players
+      </h1>
+      <p class="text-lg leading-relaxed text-primary/80">
+        Full {team.name} roster coming soon. We're building the player data pipeline now. Check back shortly.
+      </p>
+    </header>
+
+    <div class="rounded-2xl border-2 border-primary/10 p-8 text-center">
+      <p class="font-display font-bold text-2xl text-primary mb-2">Roster coming soon</p>
+      <p class="text-muted leading-relaxed">
+        Player profiles, stats, and bios are on the way. In the meantime, visit the
+        <a href={team.officialUrl} target="_blank" rel="noopener noreferrer" class="text-accent hover:underline font-medium">official {team.name} site</a>
+        for the full roster.
+      </p>
+    </div>
+
+    <footer class="mt-16 pt-8 border-t border-primary/15 text-sm text-muted">
+      <p>← <a href={`/wnba/${team.slug}`} class="text-primary hover:text-accent transition-colors">Back to {team.name} tracker</a></p>
+    </footer>
+  </main>
+
+  <Footer />
+</BaseLayout>

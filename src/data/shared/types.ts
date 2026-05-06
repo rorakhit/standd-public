@@ -9,7 +9,7 @@ export interface TeamConfig {
 }
 
 export interface MatchResult {
-  bostonScore: number;
+  teamScore: number;
   opponentScore: number;
   notes?: string;
 }
@@ -19,7 +19,7 @@ export interface Match {
   time?: string; // local ET kickoff time e.g. "7:00 PM"
   opponent: string;
   homeAway: 'home' | 'away';
-  venue: string;
+  venue?: string;
   broadcast: string[];
   result?: MatchResult;
 }

@@ -5,7 +5,7 @@ venue: Northwestern Medicine Field at Martin Stadium, Evanston, IL
 broadcast: ION
 date: 2026-04-25
 publishedAt: 2026-04-28
-bostonScore: 0
+teamScore: 0
 opponentScore: 2
 description: "Boston out-possessed, out-passed, and out-shot Chicago but lost 2-0. Katie Atkinson made eight saves for the Stars. The xG vs. scoreline gap is becoming a pattern."
 ---

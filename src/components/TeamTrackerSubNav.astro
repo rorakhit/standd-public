@@ -5,9 +5,10 @@ interface Props {
   showHowToWatch?: boolean;
   showFreeTV?: boolean;
   showSquad?: boolean;
+  showPlayers?: boolean;
 }
 
-const { leagueSlug, teamSlug, showHowToWatch = false, showFreeTV = false, showSquad = false } = Astro.props;
+const { leagueSlug, teamSlug, showHowToWatch = false, showFreeTV = false, showSquad = false, showPlayers = false } = Astro.props;
 const { pathname } = Astro.url;
 
 const base = `/${leagueSlug}/${teamSlug}`;
@@ -17,6 +18,7 @@ const items = [
   ...(showHowToWatch ? [{ href: `${base}/how-to-watch`, label: 'How to Watch' }] : []),
   ...(showFreeTV ? [{ href: `${base}/free-tv`, label: 'Watch Free' }] : []),
   ...(showSquad ? [{ href: `${base}/roster`, label: 'Squad' }] : []),
+  ...(showPlayers ? [{ href: `${base}/players`, label: 'Players' }] : []),
 ];
 ---
 

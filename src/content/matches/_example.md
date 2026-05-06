@@ -15,7 +15,7 @@ venue: "Gillette Stadium, Foxborough"
 broadcast: "Paramount+"
 date: 2026-04-26
 publishedAt: 2026-04-27
-bostonScore: 2
+teamScore: 2
 opponentScore: 1
 title: "Boston Legacy vs Racing Louisville FC — April 26, 2026"
 description: "Recap of Boston Legacy's 2-1 home win over Racing Louisville at Gillette Stadium. The first three points of the season."

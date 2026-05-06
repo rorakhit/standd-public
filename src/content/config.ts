@@ -27,7 +27,7 @@ const matches = defineCollection({
     publishedAt: z.coerce.date(),
 
     // Result
-    bostonScore: z.number().int().min(0),
+    teamScore: z.number().int().min(0),
     opponentScore: z.number().int().min(0),
 
     // Page metadata (optional — sensible defaults will be derived if omitted)

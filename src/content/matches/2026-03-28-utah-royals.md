@@ -5,7 +5,7 @@ venue: Gillette Stadium, Foxborough, MA
 broadcast: ESPN2, ESPN Deportes, ESPN App
 date: 2026-03-28
 publishedAt: 2026-04-27
-bostonScore: 1
+teamScore: 1
 opponentScore: 2
 description: "Boston Legacy's second home match delivered a club landmark — Aïssata Traoré's first-ever goal — but Utah Royals' set-piece quality and a second-half penalty sealed a 2-1 defeat."
 ---

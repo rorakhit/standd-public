@@ -4,6 +4,7 @@ export const team: TeamConfig = {
   name: 'Washington Mystics',
   slug: 'washington-mystics',
   color: '#E03A3E',
+  badge: 'https://cdn.wnba.com/logos/wnba/1611661322/primary/L/logo.svg',
   standingsKey: 'Washington Mystics',
   officialUrl: 'https://mystics.wnba.com/',
   ticketsUrl: 'https://mystics.wnba.com/tickets/',

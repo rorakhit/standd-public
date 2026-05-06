@@ -30,6 +30,7 @@ CLAUDE.md
 # Speckit
 .specify/
 specs/
+!docs/superpowers/specs/
 
 # Serena (Claude Code MCP)
 .serena/

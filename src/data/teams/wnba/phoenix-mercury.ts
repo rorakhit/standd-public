@@ -4,6 +4,7 @@ export const team: TeamConfig = {
   name: 'Phoenix Mercury',
   slug: 'phoenix-mercury',
   color: '#E56020',
+  badge: 'https://cdn.wnba.com/logos/wnba/1611661317/primary/L/logo.svg',
   standingsKey: 'Phoenix Mercury',
   officialUrl: 'https://mercury.wnba.com/',
   ticketsUrl: 'https://mercury.wnba.com/tickets/',

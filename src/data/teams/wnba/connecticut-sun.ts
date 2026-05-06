@@ -4,6 +4,7 @@ export const team: TeamConfig = {
   name: 'Connecticut Sun',
   slug: 'connecticut-sun',
   color: '#E07E25',
+  badge: 'https://cdn.wnba.com/logos/wnba/1611661323/primary/L/logo.svg',
   standingsKey: 'Connecticut Sun',
   officialUrl: 'https://sun.wnba.com/',
   ticketsUrl: 'https://sun.wnba.com/tickets/',

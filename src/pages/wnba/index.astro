@@ -82,10 +82,13 @@ const description = 'WNBA 2026 season — standings and team trackers for all 15
           {allTeams.map(team => (
             <a
               href={`/wnba/${team.slug}`}
-              class="flex items-center justify-between bg-neutral/10 hover:bg-neutral/20 transition-colors rounded-xl p-4 group"
+              class="flex items-center justify-between bg-neutral/20 hover:bg-neutral/30 transition-colors rounded-xl p-4 group"
             >
-              <div class="flex items-center gap-3">
-                <div class="w-2.5 h-2.5 rounded-full flex-shrink-0" style={`background-color: ${team.color}`} />
+              <div class="flex items-center gap-2">
+                {team.badge
+                  ? <img src={team.badge} alt={team.name} width="48" height="48" class="flex-shrink-0 object-contain" />
+                  : <div class="w-2.5 h-2.5 rounded-full flex-shrink-0" style={`background-color: ${team.color}`} />
+                }
                 <span class="font-display font-bold text-neutral leading-tight">{team.name}</span>
               </div>
               <span class="text-neutral/40 group-hover:text-neutral/70 group-hover:translate-x-0.5 transition-all text-lg">→</span>

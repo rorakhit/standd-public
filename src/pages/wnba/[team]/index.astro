@@ -117,9 +117,12 @@ const description = `${team.name} WNBA 2026 season tracker — schedule, results
     <section class="bg-neutral pt-12 pb-12 border-b-[12px]" style="border-color: var(--team-color)">
       <div class="max-w-3xl mx-auto px-6">
         <p class="text-sm font-bold uppercase tracking-[0.2em] mb-3" style="color: var(--team-color)">WNBA · 2026 Season</p>
-        <h1 class="font-display font-bold text-5xl md:text-7xl text-primary leading-[1.0] mb-6">
-          {team.name}
-        </h1>
+        <div class="flex items-center gap-5 mb-6">
+          {team.badge && <img src={team.badge} alt={team.name} width="72" height="72" class="flex-shrink-0 object-contain" />}
+          <h1 class="font-display font-bold text-5xl md:text-7xl text-primary leading-[1.0]">
+            {team.name}
+          </h1>
+        </div>
 
         {/* Season progress bar */}
         {matches.length > 0 && (

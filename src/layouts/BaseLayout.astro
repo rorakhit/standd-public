@@ -5,12 +5,14 @@ interface Props {
   title: string;
   description?: string;
   ogImage?: string;
+  noindex?: boolean;
 }
 
 const {
   title,
   description = "Standd - Women's pro sports all in one place. Schedules, scores, standings, player pages, and more across NWSL, WSL, WNBA, and PWHL.",
   ogImage = '/og-default.png',
+  noindex = false,
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
@@ -29,6 +31,7 @@ const ogImageURL = new URL(ogImage, Astro.site);
 
     <title>{title}</title>
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
     <link rel="canonical" href={canonicalURL} />
 
     <!-- Open Graph -->

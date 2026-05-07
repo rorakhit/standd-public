@@ -132,6 +132,21 @@ const description = `${team.name} WNBA 2026 season tracker — schedule, results
 </style>
 
 <BaseLayout title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "SportsTeam",
+    "name": team.name,
+    "url": `https://standd.fan/wnba/${team.slug}`,
+    "sport": "Basketball",
+    "memberOf": {
+      "@type": "SportsOrganization",
+      "name": "Women's National Basketball Association",
+      "alternateName": "WNBA",
+      "url": "https://www.wnba.com/"
+    },
+    ...(team.badge ? { "logo": team.badge } : {}),
+    "sameAs": [team.officialUrl]
+  })} />
   <Header />
   <TeamTrackerSubNav leagueSlug="wnba" teamSlug={team.slug} showHowToWatch showPlayers />
 

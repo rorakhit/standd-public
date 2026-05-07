@@ -98,6 +98,21 @@ const description = `${team.name} NWSL 2026 season tracker — match results, fi
 </style>
 
 <BaseLayout title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "SportsTeam",
+    "name": team.name,
+    "url": `https://standd.fan/nwsl/${team.slug}`,
+    "sport": "Soccer",
+    "memberOf": {
+      "@type": "SportsOrganization",
+      "name": "National Women's Soccer League",
+      "alternateName": "NWSL",
+      "url": "https://www.nwslsoccer.com/"
+    },
+    ...(team.badge ? { "logo": team.badge } : {}),
+    "sameAs": [team.officialUrl]
+  })} />
   <Header />
   <TeamTrackerSubNav leagueSlug="nwsl" teamSlug={team.slug} showHowToWatch showFreeTV showSquad />
 

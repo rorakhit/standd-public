@@ -3,7 +3,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Header from '../../../components/Header.astro';
 import TeamTrackerSubNav from '../../../components/TeamTrackerSubNav.astro';
 import Footer from '../../../components/Footer.astro';
-import { matches } from '../../../data/teams/nwsl/boston-legacy';
+import { matches, team } from '../../../data/teams/nwsl/boston-legacy';
 
 const allMatches = [...matches].sort((a, b) => a.date.localeCompare(b.date));
 const today = new Date().toISOString().slice(0, 10);
@@ -93,6 +93,36 @@ const services = [
 ---
 
 <BaseLayout title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": `${team.name} 2026 NWSL Broadcast Schedule`,
+    "itemListElement": allMatches.slice(0, 20).map((match, i) => ({
+      "@type": "ListItem",
+      "position": i + 1,
+      "item": {
+        "@type": "SportsEvent",
+        "name": match.homeAway === 'home'
+          ? `${team.name} vs ${match.opponent}`
+          : `${match.opponent} vs ${team.name}`,
+        "startDate": match.date,
+        "sport": "Soccer",
+        "homeTeam": match.homeAway === 'home'
+          ? { "@type": "SportsTeam", "name": team.name }
+          : { "@type": "SportsTeam", "name": match.opponent },
+        "awayTeam": match.homeAway === 'away'
+          ? { "@type": "SportsTeam", "name": team.name }
+          : { "@type": "SportsTeam", "name": match.opponent },
+        "organizer": { "@type": "SportsOrganization", "name": "NWSL" },
+        ...(match.broadcast?.length ? {
+          "broadcastOfEvent": match.broadcast.map((b: string) => ({
+            "@type": "BroadcastEvent",
+            "broadcastDisplayName": b
+          }))
+        } : {})
+      }
+    }))
+  })} />
   <Header />
   <TeamTrackerSubNav leagueSlug="nwsl" teamSlug="boston-legacy" showHowToWatch showFreeTV showSquad />
 

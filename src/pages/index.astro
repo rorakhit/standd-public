@@ -16,6 +16,31 @@ const comingSoon = [
 ---
 
 <BaseLayout title={title}>
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://standd.fan/#website",
+        "url": "https://standd.fan/",
+        "name": "Standd",
+        "description": "Women's pro sports tracker — standings, schedules, and broadcast info for NWSL, WNBA, WSL, PWHL, NSL, and LOVB Pro."
+      },
+      {
+        "@type": "Organization",
+        "@id": "https://standd.fan/#organization",
+        "name": "Standd",
+        "url": "https://standd.fan/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://standd.fan/og-default.png",
+          "width": 1200,
+          "height": 630
+        },
+        "sameAs": []
+      }
+    ]
+  })} />
   <Header />
 
   <main class="flex-1">

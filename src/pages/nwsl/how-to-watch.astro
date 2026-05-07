@@ -1,0 +1,272 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+
+const title = 'How to Watch NWSL 2026 — Every Service, Every Match';
+const description = 'Where every NWSL match airs in 2026. ION (58 matches, free), Victory+ (57 matches, free streaming), Amazon Prime Video, ESPN, CBS, ABC, and NWSL+ — full breakdown with pricing.';
+
+const services = [
+  {
+    name: 'ION',
+    games: 58,
+    price: 'Free',
+    ota: true,
+    linkLabel: null,
+    affiliateUrl: null,
+    description: 'ION is the biggest carrier of NWSL matches in 2026 with 58 games on free broadcast TV. Get it over the air with a TV antenna or check your cable/satellite package. No subscription needed.',
+  },
+  {
+    name: 'Victory+',
+    games: 57,
+    price: 'Free',
+    ota: false,
+    linkLabel: 'Watch on Victory+ →',
+    affiliateUrl: 'https://victoryplus.com/hub/NWSL',
+    description: 'Victory+ is the official free streaming partner of the NWSL. Available on iOS, Android, Apple TV, Roku, and Fire TV at no cost. Blackouts apply for nationally televised games on ION, ESPN, and Prime Video.',
+  },
+  {
+    name: 'CBS Sports',
+    games: 36,
+    price: 'Cable / satellite',
+    ota: false,
+    linkLabel: null,
+    affiliateUrl: null,
+    description: 'CBS Sports Network carries 36 NWSL matches. Cable and satellite only. Some matches may stream at cbssports.com with a TV provider login.',
+  },
+  {
+    name: 'NWSL+',
+    games: 28,
+    price: 'Free',
+    ota: false,
+    linkLabel: 'Watch on NWSL+ →',
+    affiliateUrl: 'https://www.nwslsoccer.com/plus',
+    description: "The league's own streaming app — free for US fans. Carries games not on national TV. Best as a supplemental service alongside Victory+ for full coverage.",
+  },
+  {
+    name: 'Amazon Prime Video',
+    games: 25,
+    price: '$14.99/mo',
+    ota: false,
+    linkLabel: 'See Prime plans →',
+    affiliateUrl: 'https://www.amazon.com/amazonprime',
+    description: "Amazon Prime Video carries 25 NWSL matches in 2026. Included with any Amazon Prime subscription at $14.99/month — no sports add-on needed. If you already have Prime for shipping, you're already covered.",
+  },
+  {
+    name: 'ESPN / ESPN2',
+    games: 22,
+    price: '$12.99+/mo',
+    ota: false,
+    linkLabel: 'See ESPN plans →',
+    affiliateUrl: 'https://plus.espn.com/',
+    description: 'ESPN and ESPN2 carry 22 NWSL matches in 2026 (13 on ESPN, 9 on ESPN2). Stream via the ESPN App with a cable TV provider login or an ESPN Select subscription starting at $12.99/month.',
+  },
+  {
+    name: 'ABC / Disney+',
+    games: 3,
+    price: 'Free / $11.99+/mo',
+    ota: true,
+    linkLabel: null,
+    affiliateUrl: null,
+    description: 'ABC carries 3 marquee NWSL matches on free over-the-air TV. These games simulcast on Disney+. Disney+ standalone starts at $11.99/month.',
+  },
+];
+
+const teams = [
+  { name: 'Angel City FC', slug: 'angel-city', badge: 'https://images.nwslsoccer.com/image/private/t_q-best/v1710436088/prd/assets/teams/angel-city-fc.svg' },
+  { name: 'Bay FC', slug: 'bay-fc', badge: 'https://images.nwslsoccer.com/image/private/t_q-best/v1710436090/prd/assets/teams/bay-fc.svg' },
+  { name: 'Boston Legacy FC', slug: 'boston-legacy', badge: 'https://images.nwslsoccer.com/image/private/t_q-best/v1749431607/prd/assets/teams/bos-nation-fc.png' },
+  { name: 'Chicago Stars FC', slug: 'chicago-stars', badge: 'https://images.nwslsoccer.com/image/private/t_q-best/v1776368471/prd/assets/teams/chicago-stars.png' },
+  { name: 'Denver Summit FC', slug: 'denver-summit', badge: 'https://images.nwslsoccer.com/image/private/t_q-best/v1757004382/prd/assets/teams/denver-summit-fc.png' },
+  { name: 'Gotham FC', slug: 'gotham-fc', badge: 'https://images.nwslsoccer.com/image/private/t_q-best/v1768567024/prd/assets/teams/nj-ny-gotham-fc.png' },
+  { name: 'Houston Dash', slug: 'houston-dash', badge: 'https://images.nwslsoccer.com/image/private/t_q-best/v1710436093/prd/assets/teams/houston-dash.svg' },
+  { name: 'Kansas City Current', slug: 'kansas-city-current', badge: 'https://images.nwslsoccer.com/image/private/t_q-best/v1710436094/prd/assets/teams/kansas-city-current.svg' },
+  { name: 'North Carolina Courage', slug: 'north-carolina-courage', badge: 'https://images.nwslsoccer.com/image/private/t_q-best/v1712866345/prd/assets/teams/north-carolina-courage.svg' },
+  { name: 'Orlando Pride', slug: 'orlando-pride', badge: 'https://images.nwslsoccer.com/image/private/t_q-best/v1710436099/prd/assets/teams/orlando-pride.svg' },
+  { name: 'Portland Thorns FC', slug: 'portland-thorns', badge: 'https://images.nwslsoccer.com/image/private/t_q-best/v1710436101/prd/assets/teams/portland-thorns-fc.svg' },
+  { name: 'Racing Louisville FC', slug: 'racing-louisville', badge: 'https://images.nwslsoccer.com/image/private/t_q-best/v1710436103/prd/assets/teams/racing-louisville-fc.svg' },
+  { name: 'San Diego Wave FC', slug: 'san-diego-wave', badge: 'https://images.nwslsoccer.com/image/private/t_q-best/v1710436105/prd/assets/teams/san-diego-wave-fc.svg' },
+  { name: 'Seattle Reign FC', slug: 'seattle-reign', badge: 'https://images.nwslsoccer.com/image/private/t_q-best/v1710436107/prd/assets/teams/seattle-reign.svg' },
+  { name: 'Utah Royals FC', slug: 'utah-royals', badge: 'https://images.nwslsoccer.com/image/private/t_q-best/v1710436109/prd/assets/teams/utah-royals-fc.svg' },
+  { name: 'Washington Spirit', slug: 'washington-spirit', badge: 'https://images.nwslsoccer.com/image/private/t_q-best/v1712866158/prd/assets/teams/washington-spirit.svg' },
+];
+
+const freeServices = services.filter(s => s.ota);
+---
+
+<BaseLayout title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How do I watch NWSL games in 2026?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "NWSL matches in 2026 air across multiple services: ION (58 matches, free over-the-air), Victory+ (57 matches, free streaming), CBS Sports (36 matches, cable), NWSL+ (28 matches, free streaming), Amazon Prime Video (25 matches, $14.99/mo), ESPN/ESPN2 (22 matches, $12.99+/mo), and ABC (3 matches, free OTA)."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I watch NWSL games for free?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. ION (58 matches) and ABC (3 matches) air NWSL games free over-the-air with a TV antenna. Victory+ and NWSL+ also stream many matches online for free — no subscription required. That's over 140 games available free in 2026."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is Victory+ and does it cost money?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Victory+ is the official free streaming partner of the NWSL. It is completely free — no subscription, no cable login. Available on iOS, Android, Roku, Apple TV, and Fire TV. Blackout rules apply for nationally televised games."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What streaming service has the most NWSL games?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "ION has the most NWSL matches in 2026 with 58 games, all free on broadcast TV. Victory+ carries 57 matches at no cost for streaming. Amazon Prime Video is the top paid streaming option with 25 games."
+        }
+      }
+    ]
+  })} />
+  <Header />
+
+  <main class="flex-1">
+    <section class="bg-neutral pt-12 pb-12 border-b-[12px]" style="border-color: #003865;">
+      <div class="max-w-3xl mx-auto px-6">
+        <p class="text-sm font-bold uppercase tracking-[0.2em] mb-3" style="color: #003865;">NWSL · 2026 Season</p>
+        <h1 class="font-display font-bold text-4xl md:text-5xl text-primary leading-[1.1] mb-6">
+          How to watch NWSL 2026
+        </h1>
+        <p class="text-lg leading-relaxed text-primary/80">
+          The NWSL in 2026 is spread across ION, Victory+, CBS Sports, NWSL+, Amazon Prime Video, ESPN, and ABC. The good news: most of the season is free. Here's the full breakdown.
+        </p>
+        <div class="mt-5">
+          <a href="/nwsl/angel-city/free-tv" class="text-sm font-bold hover:underline" style="color: #003865;">How to watch NWSL for free — antenna and cord-free options →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Free options callout -->
+    <section class="py-10" style="background-color: #003865;">
+      <div class="max-w-3xl mx-auto px-6">
+        <h2 class="font-display font-bold text-2xl text-neutral mb-2 uppercase tracking-wider">Watch free — antenna + streaming</h2>
+        <p class="text-neutral/80 mb-6">ION (58 matches) and ABC (3 matches) are free over-the-air with a TV antenna. Victory+ and NWSL+ stream many more matches free online.</p>
+        <div class="grid sm:grid-cols-4 gap-3">
+          <div class="bg-neutral/15 rounded-xl p-4">
+            <p class="font-display font-bold text-neutral text-lg">ION</p>
+            <p class="text-neutral/70 text-sm mt-1">58 matches · Free OTA</p>
+          </div>
+          <div class="bg-neutral/15 rounded-xl p-4">
+            <p class="font-display font-bold text-neutral text-lg">ABC</p>
+            <p class="text-neutral/70 text-sm mt-1">3 matches · Free OTA</p>
+          </div>
+          <div class="bg-neutral/15 rounded-xl p-4">
+            <p class="font-display font-bold text-neutral text-lg">Victory+</p>
+            <p class="text-neutral/70 text-sm mt-1">57 matches · Free stream</p>
+          </div>
+          <div class="bg-neutral/15 rounded-xl p-4">
+            <p class="font-display font-bold text-neutral text-lg">NWSL+</p>
+            <p class="text-neutral/70 text-sm mt-1">28 matches · Free stream</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- All services -->
+    <section class="bg-neutral py-16">
+      <div class="max-w-3xl mx-auto px-6">
+        <h2 class="font-display font-bold text-3xl text-primary mb-8">All 2026 NWSL broadcast services</h2>
+        <div class="flex flex-col gap-4">
+          {services.map(s => (
+            <div class="border border-primary/10 rounded-xl p-6">
+              <div class="flex items-start justify-between gap-4 mb-3">
+                <div>
+                  <h3 class="font-display font-bold text-xl text-primary">{s.name}</h3>
+                  <div class="flex items-center gap-3 mt-1">
+                    {s.games && <span class="text-sm font-bold text-primary/60">{s.games} matches</span>}
+                    <span class={`text-sm font-bold px-2 py-0.5 rounded-full ${s.ota ? 'bg-green-100 text-green-800' : 'bg-primary/10 text-primary/70'}`}>
+                      {s.price}
+                    </span>
+                    {s.ota && <span class="text-xs font-bold text-green-700 uppercase tracking-wider">Free OTA</span>}
+                  </div>
+                </div>
+              </div>
+              <p class="text-primary/75 text-sm leading-relaxed mb-4">{s.description}</p>
+              {s.affiliateUrl && (
+                <a
+                  href={s.affiliateUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-block text-sm font-bold text-accent hover:underline"
+                >
+                  {s.linkLabel}
+                </a>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick comparison table -->
+    <section class="bg-primary py-16">
+      <div class="max-w-3xl mx-auto px-6">
+        <h2 class="font-display font-bold text-3xl text-neutral mb-8">Quick comparison</h2>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="text-left text-xs uppercase tracking-wider text-neutral/50 border-b border-neutral/10">
+                <th class="pb-3 pr-4 font-bold">Service</th>
+                <th class="pb-3 px-3 font-bold text-right">Matches</th>
+                <th class="pb-3 px-3 font-bold text-right">Price</th>
+                <th class="pb-3 pl-3 font-bold text-right">Free OTA</th>
+              </tr>
+            </thead>
+            <tbody>
+              {services.map(s => (
+                <tr class="border-b border-neutral/5">
+                  <td class="py-3 pr-4 font-medium text-neutral">{s.name}</td>
+                  <td class="py-3 px-3 text-right tabular-nums text-neutral/70">{s.games ?? '—'}</td>
+                  <td class="py-3 px-3 text-right tabular-nums text-neutral/70">{s.price}</td>
+                  <td class="py-3 pl-3 text-right text-neutral/70">{s.ota ? '✓' : '—'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Team links -->
+    <section class="bg-neutral py-16">
+      <div class="max-w-3xl mx-auto px-6">
+        <h2 class="font-display font-bold text-3xl text-primary mb-3">Find your team's schedule</h2>
+        <p class="text-primary/70 mb-8">Every team has a dedicated broadcast guide with their full match-by-match schedule and which service each game is on.</p>
+        <div class="grid sm:grid-cols-2 gap-2">
+          {teams.map(t => (
+            <a
+              href={`/nwsl/${t.slug}/how-to-watch`}
+              class="flex items-center justify-between bg-primary/5 hover:bg-primary/10 transition-colors rounded-xl px-4 py-3 group"
+            >
+              <div class="flex items-center gap-3">
+                <img src={t.badge} alt={t.name} width="24" height="24" class="flex-shrink-0 object-contain" />
+                <span class="font-medium text-primary text-sm">{t.name}</span>
+              </div>
+              <span class="text-primary/30 group-hover:text-primary/60 transition-colors text-sm">→</span>
+            </a>
+          ))}
+        </div>
+        <div class="mt-6">
+          <a href="/nwsl" class="text-sm font-bold text-accent hover:underline">← NWSL standings and all teams</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>

@@ -1,0 +1,278 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+
+const title = 'How to Watch WNBA 2026 — Every Service, Every Game';
+const description = 'Where every WNBA game airs in 2026. ION (50 games), USA Network (48), Amazon Prime (30), ABC/ESPN (30), CBS/Paramount+ (20), NBC/Peacock (22), and WNBA League Pass — full breakdown with pricing.';
+
+const services = [
+  {
+    name: 'ION',
+    games: 50,
+    price: 'Free',
+    ota: true,
+    affiliate: null,
+    linkLabel: null,
+    description: 'The single biggest carrier of WNBA games in 2026. ION is a free broadcast channel — no cable or streaming subscription needed. Get it with a TV antenna or check your cable/satellite package. 50 games this season.',
+  },
+  {
+    name: 'USA Network',
+    games: 48,
+    price: '$7.99+/mo',
+    ota: false,
+    affiliate: null,
+    linkLabel: 'Watch on Peacock (includes USA Network) →',
+    affiliateUrl: 'https://www.peacocktv.com/',
+    description: 'USA Network is a cable channel that also streams live on Peacock Premium. If you have cable or satellite, check your package. If you\'re streaming-only, Peacock Premium ($7.99/month) gets you both USA Network games and NBC/Peacock games.',
+  },
+  {
+    name: 'Amazon Prime Video',
+    games: 30,
+    price: '$14.99/mo',
+    ota: false,
+    affiliate: null,
+    linkLabel: 'Watch on Prime Video →',
+    affiliateUrl: 'https://www.amazon.com/amazonprime',
+    description: 'Amazon carries 30 WNBA games this season, included with any Amazon Prime subscription at $14.99/month — no sports add-on needed. If you already have Prime for shipping, you already have access.',
+  },
+  {
+    name: 'ABC',
+    games: 13,
+    price: 'Free',
+    ota: true,
+    affiliate: null,
+    linkLabel: null,
+    description: 'The biggest marquee matchups air on ABC, free over-the-air with a TV antenna. These games also stream live on the ESPN App and Disney+ for subscribers.',
+  },
+  {
+    name: 'ESPN / ESPN App',
+    games: 17,
+    price: '$11.99+/mo',
+    ota: false,
+    affiliate: null,
+    linkLabel: 'Get ESPN+ →',
+    affiliateUrl: 'https://www.espn.com/espnplus/',
+    description: 'ESPN and ESPN2 carry 17 games. Stream on the ESPN App with a cable TV provider login or an ESPN+ subscription starting at $11.99/month. ESPN Unlimited (includes live TV) is $29.99/month.',
+  },
+  {
+    name: 'CBS',
+    games: 8,
+    price: 'Free',
+    ota: true,
+    affiliate: null,
+    linkLabel: null,
+    description: '8 games air on CBS, free over-the-air with a TV antenna. These games also stream live at CBS.com and on the CBS app. A handful of additional games go to Paramount+ only.',
+  },
+  {
+    name: 'Paramount+',
+    games: 12,
+    price: '$7.99/mo',
+    ota: false,
+    affiliate: null,
+    linkLabel: 'Try Paramount+ →',
+    affiliateUrl: 'https://www.paramountplus.com/',
+    description: 'Paramount+ carries 12 WNBA games that aren\'t on the free CBS broadcast. Plans start at $7.99/month. If you already have CBS All Access or a bundle with Showtime, you\'re covered.',
+  },
+  {
+    name: 'NBC / Peacock',
+    games: 22,
+    price: '$7.99/mo',
+    ota: false,
+    affiliate: null,
+    linkLabel: 'Watch on Peacock →',
+    affiliateUrl: 'https://www.peacocktv.com/',
+    description: '7 games air on NBC (free over-the-air with an antenna). The remaining 15 Peacock-exclusive games require Peacock Premium at $7.99/month. Peacock also carries USA Network, so one subscription covers both.',
+  },
+  {
+    name: 'WNBA League Pass',
+    games: null,
+    price: '$14.99/mo or $39.99/yr',
+    ota: false,
+    affiliate: null,
+    linkLabel: 'Get WNBA League Pass →',
+    affiliateUrl: 'https://www.wnba.com/leaguepass?plan=annual',
+    description: 'The league\'s own out-of-market streaming service. $14.99/month or $39.99/year. Covers games blacked out locally on national TV. Best for fans who want to follow a team that isn\'t in their local TV market. Blackout rules apply for nationally televised games.',
+  },
+];
+
+const teams = [
+  { name: 'Atlanta Dream', slug: 'atlanta-dream', badge: 'https://cdn.wnba.com/logos/wnba/1611661330/primary/L/logo.svg' },
+  { name: 'Chicago Sky', slug: 'chicago-sky', badge: 'https://cdn.wnba.com/logos/wnba/1611661329/primary/L/logo.svg' },
+  { name: 'Connecticut Sun', slug: 'connecticut-sun', badge: 'https://cdn.wnba.com/logos/wnba/1611661323/primary/L/logo.svg' },
+  { name: 'Dallas Wings', slug: 'dallas-wings', badge: 'https://cdn.wnba.com/logos/wnba/1611661321/primary/L/logo.svg' },
+  { name: 'Golden State Valkyries', slug: 'golden-state-valkyries', badge: 'https://cdn.wnba.com/logos/wnba/1611661331/primary/L/logo.svg' },
+  { name: 'Indiana Fever', slug: 'indiana-fever', badge: 'https://cdn.wnba.com/logos/wnba/1611661325/primary/L/logo.svg' },
+  { name: 'Las Vegas Aces', slug: 'las-vegas-aces', badge: 'https://cdn.wnba.com/logos/wnba/1611661319/primary/L/logo.svg' },
+  { name: 'Los Angeles Sparks', slug: 'los-angeles-sparks', badge: 'https://cdn.wnba.com/logos/wnba/1611661320/primary/L/logo.svg' },
+  { name: 'Minnesota Lynx', slug: 'minnesota-lynx', badge: 'https://cdn.wnba.com/logos/wnba/1611661324/primary/L/logo.svg' },
+  { name: 'New York Liberty', slug: 'new-york-liberty', badge: 'https://cdn.wnba.com/logos/wnba/1611661313/primary/L/logo.svg' },
+  { name: 'Phoenix Mercury', slug: 'phoenix-mercury', badge: 'https://cdn.wnba.com/logos/wnba/1611661317/primary/L/logo.svg' },
+  { name: 'Portland Fire', slug: 'portland-fire', badge: 'https://cdn.wnba.com/logos/wnba/1611661327/primary/L/logo.svg' },
+  { name: 'Seattle Storm', slug: 'seattle-storm', badge: 'https://cdn.wnba.com/logos/wnba/1611661328/primary/L/logo.svg' },
+  { name: 'Toronto Tempo', slug: 'toronto-tempo', badge: 'https://cdn.wnba.com/logos/wnba/1611661332/primary/L/logo.svg' },
+  { name: 'Washington Mystics', slug: 'washington-mystics', badge: 'https://cdn.wnba.com/logos/wnba/1611661322/primary/L/logo.svg' },
+];
+
+const freeServices = services.filter(s => s.ota);
+const paidServices = services.filter(s => !s.ota);
+---
+
+<BaseLayout title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How do I watch WNBA games in 2026?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "WNBA games in 2026 air across 7 services: ION (50 games, free), USA Network (48 games, via Peacock), Amazon Prime Video (30 games, $14.99/mo), ABC (13 games, free), ESPN (17 games, $11.99+/mo), CBS (8 games, free), Paramount+ (12 games, $7.99/mo), and NBC/Peacock (22 games, $7.99/mo). WNBA League Pass covers out-of-market games."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I watch WNBA games for free?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. ION (50 games), ABC (13 games), CBS (8 games), and NBC (7 games) all air WNBA games free over-the-air with a TV antenna. That's 78 games available for free in 2026."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What streaming service has the most WNBA games?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "ION has the most WNBA games in 2026 with 50 games, and it's free. For paid streaming, USA Network (via Peacock) has 48 games, followed by Amazon Prime Video with 30 games."
+        }
+      }
+    ]
+  })} />
+  <Header />
+
+  <main class="flex-1">
+    <section class="bg-neutral pt-12 pb-12 border-b-[12px]" style="border-color: #E85D00;">
+      <div class="max-w-3xl mx-auto px-6">
+        <p class="text-sm font-bold uppercase tracking-[0.2em] mb-3" style="color: #E85D00;">WNBA · 2026 Season</p>
+        <h1 class="font-display font-bold text-4xl md:text-5xl text-primary leading-[1.1] mb-6">
+          How to watch WNBA 2026
+        </h1>
+        <p class="text-lg leading-relaxed text-primary/80">
+          The WNBA requires access to 7 different services in 2026. No single subscription covers everything — but you can catch most of the season for free. Here's the full breakdown.
+        </p>
+        <div class="mt-5">
+          <a href="/nwsl/angel-city/free-tv" class="text-sm font-bold hover:underline" style="color: #E85D00;">How to watch sports for free — antenna and cord-free options →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Free options callout -->
+    <section class="py-10" style="background-color: #E85D00;">
+      <div class="max-w-3xl mx-auto px-6">
+        <h2 class="font-display font-bold text-2xl text-neutral mb-2 uppercase tracking-wider">Watch free with an antenna</h2>
+        <p class="text-neutral/80 mb-6">78 WNBA games in 2026 air on free over-the-air channels. All you need is a TV antenna.</p>
+        <div class="grid sm:grid-cols-3 gap-3">
+          {freeServices.map(s => (
+            <div class="bg-neutral/15 rounded-xl p-4">
+              <p class="font-display font-bold text-neutral text-lg">{s.name}</p>
+              <p class="text-neutral/70 text-sm mt-1">{s.games} games · Free OTA</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- All services -->
+    <section class="bg-neutral py-16">
+      <div class="max-w-3xl mx-auto px-6">
+        <h2 class="font-display font-bold text-3xl text-primary mb-8">All 2026 WNBA broadcast services</h2>
+        <div class="flex flex-col gap-4">
+          {services.map(s => (
+            <div class="border border-primary/10 rounded-xl p-6">
+              <div class="flex items-start justify-between gap-4 mb-3">
+                <div>
+                  <h3 class="font-display font-bold text-xl text-primary">{s.name}</h3>
+                  <div class="flex items-center gap-3 mt-1">
+                    {s.games && <span class="text-sm font-bold text-primary/60">{s.games} games</span>}
+                    <span class={`text-sm font-bold px-2 py-0.5 rounded-full ${s.ota ? 'bg-green-100 text-green-800' : 'bg-primary/10 text-primary/70'}`}>
+                      {s.price}
+                    </span>
+                    {s.ota && <span class="text-xs font-bold text-green-700 uppercase tracking-wider">Free OTA</span>}
+                  </div>
+                </div>
+              </div>
+              <p class="text-primary/75 text-sm leading-relaxed mb-4">{s.description}</p>
+              {s.affiliateUrl && (
+                <a
+                  href={s.affiliateUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-block text-sm font-bold text-accent hover:underline"
+                >
+                  {s.linkLabel}
+                </a>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick comparison table -->
+    <section class="bg-primary py-16">
+      <div class="max-w-3xl mx-auto px-6">
+        <h2 class="font-display font-bold text-3xl text-neutral mb-8">Quick comparison</h2>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="text-left text-xs uppercase tracking-wider text-neutral/50 border-b border-neutral/10">
+                <th class="pb-3 pr-4 font-bold">Service</th>
+                <th class="pb-3 px-3 font-bold text-right">Games</th>
+                <th class="pb-3 px-3 font-bold text-right">Price</th>
+                <th class="pb-3 pl-3 font-bold text-right">Free OTA</th>
+              </tr>
+            </thead>
+            <tbody>
+              {services.map(s => (
+                <tr class="border-b border-neutral/5">
+                  <td class="py-3 pr-4 font-medium text-neutral">{s.name}</td>
+                  <td class="py-3 px-3 text-right tabular-nums text-neutral/70">{s.games ?? '—'}</td>
+                  <td class="py-3 px-3 text-right tabular-nums text-neutral/70">{s.price}</td>
+                  <td class="py-3 pl-3 text-right text-neutral/70">{s.ota ? '✓' : '—'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Team links -->
+    <section class="bg-neutral py-16">
+      <div class="max-w-3xl mx-auto px-6">
+        <h2 class="font-display font-bold text-3xl text-primary mb-3">Find your team's schedule</h2>
+        <p class="text-primary/70 mb-8">Every team has a dedicated broadcast guide with their full game-by-game schedule and which service each game is on.</p>
+        <div class="grid sm:grid-cols-2 gap-2">
+          {teams.map(t => (
+            <a
+              href={`/wnba/${t.slug}/how-to-watch`}
+              class="flex items-center justify-between bg-primary/5 hover:bg-primary/10 transition-colors rounded-xl px-4 py-3 group"
+            >
+              <div class="flex items-center gap-3">
+                <img src={t.badge} alt={t.name} width="24" height="24" class="flex-shrink-0 object-contain" />
+                <span class="font-medium text-primary text-sm">{t.name}</span>
+              </div>
+              <span class="text-primary/30 group-hover:text-primary/60 transition-colors text-sm">→</span>
+            </a>
+          ))}
+        </div>
+        <div class="mt-6">
+          <a href="/wnba" class="text-sm font-bold text-accent hover:underline">← WNBA standings and all teams</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>

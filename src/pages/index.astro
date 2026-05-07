@@ -6,8 +6,10 @@ import EmailSignup from '../components/EmailSignup.astro';
 
 const title = "Standd - All your women's pro sports in one place";
 
+const currentSeason = new Date().getFullYear();
+
 const comingSoon = [
-  { title: 'WSL, PWHL.', subtitle: 'More leagues. One home.' },
+  { title: 'LOVB Pro, WSL, PWHL.', subtitle: 'More leagues on the way. One home for all of it.' },
   { title: 'Picks.', subtitle: 'Pick five faves a week. Across every league. No friend group required.' },
   { title: 'Your year, wrapped.', subtitle: 'Your Picks. Your hit rate. Your fandom, in receipts.' },
 ];
@@ -20,7 +22,7 @@ const comingSoon = [
     <!-- Hero: cream → teal section with massive dd -->
     <section class="bg-neutral pt-12 pb-20 border-b-[12px] border-accent">
       <div class="max-w-5xl mx-auto px-6">
-        <p class="text-sm font-bold text-accent uppercase tracking-[0.2em] mb-6">Now tracking · NWSL + WNBA · 2026</p>
+        <p class="text-sm font-bold text-accent uppercase tracking-[0.2em] mb-6">Now tracking · NWSL + WNBA · {currentSeason}</p>
         <div class="md:grid md:grid-cols-[auto_1fr] md:items-end md:gap-12">
           <div class="font-display font-bold leading-[0.85]">
             <div class="text-6xl md:text-8xl text-primary">stan</div>
@@ -40,19 +42,20 @@ const comingSoon = [
         <div class="grid md:grid-cols-2 gap-4">
           <a
             href="/nwsl"
-            class="block bg-accent text-primary p-8 rounded-2xl hover:bg-neutral transition-colors group"
+            class="block text-neutral p-8 rounded-2xl hover:opacity-90 transition-opacity group"
+            style="background-color: #003865;"
           >
             <div class="flex flex-col gap-4">
               <div>
-                <p class="text-xs font-bold uppercase tracking-[0.2em] text-primary/60 mb-1">NWSL · 2026</p>
+                <p class="text-xs font-bold uppercase tracking-[0.2em] text-neutral/60 mb-1">NWSL · {currentSeason}</p>
                 <h2 class="font-display font-bold text-3xl md:text-4xl leading-tight">
                   National Women's Soccer League
                 </h2>
-                <p class="mt-2 text-base font-medium text-primary/80">
+                <p class="mt-2 text-base font-medium text-neutral/80">
                   All 16 teams. Scores, fixtures, standings, squad pages.
                 </p>
               </div>
-              <span class="self-start text-4xl font-display font-bold leading-none text-primary group-hover:translate-x-1 transition-transform">→</span>
+              <span class="self-start text-4xl font-display font-bold leading-none text-neutral group-hover:translate-x-1 transition-transform">→</span>
             </div>
           </a>
           <a
@@ -62,7 +65,7 @@ const comingSoon = [
           >
             <div class="flex flex-col gap-4">
               <div>
-                <p class="text-xs font-bold uppercase tracking-[0.2em] text-neutral/60 mb-1">WNBA · 2026</p>
+                <p class="text-xs font-bold uppercase tracking-[0.2em] text-neutral/60 mb-1">WNBA · {currentSeason}</p>
                 <h2 class="font-display font-bold text-3xl md:text-4xl leading-tight">
                   Women's National Basketball Association
                 </h2>

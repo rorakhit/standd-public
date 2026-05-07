@@ -4,53 +4,69 @@ import Header from '../../../components/Header.astro';
 import TeamTrackerSubNav from '../../../components/TeamTrackerSubNav.astro';
 import Footer from '../../../components/Footer.astro';
 import Broadcaster from '../../../components/Broadcaster.astro';
-import { team as atlantaDream, matches as atlantaDreamMatches } from '../../../data/teams/wnba/atlanta-dream';
-import { team as chicagoSky, matches as chicagoSkyMatches } from '../../../data/teams/wnba/chicago-sky';
-import { team as connecticutSun, matches as connecticutSunMatches } from '../../../data/teams/wnba/connecticut-sun';
-import { team as dallasWings, matches as dallasWingsMatches } from '../../../data/teams/wnba/dallas-wings';
-import { team as goldenStateValkyries, matches as goldenStateValkyriesMatches } from '../../../data/teams/wnba/golden-state-valkyries';
-import { team as indianaFever, matches as indianaFeverMatches } from '../../../data/teams/wnba/indiana-fever';
-import { team as lasVegasAces, matches as lasVegasAcesMatches } from '../../../data/teams/wnba/las-vegas-aces';
-import { team as losAngelesSparks, matches as losAngelesSparksMatches } from '../../../data/teams/wnba/los-angeles-sparks';
-import { team as minnesotaLynx, matches as minnesotaLynxMatches } from '../../../data/teams/wnba/minnesota-lynx';
-import { team as newYorkLiberty, matches as newYorkLibertyMatches } from '../../../data/teams/wnba/new-york-liberty';
-import { team as phoenixMercury, matches as phoenixMercuryMatches } from '../../../data/teams/wnba/phoenix-mercury';
-import { team as seattleStorm, matches as seattleStormMatches } from '../../../data/teams/wnba/seattle-storm';
-import { team as washingtonMystics, matches as washingtonMysticsMatches } from '../../../data/teams/wnba/washington-mystics';
-import { team as portlandFire, matches as portlandFireMatches } from '../../../data/teams/wnba/portland-fire';
-import { team as torontoTempo, matches as torontoTempoMatches } from '../../../data/teams/wnba/toronto-tempo';
-import type { TeamConfig, Match } from '../../../data/shared/types';
+import { team as atlantaDream } from '../../../data/teams/wnba/atlanta-dream';
+import { team as chicagoSky } from '../../../data/teams/wnba/chicago-sky';
+import { team as connecticutSun } from '../../../data/teams/wnba/connecticut-sun';
+import { team as dallasWings } from '../../../data/teams/wnba/dallas-wings';
+import { team as goldenStateValkyries } from '../../../data/teams/wnba/golden-state-valkyries';
+import { team as indianaFever } from '../../../data/teams/wnba/indiana-fever';
+import { team as lasVegasAces } from '../../../data/teams/wnba/las-vegas-aces';
+import { team as losAngelesSparks } from '../../../data/teams/wnba/los-angeles-sparks';
+import { team as minnesotaLynx } from '../../../data/teams/wnba/minnesota-lynx';
+import { team as newYorkLiberty } from '../../../data/teams/wnba/new-york-liberty';
+import { team as phoenixMercury } from '../../../data/teams/wnba/phoenix-mercury';
+import { team as seattleStorm } from '../../../data/teams/wnba/seattle-storm';
+import { team as washingtonMystics } from '../../../data/teams/wnba/washington-mystics';
+import { team as portlandFire } from '../../../data/teams/wnba/portland-fire';
+import { team as torontoTempo } from '../../../data/teams/wnba/toronto-tempo';
+import type { TeamConfig } from '../../../data/shared/types';
+import { getTeamSchedule, getTeamStats, getStandings } from '../../../data/wnba/queries';
 
-const allTeamData: Array<{ team: TeamConfig; matches: Match[] }> = [
-  { team: atlantaDream, matches: atlantaDreamMatches },
-  { team: chicagoSky, matches: chicagoSkyMatches },
-  { team: connecticutSun, matches: connecticutSunMatches },
-  { team: dallasWings, matches: dallasWingsMatches },
-  { team: goldenStateValkyries, matches: goldenStateValkyriesMatches },
-  { team: indianaFever, matches: indianaFeverMatches },
-  { team: lasVegasAces, matches: lasVegasAcesMatches },
-  { team: losAngelesSparks, matches: losAngelesSparksMatches },
-  { team: minnesotaLynx, matches: minnesotaLynxMatches },
-  { team: newYorkLiberty, matches: newYorkLibertyMatches },
-  { team: phoenixMercury, matches: phoenixMercuryMatches },
-  { team: portlandFire, matches: portlandFireMatches },
-  { team: seattleStorm, matches: seattleStormMatches },
-  { team: torontoTempo, matches: torontoTempoMatches },
-  { team: washingtonMystics, matches: washingtonMysticsMatches },
+const allTeams: TeamConfig[] = [
+  atlantaDream, chicagoSky, connecticutSun, dallasWings,
+  goldenStateValkyries, indianaFever, lasVegasAces, losAngelesSparks,
+  minnesotaLynx, newYorkLiberty, phoenixMercury, portlandFire,
+  seattleStorm, torontoTempo, washingtonMystics,
 ];
 
 export function getStaticPaths() {
   return [
-    'atlanta-dream', 'chicago-sky', 'connecticut-sun', 'dallas-wings',
-    'golden-state-valkyries', 'indiana-fever', 'las-vegas-aces', 'los-angeles-sparks',
-    'minnesota-lynx', 'new-york-liberty', 'phoenix-mercury', 'portland-fire',
-    'seattle-storm', 'toronto-tempo', 'washington-mystics',
-  ].map(slug => ({ params: { team: slug } }));
+    atlantaDream, chicagoSky, connecticutSun, dallasWings,
+    goldenStateValkyries, indianaFever, lasVegasAces, losAngelesSparks,
+    minnesotaLynx, newYorkLiberty, phoenixMercury, portlandFire,
+    seattleStorm, torontoTempo, washingtonMystics,
+  ].map(t => ({ params: { team: t.slug } }));
 }
 
 const { team: teamSlug } = Astro.params;
-const teamData = allTeamData.find(d => d.team.slug === teamSlug)!;
-const { team, matches } = teamData;
+const team = allTeams.find(t => t.slug === teamSlug)!;
+
+const [d1Games, teamStats, allStandings] = await Promise.all([
+  getTeamSchedule(teamSlug),
+  getTeamStats(teamSlug),
+  getStandings(),
+]);
+
+const matches = d1Games.map(g => {
+  const isHome = g.home_team === teamSlug;
+  const opponentSlug = isHome ? g.away_team : g.home_team;
+  const opponentTeam = allTeams.find(t => t.slug === opponentSlug);
+  const opponentName = opponentTeam?.name ?? opponentSlug;
+  return {
+    date: g.date,
+    time: g.time ?? undefined,
+    opponent: opponentName,
+    homeAway: isHome ? ('home' as const) : ('away' as const),
+    venue: g.venue ?? undefined,
+    broadcast: g.broadcast,
+    result: g.status === 'final' && g.home_score != null && g.away_score != null
+      ? {
+          teamScore:     isHome ? g.home_score : g.away_score,
+          opponentScore: isHome ? g.away_score : g.home_score,
+        }
+      : undefined,
+  };
+});
 
 const playedMatches = matches.filter(m => m.result);
 const upcomingMatches = matches.filter(m => !m.result);
@@ -64,7 +80,6 @@ const wins = playedMatches.filter(m => m.result && m.result.teamScore > m.result
 const losses = playedMatches.filter(m => m.result && m.result.teamScore < m.result.opponentScore).length;
 const progressPct = matches.length > 0 ? Math.round((gamesPlayed / matches.length) * 100) : 0;
 
-// Win streak: count consecutive W from most recent played match
 let streak = 0;
 let streakLabel = '';
 const reversed = [...playedMatches].reverse();
@@ -80,20 +95,28 @@ if (reversed.length > 0) {
   streakLabel = isWinStreak ? `W${streak}` : `L${streak}`;
 }
 
+const teamStanding = allStandings.find(r => r.team === teamSlug);
+const teamConference = teamStanding?.conference ?? null;
+const conferenceRows = teamConference
+  ? allStandings
+      .filter(r => r.conference === teamConference)
+      .sort((a, b) => (a.playoff_seed ?? 99) - (b.playoff_seed ?? 99))
+  : [];
+
 function formatDate(iso: string): string {
   const d = new Date(iso + 'T12:00:00Z');
   return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
 }
 
-function formatScore(match: Match): string {
+function formatScore(match: typeof matches[0]): string {
   if (!match.result) return '—';
   return `${match.result.teamScore}–${match.result.opponentScore}`;
 }
 
-function resultBadge(match: Match): { label: string; color: string; style?: string } {
+function resultBadge(match: typeof matches[0]): { label: string; color: string; style?: string } {
   if (!match.result) return { label: '—', color: 'bg-muted/20 text-muted' };
   const { teamScore, opponentScore } = match.result;
-  if (teamScore > opponentScore) return { label: 'W', color: 'text-primary', style: 'background-color: var(--team-color)' };
+  if (teamScore > opponentScore) return { label: 'W', color: 'text-neutral', style: 'background-color: var(--team-color)' };
   if (teamScore < opponentScore) return { label: 'L', color: 'bg-primary text-neutral' };
   return { label: 'D', color: 'bg-primary/20 text-primary' };
 }
@@ -163,7 +186,7 @@ const description = `${team.name} WNBA 2026 season tracker — schedule, results
                   href={team.ticketsUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="flex-shrink-0 text-sm font-bold text-primary px-4 py-2 rounded-full hover:opacity-80 transition-opacity"
+                  class="flex-shrink-0 text-sm font-bold text-neutral px-4 py-2 rounded-full hover:opacity-80 transition-opacity"
                   style="background-color: var(--team-color)"
                 >
                   Get tickets →
@@ -220,7 +243,7 @@ const description = `${team.name} WNBA 2026 season tracker — schedule, results
                         <div class="w-1.5 flex-shrink-0" style={`background-color: var(--team-color)`} />
                         <div class="flex flex-col gap-2 p-5 flex-1">
                           <div class="flex items-center justify-between">
-                            <span class={`font-display font-bold tabular text-lg`} style={isHome ? 'color: var(--team-color)' : 'color: var(--team-color)'}>{formatDate(match.date)}</span>
+                            <span class={`font-display font-bold tabular text-lg ${isHome ? 'text-neutral/80' : 'text-primary/60'}`}>{formatDate(match.date)}</span>
                             <span class={`text-xs uppercase tracking-wider font-bold px-2 py-1 rounded ${isHome ? 'bg-neutral/10 text-neutral/60' : 'bg-primary/10 text-primary/50'}`}>
                               {isHome ? 'HOME' : 'AWAY'}
                             </span>
@@ -294,7 +317,7 @@ const description = `${team.name} WNBA 2026 season tracker — schedule, results
             </button>
           </div>
           <p class="text-muted text-sm mb-6">All upcoming {team.name} games this season.</p>
-          <ul id="schedule-list" aria-hidden="true" inert class="space-y-3 overflow-hidden" style="max-height: 0; transition: max-height 0.4s ease;">
+          <ul id="schedule-list" aria-hidden="true" inert class="grid md:grid-cols-2 gap-3 overflow-hidden" style="max-height: 0; transition: max-height 0.4s ease;">
             {upcomingMatches.map(match => {
               const isHome = match.homeAway === 'home';
               return (
@@ -302,7 +325,7 @@ const description = `${team.name} WNBA 2026 season tracker — schedule, results
                   <div class="w-1.5 flex-shrink-0" style="background-color: var(--team-color)" />
                   <div class="flex flex-col gap-2 p-5 flex-1">
                     <div class="flex items-center justify-between">
-                      <span class="font-display font-bold tabular text-lg" style="color: var(--team-color)">{formatDate(match.date)}</span>
+                      <span class={`font-display font-bold tabular text-lg ${isHome ? 'text-neutral/80' : 'text-primary/60'}`}>{formatDate(match.date)}</span>
                       <span class={`text-xs uppercase tracking-wider font-bold px-2 py-1 rounded ${isHome ? 'bg-neutral/10 text-neutral/60' : 'bg-primary/10 text-primary/50'}`}>
                         {isHome ? 'HOME' : 'AWAY'}
                       </span>
@@ -321,7 +344,7 @@ const description = `${team.name} WNBA 2026 season tracker — schedule, results
                         href={team.ticketsUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        class="self-start text-xs font-bold text-primary px-3 py-1 rounded-full hover:opacity-80 transition-opacity mt-1"
+                        class="self-start text-xs font-bold text-neutral px-3 py-1 rounded-full hover:opacity-80 transition-opacity mt-1"
                         style="background-color: var(--team-color)"
                       >
                         Get tickets →
@@ -336,11 +359,111 @@ const description = `${team.name} WNBA 2026 season tracker — schedule, results
       </section>
     )}
 
+    <!-- Team stats -->
+    {teamStats && (
+      <section class="bg-primary py-16">
+        <div class="max-w-5xl mx-auto px-6">
+          <h2 class="font-display font-bold text-3xl text-neutral mb-2">Team stats</h2>
+          <p class="text-neutral/50 text-xs mb-6">{teamStats.games_played} games played</p>
+          <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {[
+              { label: 'PPG', value: teamStats.avg_points?.toFixed(1) },
+              { label: 'Opp PPG', value: teamStats.avg_points_against?.toFixed(1) },
+              { label: 'RPG', value: teamStats.avg_rebounds?.toFixed(1) },
+              { label: 'APG', value: teamStats.avg_assists?.toFixed(1) },
+              { label: 'TPG', value: teamStats.avg_turnovers?.toFixed(1) },
+              { label: 'SPG', value: teamStats.avg_steals?.toFixed(1) },
+              { label: 'BPG', value: teamStats.avg_blocks?.toFixed(1) },
+              { label: 'FG%', value: teamStats.field_goal_pct != null ? `${teamStats.field_goal_pct.toFixed(1)}%` : null },
+              { label: '3P%', value: teamStats.three_point_pct != null ? `${teamStats.three_point_pct.toFixed(1)}%` : null },
+              { label: 'FT%', value: teamStats.free_throw_pct != null ? `${teamStats.free_throw_pct.toFixed(1)}%` : null },
+              { label: 'Scoring Eff.*', value: teamStats.scoring_efficiency?.toFixed(1) },
+              { label: 'Shooting Eff.*', value: teamStats.shooting_efficiency?.toFixed(1) },
+            ].filter(s => s.value != null).map(s => (
+              <div class="bg-neutral/10 rounded-xl p-4">
+                <p class="text-neutral/50 text-xs uppercase tracking-wider font-bold mb-1">{s.label}</p>
+                <p class="font-display font-bold text-2xl text-neutral">{s.value}</p>
+              </div>
+            ))}
+          </div>
+          <p class="text-neutral/30 text-xs mt-4">* ESPN-defined efficiency metrics</p>
+        </div>
+      </section>
+    )}
+
+    <!-- Conference standings -->
+    {conferenceRows.length > 0 && (
+      <section class="bg-neutral py-16">
+        <div class="max-w-5xl mx-auto px-6">
+          <div class="flex items-center justify-between mb-6">
+            <h2 class="font-display font-bold text-3xl text-primary">
+              {teamConference?.replace(' Conference', '')} Conference
+            </h2>
+            <a href="/wnba#overall-standings" class="text-sm font-bold hover:underline" style="color: var(--team-color)">
+              Overall standings →
+            </a>
+          </div>
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="text-left text-xs uppercase tracking-wider text-muted border-b border-primary/10">
+                <th class="pb-2 pr-2 font-bold w-6 text-center">#</th>
+                <th class="pb-2 pr-4 font-bold">Team</th>
+                <th class="pb-2 px-2 font-bold text-right">W</th>
+                <th class="pb-2 px-2 font-bold text-right">L</th>
+                <th class="pb-2 px-2 font-bold text-right">GB</th>
+                <th class="pb-2 pl-2 font-bold text-right hidden sm:table-cell">Streak</th>
+              </tr>
+            </thead>
+            <tbody>
+              {conferenceRows.map((row, i) => {
+                const rowTeam = allTeams.find(t => t.slug === row.team);
+                const isCurrent = row.team === teamSlug;
+                const inPlayoffs = i < 8;
+                const onBubble = i === 7;
+                return (
+                  <tr
+                    class={`border-b transition-colors ${onBubble ? 'border-b-2 border-dashed border-primary/30' : 'border-primary/5'} ${isCurrent ? 'bg-primary/[0.04]' : 'hover:bg-primary/[0.02]'}`}
+                    style={rowTeam ? `border-left: 3px solid ${rowTeam.color}` : ''}
+                  >
+                    <td class={`py-2 pr-2 pl-1 text-center text-xs font-bold ${inPlayoffs ? 'text-primary/40' : 'text-muted/40'}`}>{row.playoff_seed}</td>
+                    <td class="py-2 pr-4">
+                      {isCurrent ? (
+                        <div class="flex items-center gap-2 font-bold text-primary">
+                          {rowTeam?.badge
+                            ? <img src={rowTeam.badge} alt={rowTeam.name} width="22" height="22" class="flex-shrink-0 object-contain" />
+                            : rowTeam && <span class="w-2.5 h-2.5 rounded-full flex-shrink-0 inline-block" style={`background-color: ${rowTeam.color}`} />
+                          }
+                          <span>{rowTeam?.name ?? row.team}</span>
+                          <span class="text-xs font-bold px-1.5 py-0.5 rounded text-neutral" style="background-color: var(--team-color)">YOU</span>
+                        </div>
+                      ) : (
+                        <a href={`/wnba/${row.team}`} class={`flex items-center gap-2 hover:underline font-medium ${inPlayoffs ? 'text-primary' : 'text-primary/50'}`}>
+                          {rowTeam?.badge
+                            ? <img src={rowTeam.badge} alt={rowTeam.name} width="22" height="22" class="flex-shrink-0 object-contain" />
+                            : rowTeam && <span class="w-2.5 h-2.5 rounded-full flex-shrink-0 inline-block" style={`background-color: ${rowTeam.color}`} />
+                          }
+                          {rowTeam?.name ?? row.team}
+                        </a>
+                      )}
+                    </td>
+                    <td class={`py-2 px-2 text-right tabular-nums font-bold ${inPlayoffs ? 'text-primary' : 'text-primary/50'}`}>{row.wins}</td>
+                    <td class={`py-2 px-2 text-right tabular-nums ${inPlayoffs ? 'text-primary/70' : 'text-primary/40'}`}>{row.losses}</td>
+                    <td class="py-2 px-2 text-right tabular-nums text-muted">{row.games_behind === 0 ? '-' : (row.games_behind ?? '-')}</td>
+                    <td class="py-2 pl-2 text-right tabular-nums text-muted hidden sm:table-cell">{row.streak ?? '-'}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    )}
+
     <!-- Closer -->
     <section class="bg-neutral py-12">
       <div class="max-w-5xl mx-auto px-6">
         <p class="text-sm text-muted leading-relaxed max-w-2xl">
-          Data sourced from <a href="https://wnba.com" target="_blank" rel="noopener noreferrer" class="font-bold hover:underline" style="color: var(--team-color)">wnba.com</a> and <a href={team.officialUrl} target="_blank" rel="noopener noreferrer" class="font-bold hover:underline" style="color: var(--team-color)">{new URL(team.officialUrl).hostname.replace('www.', '')}</a>. If you spot something wrong, email <a href="mailto:ro@standd.fan" class="font-bold hover:underline" style="color: var(--team-color)">ro@standd.fan</a>.
+          Data sourced from <a href="https://wnba.com" target="_blank" rel="noopener noreferrer" class="font-bold hover:underline" style="color: var(--team-color)">wnba.com</a> and <a href={team.officialUrl} target="_blank" rel="noopener noreferrer" class="font-bold hover:underline" style="color: var(--team-color)">{(() => { try { return new URL(team.officialUrl).hostname.replace('www.', ''); } catch { return team.officialUrl; } })()}</a>. If you spot something wrong, email <a href="mailto:ro@standd.fan" class="font-bold hover:underline" style="color: var(--team-color)">ro@standd.fan</a>.
         </p>
       </div>
     </section>

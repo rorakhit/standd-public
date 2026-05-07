@@ -1,0 +1,36 @@
+export const WNBA_ESPN_TEAMS: Record<string, number> = {
+  'atlanta-dream':           20,
+  'chicago-sky':             19,
+  'connecticut-sun':         18,
+  'dallas-wings':             3,
+  'golden-state-valkyries': 129689,
+  'indiana-fever':            5,
+  'las-vegas-aces':          17,
+  'los-angeles-sparks':       6,
+  'minnesota-lynx':           8,
+  'new-york-liberty':         9,
+  'phoenix-mercury':         11,
+  'portland-fire':          132052,
+  'seattle-storm':           14,
+  'toronto-tempo':          131935,
+  'washington-mystics':      16,
+};
+
+// Reverse map: ESPN displayName → our slug
+export const ESPN_NAME_TO_SLUG: Record<string, string> = {
+  'Atlanta Dream':           'atlanta-dream',
+  'Chicago Sky':             'chicago-sky',
+  'Connecticut Sun':         'connecticut-sun',
+  'Dallas Wings':            'dallas-wings',
+  'Golden State Valkyries':  'golden-state-valkyries',
+  'Indiana Fever':           'indiana-fever',
+  'Las Vegas Aces':          'las-vegas-aces',
+  'Los Angeles Sparks':      'los-angeles-sparks',
+  'Minnesota Lynx':          'minnesota-lynx',
+  'New York Liberty':        'new-york-liberty',
+  'Phoenix Mercury':         'phoenix-mercury',
+  'Portland Fire':           'portland-fire',
+  'Seattle Storm':           'seattle-storm',
+  'Toronto Tempo':           'toronto-tempo',
+  'Washington Mystics':      'washington-mystics',
+};

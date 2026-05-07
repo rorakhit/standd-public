@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <!-- Background -->
+  <rect width="400" height="400" fill="#FAF6F0"/>
+
+  <!-- "stan" -->
+  <text x="24" y="268" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-weight="900" font-size="190" fill="#0F2A2D" letter-spacing="-10">stan</text>
+
+  <!-- "dd" badge block — top ~y=268 (cap top), bottom ~y=388 (descender+pad) -->
+  <rect x="88" y="268" width="224" height="120" rx="12" fill="#0F2A2D"/>
+
+  <!-- "dd" text inside badge -->
+  <text x="200" y="356" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-weight="900" font-size="112" fill="#FF6B2C" text-anchor="middle" letter-spacing="-6">dd</text>
+</svg>

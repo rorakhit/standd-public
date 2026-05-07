@@ -3,39 +3,29 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Header from '../../../components/Header.astro';
 import TeamTrackerSubNav from '../../../components/TeamTrackerSubNav.astro';
 import Footer from '../../../components/Footer.astro';
-import { team as atlantaDream, matches as atlantaDreamMatches } from '../../../data/teams/wnba/atlanta-dream';
-import { team as chicagoSky, matches as chicagoSkyMatches } from '../../../data/teams/wnba/chicago-sky';
-import { team as connecticutSun, matches as connecticutSunMatches } from '../../../data/teams/wnba/connecticut-sun';
-import { team as dallasWings, matches as dallasWingsMatches } from '../../../data/teams/wnba/dallas-wings';
-import { team as goldenStateValkyries, matches as goldenStateValkyiesMatches } from '../../../data/teams/wnba/golden-state-valkyries';
-import { team as indianaFever, matches as indianaFeverMatches } from '../../../data/teams/wnba/indiana-fever';
-import { team as lasVegasAces, matches as lasVegasAcesMatches } from '../../../data/teams/wnba/las-vegas-aces';
-import { team as losAngelesSparks, matches as losAngelesSparksMatches } from '../../../data/teams/wnba/los-angeles-sparks';
-import { team as minnesotaLynx, matches as minnesotaLynxMatches } from '../../../data/teams/wnba/minnesota-lynx';
-import { team as newYorkLiberty, matches as newYorkLibertyMatches } from '../../../data/teams/wnba/new-york-liberty';
-import { team as phoenixMercury, matches as phoenixMercuryMatches } from '../../../data/teams/wnba/phoenix-mercury';
-import { team as seattleStorm, matches as seattleStormMatches } from '../../../data/teams/wnba/seattle-storm';
-import { team as washingtonMystics, matches as washingtonMysticsMatches } from '../../../data/teams/wnba/washington-mystics';
-import { team as portlandFire, matches as portlandFireMatches } from '../../../data/teams/wnba/portland-fire';
-import { team as torontoTempo, matches as torontoTempoMatches } from '../../../data/teams/wnba/toronto-tempo';
-import type { TeamConfig, Match } from '../../../data/shared/types';
+import { team as atlantaDream } from '../../../data/teams/wnba/atlanta-dream';
+import { team as chicagoSky } from '../../../data/teams/wnba/chicago-sky';
+import { team as connecticutSun } from '../../../data/teams/wnba/connecticut-sun';
+import { team as dallasWings } from '../../../data/teams/wnba/dallas-wings';
+import { team as goldenStateValkyries } from '../../../data/teams/wnba/golden-state-valkyries';
+import { team as indianaFever } from '../../../data/teams/wnba/indiana-fever';
+import { team as lasVegasAces } from '../../../data/teams/wnba/las-vegas-aces';
+import { team as losAngelesSparks } from '../../../data/teams/wnba/los-angeles-sparks';
+import { team as minnesotaLynx } from '../../../data/teams/wnba/minnesota-lynx';
+import { team as newYorkLiberty } from '../../../data/teams/wnba/new-york-liberty';
+import { team as phoenixMercury } from '../../../data/teams/wnba/phoenix-mercury';
+import { team as seattleStorm } from '../../../data/teams/wnba/seattle-storm';
+import { team as washingtonMystics } from '../../../data/teams/wnba/washington-mystics';
+import { team as portlandFire } from '../../../data/teams/wnba/portland-fire';
+import { team as torontoTempo } from '../../../data/teams/wnba/toronto-tempo';
+import type { TeamConfig } from '../../../data/shared/types';
+import { getTeamSchedule } from '../../../data/wnba/queries';
 
-const allTeamData: Array<{ team: TeamConfig; matches: Match[] }> = [
-  { team: atlantaDream, matches: atlantaDreamMatches },
-  { team: chicagoSky, matches: chicagoSkyMatches },
-  { team: connecticutSun, matches: connecticutSunMatches },
-  { team: dallasWings, matches: dallasWingsMatches },
-  { team: goldenStateValkyries, matches: goldenStateValkyiesMatches },
-  { team: indianaFever, matches: indianaFeverMatches },
-  { team: lasVegasAces, matches: lasVegasAcesMatches },
-  { team: losAngelesSparks, matches: losAngelesSparksMatches },
-  { team: minnesotaLynx, matches: minnesotaLynxMatches },
-  { team: newYorkLiberty, matches: newYorkLibertyMatches },
-  { team: phoenixMercury, matches: phoenixMercuryMatches },
-  { team: portlandFire, matches: portlandFireMatches },
-  { team: seattleStorm, matches: seattleStormMatches },
-  { team: torontoTempo, matches: torontoTempoMatches },
-  { team: washingtonMystics, matches: washingtonMysticsMatches },
+const allTeams: TeamConfig[] = [
+  atlantaDream, chicagoSky, connecticutSun, dallasWings,
+  goldenStateValkyries, indianaFever, lasVegasAces, losAngelesSparks,
+  minnesotaLynx, newYorkLiberty, phoenixMercury, portlandFire,
+  seattleStorm, torontoTempo, washingtonMystics,
 ];
 
 export function getStaticPaths() {
@@ -48,10 +38,16 @@ export function getStaticPaths() {
 }
 
 const { team: teamSlug } = Astro.params;
-const teamData = allTeamData.find(d => d.team.slug === teamSlug)!;
-const { team, matches } = teamData;
+const team = allTeams.find(t => t.slug === teamSlug)!;
 
-const allMatches = [...matches].sort((a, b) => a.date.localeCompare(b.date));
+const d1Games = await getTeamSchedule(teamSlug);
+const allMatches = d1Games.map(g => ({
+  date: g.date,
+  homeAway: g.home_team === teamSlug ? ('home' as const) : ('away' as const),
+  opponent: allTeams.find(t => t.slug === (g.home_team === teamSlug ? g.away_team : g.home_team))?.name
+    ?? (g.home_team === teamSlug ? g.away_team : g.home_team),
+  broadcast: g.broadcast,
+}));
 const today = new Date().toISOString().slice(0, 10);
 const upcomingMatches = allMatches.filter(m => m.date >= today);
 const visibleMatches = upcomingMatches.slice(0, 5);
@@ -65,49 +61,65 @@ function formatDate(iso: string): string {
 
 const services = [
   {
+    name: 'ION',
+    badge: 'Free',
+    badgeClass: 'bg-accent text-primary',
+    description: 'ION carries 50 WNBA games in 2026, the most of any single broadcaster, all on Friday nights. It\'s a free broadcast channel available via TV antenna, cable, and satellite. Check your local listings for the channel number.',
+    link: null,
+    linkLabel: null,
+  },
+  {
+    name: 'USA Network',
+    badge: 'Cable or streaming',
+    badgeClass: 'bg-primary/10 text-primary',
+    description: 'USA Network airs 48 WNBA games in 2026, the second-highest total of any broadcaster. Available with most cable and satellite packages, or via streaming services like Peacock and Sling.',
+    link: null,
+    linkLabel: null,
+  },
+  {
     name: 'Amazon Prime Video',
     badge: '$14.99/mo or Prime',
     badgeClass: 'bg-primary/10 text-primary',
-    description: 'Amazon Prime Video carries a significant portion of WNBA games in 2026. Included with an Amazon Prime subscription ($14.99/month) — no sports add-on needed.',
+    description: 'Amazon Prime Video carries 30 WNBA games in 2026, primarily on Thursday nights. Included with an Amazon Prime subscription ($14.99/month) — no sports add-on needed.',
     link: 'https://www.amazon.com/amazonprime',
     linkLabel: 'See Prime plans →',
   },
   {
-    name: 'ESPN / ESPN2',
+    name: 'ABC / ESPN',
     badge: 'Cable or $12.99+/mo',
     badgeClass: 'bg-primary/10 text-primary',
-    description: 'Select games air on ESPN and ESPN2. Stream with a cable TV provider login via the ESPN App. ESPN Select is $12.99/month; ESPN Unlimited (with live TV) is $29.99/month.',
+    description: '30 games air on ABC and ESPN in 2026 (13 on ABC, 17 on ESPN). ABC is free over-the-air. Stream ESPN via ESPN Select ($12.99/mo) or ESPN Unlimited ($29.99/mo).',
     link: 'https://plus.espn.com/',
     linkLabel: 'See ESPN plans →',
   },
   {
-    name: 'ABC',
-    badge: 'Free over-the-air',
-    badgeClass: 'bg-accent text-primary',
-    description: 'Marquee WNBA games air on ABC, which is free with any TV antenna. Games also stream on the ESPN App and Disney+ simultaneously.',
-    link: null,
-    linkLabel: null,
+    name: 'CBS / Paramount+',
+    badge: 'Cable or streaming',
+    badgeClass: 'bg-primary/10 text-primary',
+    description: 'CBS Sports airs 20 WNBA games in 2026 — 8 in primetime on Saturday nights on CBS, the rest on CBS and Paramount+. CBS is free over-the-air; Paramount+ starts at $7.99/month.',
+    link: 'https://www.paramountplus.com/',
+    linkLabel: 'See Paramount+ plans →',
   },
   {
-    name: 'ION',
-    badge: 'Free',
-    badgeClass: 'bg-accent text-primary',
-    description: 'ION is a free broadcast channel available via TV antenna, cable, and satellite. ION carries select WNBA games. Check your local listings for the channel number.',
-    link: null,
-    linkLabel: null,
+    name: 'NBC / Peacock',
+    badge: 'Free or $7.99+/mo',
+    badgeClass: 'bg-primary/10 text-primary',
+    description: '7 games air on NBC on Sunday afternoons (free over-the-air). 15 more games air on Peacock and NBCSN, primarily Monday nights. Peacock starts at $7.99/month.',
+    link: 'https://www.peacocktv.com/',
+    linkLabel: 'See Peacock plans →',
   },
   {
     name: 'WNBA League Pass',
-    badge: '$17.99+/mo',
+    badge: '$14.99/mo or $39.99/yr',
     badgeClass: 'bg-primary/10 text-primary',
-    description: 'WNBA League Pass covers all out-of-market regular season games. Subject to blackouts for nationally televised games on ABC, ESPN, ION, and Amazon Prime Video. Best for fans who want to watch every game regardless of market.',
-    link: 'https://www.wnba.com/league-pass',
+    description: 'WNBA League Pass covers out-of-market regular season games. Subject to blackouts for nationally televised games. Best for fans who want to watch every game regardless of market.',
+    link: 'https://www.wnba.com/leaguepass',
     linkLabel: 'See League Pass plans →',
   },
 ];
 
 const title = `How to watch ${team.name} 2026 — broadcast info and streaming`;
-const description = `Where every ${team.name} WNBA game airs in 2026. Amazon Prime Video, ESPN, ABC, ION, and WNBA League Pass — full schedule and pricing below.`;
+const description = `Where every ${team.name} WNBA game airs in 2026. ION, USA Network, Amazon Prime Video, ABC, ESPN, CBS, NBC, and WNBA League Pass — full schedule and pricing below.`;
 ---
 
 <BaseLayout title={title} description={description}>
@@ -121,7 +133,7 @@ const description = `Where every ${team.name} WNBA game airs in 2026. Amazon Pri
         How to watch {team.name}
       </h1>
       <p class="text-lg leading-relaxed text-primary/80">
-        WNBA games are split across Amazon Prime Video, ESPN, ABC, ION, and WNBA League Pass. Amazon carries the most games. ABC and ION are free over-the-air — no subscription needed. WNBA League Pass fills in the rest if you want every game.
+        WNBA games in 2026 are spread across seven broadcasters: ION (50 games), USA Network (48), Amazon Prime Video (30), ABC/ESPN (30), CBS/Paramount+ (20), and NBC/Peacock (22). ION, ABC, CBS, and NBC are free over-the-air. WNBA League Pass covers out-of-market games not on national TV.
       </p>
     </header>
 

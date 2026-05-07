@@ -1,10 +1,12 @@
 ---
 const { pathname } = Astro.url;
 
-const navItems = [
-  { href: '/nwsl', label: 'NWSL' },
-  { href: '/about', label: 'About' },
+const leagues = [
+  { href: '/nwsl', label: 'NWSL', sport: 'Soccer' },
+  { href: '/wnba', label: 'WNBA', sport: 'Basketball' },
 ];
+
+const leaguesActive = leagues.some(l => pathname === l.href || pathname.startsWith(l.href + '/'));
 ---
 
 <header class="border-b border-primary/10 bg-neutral">
@@ -14,14 +16,73 @@ const navItems = [
       <span class="font-display font-bold text-xl text-accent leading-none tracking-tight px-1.5 py-1 rounded bg-primary">dd</span>
     </a>
     <nav class="flex items-center gap-6 text-sm font-medium">
-      {navItems.map(item => {
-        const active = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
-        return (
-          <a href={item.href} class={active ? 'text-accent' : 'text-primary hover:text-accent transition-colors'}>
-            {item.label}
-          </a>
-        );
-      })}
+      <!-- Leagues dropdown -->
+      <div class="relative" id="leagues-menu">
+        <button
+          id="leagues-trigger"
+          aria-haspopup="true"
+          aria-expanded="false"
+          aria-controls="leagues-dropdown"
+          class={`flex items-center gap-1 transition-colors ${leaguesActive ? 'text-accent' : 'text-primary hover:text-accent'}`}
+        >
+          Leagues
+          <svg id="leagues-chevron" width="12" height="12" viewBox="0 0 12 12" fill="none" class="transition-transform duration-200" aria-hidden="true">
+            <path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <div
+          id="leagues-dropdown"
+          aria-labelledby="leagues-trigger"
+          class="absolute right-0 top-full mt-2 w-44 bg-neutral border border-primary/15 rounded-xl shadow-lg overflow-hidden z-50 hidden"
+        >
+          {leagues.map(league => {
+            const active = pathname === league.href || pathname.startsWith(league.href + '/');
+            return (
+              <a
+                href={league.href}
+                class={`flex items-center justify-between px-4 py-3 text-sm hover:bg-primary/5 transition-colors ${active ? 'text-accent font-bold' : 'text-primary'}`}
+              >
+                <span class="font-display font-bold">{league.label}</span>
+                <span class="text-xs text-muted">{league.sport}</span>
+              </a>
+            );
+          })}
+        </div>
+      </div>
+      <a href="/about" class={pathname === '/about' ? 'text-accent' : 'text-primary hover:text-accent transition-colors'}>
+        About
+      </a>
     </nav>
   </div>
 </header>
+
+<script>
+  const trigger = document.getElementById('leagues-trigger');
+  const dropdown = document.getElementById('leagues-dropdown');
+  const chevron = document.getElementById('leagues-chevron');
+
+  if (trigger && dropdown && chevron) {
+    function open() {
+      dropdown.classList.remove('hidden');
+      trigger.setAttribute('aria-expanded', 'true');
+      chevron.style.transform = 'rotate(180deg)';
+    }
+    function close() {
+      dropdown.classList.add('hidden');
+      trigger.setAttribute('aria-expanded', 'false');
+      chevron.style.transform = '';
+    }
+
+    trigger.addEventListener('click', () => {
+      dropdown.classList.contains('hidden') ? open() : close();
+    });
+
+    document.addEventListener('click', e => {
+      if (!document.getElementById('leagues-menu')?.contains(e.target as Node)) close();
+    });
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') close();
+    });
+  }
+</script>

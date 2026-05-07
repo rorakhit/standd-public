@@ -1,4 +1,5 @@
 import type { WNBAGame, WNBAStanding, WNBATeamStats } from './types';
+import type { WNBAPlayer, WNBAPlayerStats } from '../shared/types';
 
 const ACCOUNT_ID = import.meta.env.CLOUDFLARE_ACCOUNT_ID;
 const DB_ID = import.meta.env.CLOUDFLARE_D1_DATABASE_ID;
@@ -85,4 +86,22 @@ export async function getTeamStats(teamSlug: string): Promise<WNBATeamStats | nu
     [teamSlug]
   );
   return rows[0] ?? null;
+}
+
+export async function getTeamRoster(teamSlug: string): Promise<WNBAPlayer[]> {
+  return d1query<WNBAPlayer>(
+    `SELECT * FROM wnba_players WHERE team_slug = ? ORDER BY
+       CASE position WHEN 'G' THEN 1 WHEN 'F' THEN 2 WHEN 'C' THEN 3 ELSE 4 END,
+       CAST(jersey AS INTEGER) ASC`,
+    [teamSlug]
+  );
+}
+
+export async function getPlayerStats(espnIds: string[]): Promise<WNBAPlayerStats[]> {
+  if (espnIds.length === 0) return [];
+  const placeholders = espnIds.map(() => '?').join(', ');
+  return d1query<WNBAPlayerStats>(
+    `SELECT * FROM wnba_player_stats WHERE espn_id IN (${placeholders})`,
+    espnIds
+  );
 }

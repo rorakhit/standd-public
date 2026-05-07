@@ -35,11 +35,19 @@ const featuredPlayers = [
 
 const standings = await getStandings();
 
-const title = 'WNBA 2026 — Standd';
-const description = 'WNBA 2026 season — standings and team trackers for all 15 teams.';
+const title = 'WNBA 2026 Standings, Schedule & Teams — Standd';
+const description = 'Full WNBA 2026 standings, schedules, and broadcast guides for all 15 teams. Find out where every game airs — ION, Prime Video, ESPN, and more — in one place.';
 ---
 
 <BaseLayout title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "SportsOrganization",
+    "name": "Women's National Basketball Association",
+    "alternateName": "WNBA",
+    "url": "https://standd.fan/wnba",
+    "sport": "Basketball"
+  })} />
   <Header />
 
   <main class="flex-1">

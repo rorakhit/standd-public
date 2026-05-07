@@ -31,11 +31,19 @@ const teamByStandingsKey = new Map(allTeams.map(t => [t.standingsKey, t]));
 
 const PLAYOFF_LINE = 8;
 
-const title = 'NWSL 2026 — Standd';
-const description = 'NWSL 2026 season — standings and team trackers for all 16 clubs.';
+const title = 'NWSL 2026 Standings, Schedule & Clubs — Standd';
+const description = 'Full NWSL 2026 standings, fixtures, and broadcast guides for all 16 clubs. Find out where every match airs — ION, Victory+, Amazon Prime, ESPN, and more.';
 ---
 
 <BaseLayout title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "SportsOrganization",
+    "name": "National Women's Soccer League",
+    "alternateName": "NWSL",
+    "url": "https://standd.fan/nwsl",
+    "sport": "Soccer"
+  })} />
   <Header />
 
   <main class="flex-1">

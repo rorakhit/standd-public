@@ -78,3 +78,35 @@ export function playerSlug(player: Player, allPlayers?: Player[]): string {
 
   return base;
 }
+
+export type WNBAPosition = 'G' | 'F' | 'C';
+
+export interface WNBAPlayer {
+  espn_id: string;
+  team_slug: string;
+  jersey: string | null;
+  full_name: string;
+  position: WNBAPosition | null;
+  height: string | null;
+  birthplace: string | null;
+  college: string | null;
+  updated_at: string;
+}
+
+export interface WNBAPlayerStats {
+  espn_id: string;
+  split: 'regular_season' | 'career';
+  season: number | null;
+  games_played: number | null;
+  avg_minutes: number | null;
+  avg_points: number | null;
+  avg_rebounds: number | null;
+  avg_assists: number | null;
+  avg_steals: number | null;
+  avg_blocks: number | null;
+  avg_turnovers: number | null;
+  field_goal_pct: number | null;
+  three_point_pct: number | null;
+  free_throw_pct: number | null;
+  updated_at: string;
+}

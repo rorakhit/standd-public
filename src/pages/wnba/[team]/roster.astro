@@ -1,0 +1,244 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Header from '../../../components/Header.astro';
+import TeamTrackerSubNav from '../../../components/TeamTrackerSubNav.astro';
+import Footer from '../../../components/Footer.astro';
+import { team as atlantaDream } from '../../../data/teams/wnba/atlanta-dream';
+import { team as chicagoSky } from '../../../data/teams/wnba/chicago-sky';
+import { team as connecticutSun } from '../../../data/teams/wnba/connecticut-sun';
+import { team as dallasWings } from '../../../data/teams/wnba/dallas-wings';
+import { team as goldenStateValkyries } from '../../../data/teams/wnba/golden-state-valkyries';
+import { team as indianaFever } from '../../../data/teams/wnba/indiana-fever';
+import { team as lasVegasAces } from '../../../data/teams/wnba/las-vegas-aces';
+import { team as losAngelesSparks } from '../../../data/teams/wnba/los-angeles-sparks';
+import { team as minnesotaLynx } from '../../../data/teams/wnba/minnesota-lynx';
+import { team as newYorkLiberty } from '../../../data/teams/wnba/new-york-liberty';
+import { team as phoenixMercury } from '../../../data/teams/wnba/phoenix-mercury';
+import { team as seattleStorm } from '../../../data/teams/wnba/seattle-storm';
+import { team as washingtonMystics } from '../../../data/teams/wnba/washington-mystics';
+import { team as portlandFire } from '../../../data/teams/wnba/portland-fire';
+import { team as torontoTempo } from '../../../data/teams/wnba/toronto-tempo';
+import type { TeamConfig } from '../../../data/shared/types';
+import { getTeamRoster, getPlayerStats } from '../../../data/wnba/queries';
+
+const allTeams: TeamConfig[] = [
+  atlantaDream, chicagoSky, connecticutSun, dallasWings,
+  goldenStateValkyries, indianaFever, lasVegasAces, losAngelesSparks,
+  minnesotaLynx, newYorkLiberty, phoenixMercury, portlandFire,
+  seattleStorm, torontoTempo, washingtonMystics,
+];
+
+export function getStaticPaths() {
+  return [
+    'atlanta-dream', 'chicago-sky', 'connecticut-sun', 'dallas-wings',
+    'golden-state-valkyries', 'indiana-fever', 'las-vegas-aces', 'los-angeles-sparks',
+    'minnesota-lynx', 'new-york-liberty', 'phoenix-mercury', 'portland-fire',
+    'seattle-storm', 'toronto-tempo', 'washington-mystics',
+  ].map(slug => ({ params: { team: slug } }));
+}
+
+const { team: teamSlug } = Astro.params;
+const team = allTeams.find(t => t.slug === teamSlug)!;
+
+const roster = await getTeamRoster(teamSlug);
+const espnIds = roster.map(p => p.espn_id);
+const allStats = await getPlayerStats(espnIds);
+
+// Index stats by espn_id + split for O(1) lookup
+const statsMap = new Map<string, { regular_season?: typeof allStats[0]; career?: typeof allStats[0] }>();
+for (const s of allStats) {
+  const existing = statsMap.get(s.espn_id) ?? {};
+  if (s.split === 'regular_season') existing.regular_season = s;
+  if (s.split === 'career') existing.career = s;
+  statsMap.set(s.espn_id, existing);
+}
+
+const groups = [
+  { label: 'Guards',   position: 'G' },
+  { label: 'Forwards', position: 'F' },
+  { label: 'Centers',  position: 'C' },
+] as const;
+
+function headshotUrl(espnId: string): string {
+  return `https://a.espncdn.com/i/headshots/wnba/players/full/${espnId}.png`;
+}
+
+function fmt(val: number | null | undefined, decimals = 1): string {
+  if (val == null) return '—';
+  return val.toFixed(decimals);
+}
+
+function fmtPct(val: number | null | undefined): string {
+  if (val == null) return '—';
+  return val.toFixed(1) + '%';
+}
+
+const title = `${team.name} roster 2026 — WNBA players and stats`;
+const description = `${team.name} 2026 WNBA roster with per-player stats — points, rebounds, assists, shooting percentages.`;
+---
+
+<BaseLayout title={title} description={description}>
+  <Header />
+  <TeamTrackerSubNav leagueSlug="wnba" teamSlug={team.slug} showHowToWatch />
+
+  <main class="flex-1 max-w-5xl mx-auto px-6 py-12">
+    <header class="mb-10">
+      <p class="text-sm font-medium text-muted uppercase tracking-wider mb-3">{team.name} · 2026 Season</p>
+      <h1 class="font-display font-bold text-4xl md:text-5xl text-primary leading-[1.1] mb-6">
+        Roster
+      </h1>
+
+      {roster.length === 0 ? (
+        <div class="rounded-2xl border-2 border-primary/10 p-8 text-center">
+          <p class="font-display font-bold text-2xl text-primary mb-2">Roster coming soon</p>
+          <p class="text-muted leading-relaxed">
+            Player profiles and stats are on the way. Visit the{' '}
+            <a href={team.officialUrl} target="_blank" rel="noopener noreferrer" class="text-accent hover:underline font-medium">
+              official {team.name} site
+            </a>{' '}
+            for the full roster.
+          </p>
+        </div>
+      ) : (
+        <>
+          <!-- Stat split toggle -->
+          <div class="flex items-center gap-2 mb-8" role="group" aria-label="Stat split">
+            <button
+              id="btn-regular"
+              class="px-4 py-1.5 rounded-full text-sm font-bold transition-colors bg-primary text-neutral"
+              aria-pressed="true"
+            >
+              2026 season
+            </button>
+            <button
+              id="btn-career"
+              class="px-4 py-1.5 rounded-full text-sm font-bold transition-colors bg-primary/10 text-primary"
+              aria-pressed="false"
+            >
+              Career
+            </button>
+          </div>
+
+          <div class="space-y-10">
+            {groups.map(group => {
+              const players = roster.filter(p => p.position === group.position);
+              if (players.length === 0) return null;
+              return (
+                <section>
+                  <h2 class="font-display font-bold text-xs uppercase tracking-[0.2em] text-muted mb-3">{group.label}</h2>
+                  <div class="border border-primary/10 rounded-xl overflow-hidden">
+                    <div class="overflow-x-auto">
+                      <table class="w-full text-sm border-collapse">
+                        <thead>
+                          <tr class="border-b border-primary/10 text-xs font-bold text-muted uppercase tracking-wider">
+                            <th class="px-4 py-2 text-left font-bold w-48">Player</th>
+                            <th class="px-3 py-2 text-right font-bold w-12">GP</th>
+                            <th class="px-3 py-2 text-right font-bold w-14">MIN</th>
+                            <th class="px-3 py-2 text-right font-bold w-14">PTS</th>
+                            <th class="px-3 py-2 text-right font-bold w-14">REB</th>
+                            <th class="px-3 py-2 text-right font-bold w-14">AST</th>
+                            <th class="px-3 py-2 text-right font-bold w-14">STL</th>
+                            <th class="px-3 py-2 text-right font-bold w-14">BLK</th>
+                            <th class="px-3 py-2 text-right font-bold w-14">TO</th>
+                            <th class="px-3 py-2 text-right font-bold w-14">FG%</th>
+                            <th class="px-3 py-2 text-right font-bold w-14">3P%</th>
+                            <th class="px-3 py-2 text-right font-bold w-14">FT%</th>
+                          </tr>
+                        </thead>
+                        <tbody class="divide-y divide-primary/8">
+                          {players.map(p => {
+                            const rs = statsMap.get(p.espn_id)?.regular_season;
+                            const car = statsMap.get(p.espn_id)?.career;
+                            return (
+                              <tr class="bg-neutral hover:bg-primary/[0.03] transition-colors">
+                                <td class="px-4 py-3">
+                                  <div class="flex items-center gap-3">
+                                    <img
+                                      src={headshotUrl(p.espn_id)}
+                                      alt={p.full_name}
+                                      width="40"
+                                      height="40"
+                                      class="rounded-full object-cover object-top bg-primary/10 flex-shrink-0 w-10 h-10"
+                                      onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
+                                    />
+                                    <div
+                                      class="rounded-full bg-primary/10 flex-shrink-0 w-10 h-10 items-center justify-center font-bold text-xs text-primary"
+                                      style="display:none"
+                                      aria-hidden="true"
+                                    >
+                                      {(p.full_name.trim().split(/\s+/).map((w: string) => w[0]).join('').slice(0, 2)).toUpperCase()}
+                                    </div>
+                                    <div class="min-w-0">
+                                      <p class="font-bold text-sm text-primary">{p.full_name}</p>
+                                      <p class="text-xs text-muted">
+                                        {p.jersey ? `#${p.jersey}` : ''}{p.jersey && p.position ? ' · ' : ''}{p.position ?? ''}
+                                      </p>
+                                    </div>
+                                  </div>
+                                </td>
+                                <td class="px-3 py-3 text-right tabular-nums text-primary/70" data-regular={fmt(rs?.games_played, 0)} data-career={fmt(car?.games_played, 0)}>{fmt(rs?.games_played, 0)}</td>
+                                <td class="px-3 py-3 text-right tabular-nums text-primary/70" data-regular={fmt(rs?.avg_minutes)} data-career={fmt(car?.avg_minutes)}>{fmt(rs?.avg_minutes)}</td>
+                                <td class="px-3 py-3 text-right tabular-nums font-bold text-primary" data-regular={fmt(rs?.avg_points)} data-career={fmt(car?.avg_points)}>{fmt(rs?.avg_points)}</td>
+                                <td class="px-3 py-3 text-right tabular-nums text-primary/70" data-regular={fmt(rs?.avg_rebounds)} data-career={fmt(car?.avg_rebounds)}>{fmt(rs?.avg_rebounds)}</td>
+                                <td class="px-3 py-3 text-right tabular-nums text-primary/70" data-regular={fmt(rs?.avg_assists)} data-career={fmt(car?.avg_assists)}>{fmt(rs?.avg_assists)}</td>
+                                <td class="px-3 py-3 text-right tabular-nums text-primary/70" data-regular={fmt(rs?.avg_steals)} data-career={fmt(car?.avg_steals)}>{fmt(rs?.avg_steals)}</td>
+                                <td class="px-3 py-3 text-right tabular-nums text-primary/70" data-regular={fmt(rs?.avg_blocks)} data-career={fmt(car?.avg_blocks)}>{fmt(rs?.avg_blocks)}</td>
+                                <td class="px-3 py-3 text-right tabular-nums text-primary/70" data-regular={fmt(rs?.avg_turnovers)} data-career={fmt(car?.avg_turnovers)}>{fmt(rs?.avg_turnovers)}</td>
+                                <td class="px-3 py-3 text-right tabular-nums text-primary/70" data-regular={fmtPct(rs?.field_goal_pct)} data-career={fmtPct(car?.field_goal_pct)}>{fmtPct(rs?.field_goal_pct)}</td>
+                                <td class="px-3 py-3 text-right tabular-nums text-primary/70" data-regular={fmtPct(rs?.three_point_pct)} data-career={fmtPct(car?.three_point_pct)}>{fmtPct(rs?.three_point_pct)}</td>
+                                <td class="px-3 py-3 text-right tabular-nums text-primary/70" data-regular={fmtPct(rs?.free_throw_pct)} data-career={fmtPct(car?.free_throw_pct)}>{fmtPct(rs?.free_throw_pct)}</td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </section>
+              );
+            })}
+          </div>
+
+          <footer class="mt-10 pt-6 border-t border-primary/15 text-xs text-muted">
+            Stats sourced from ESPN. Updated daily during the season.
+          </footer>
+        </>
+      )}
+    </header>
+
+    <div class="mt-4">
+      <a href={`/wnba/${team.slug}`} class="text-sm font-bold text-primary hover:text-accent transition-colors">
+        &larr; Back to {team.name} tracker
+      </a>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<script>
+  const btnRegular = document.getElementById('btn-regular') as HTMLButtonElement | null;
+  const btnCareer  = document.getElementById('btn-career')  as HTMLButtonElement | null;
+  if (btnRegular && btnCareer) {
+    function activate(split: 'regular' | 'career') {
+      const showRegular = split === 'regular';
+      btnRegular!.className = showRegular
+        ? 'px-4 py-1.5 rounded-full text-sm font-bold transition-colors bg-primary text-neutral'
+        : 'px-4 py-1.5 rounded-full text-sm font-bold transition-colors bg-primary/10 text-primary';
+      btnCareer!.className = showRegular
+        ? 'px-4 py-1.5 rounded-full text-sm font-bold transition-colors bg-primary/10 text-primary'
+        : 'px-4 py-1.5 rounded-full text-sm font-bold transition-colors bg-primary text-neutral';
+      btnRegular!.setAttribute('aria-pressed', showRegular ? 'true' : 'false');
+      btnCareer!.setAttribute('aria-pressed', showRegular ? 'false' : 'true');
+
+      // Swap stat cell text using data attributes
+      document.querySelectorAll<HTMLElement>('td[data-regular]').forEach(td => {
+        td.textContent = showRegular
+          ? (td.dataset.regular ?? '—')
+          : (td.dataset.career ?? '—');
+      });
+    }
+    btnRegular.addEventListener('click', () => activate('regular'));
+    btnCareer.addEventListener('click',  () => activate('career'));
+  }
+</script>

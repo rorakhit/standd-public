@@ -243,7 +243,10 @@ const description = `${team.name} WNBA 2026 season tracker — schedule, results
                         <div class="w-1.5 flex-shrink-0" style={`background-color: var(--team-color)`} />
                         <div class="flex flex-col gap-2 p-5 flex-1">
                           <div class="flex items-center justify-between">
-                            <span class={`font-display font-bold tabular text-lg ${isHome ? 'text-neutral/80' : 'text-primary/60'}`}>{formatDate(match.date)}</span>
+                            <div class="flex items-baseline gap-2">
+                              <span class={`font-display font-bold tabular text-lg ${isHome ? 'text-neutral/80' : 'text-primary/60'}`}>{formatDate(match.date)}</span>
+                              {match.time && <span class={`font-display font-bold text-base ${isHome ? 'text-neutral/60' : 'text-primary/50'}`}>{match.time} ET</span>}
+                            </div>
                             <span class={`text-xs uppercase tracking-wider font-bold px-2 py-1 rounded ${isHome ? 'bg-neutral/10 text-neutral/60' : 'bg-primary/10 text-primary/50'}`}>
                               {isHome ? 'HOME' : 'AWAY'}
                             </span>
@@ -325,7 +328,10 @@ const description = `${team.name} WNBA 2026 season tracker — schedule, results
                   <div class="w-1.5 flex-shrink-0" style="background-color: var(--team-color)" />
                   <div class="flex flex-col gap-2 p-5 flex-1">
                     <div class="flex items-center justify-between">
-                      <span class={`font-display font-bold tabular text-lg ${isHome ? 'text-neutral/80' : 'text-primary/60'}`}>{formatDate(match.date)}</span>
+                      <div class="flex items-baseline gap-2">
+                        <span class={`font-display font-bold tabular text-lg ${isHome ? 'text-neutral/80' : 'text-primary/60'}`}>{formatDate(match.date)}</span>
+                        {match.time && <span class={`font-display font-bold text-base ${isHome ? 'text-neutral/60' : 'text-primary/50'}`}>{match.time} ET</span>}
+                      </div>
                       <span class={`text-xs uppercase tracking-wider font-bold px-2 py-1 rounded ${isHome ? 'bg-neutral/10 text-neutral/60' : 'bg-primary/10 text-primary/50'}`}>
                         {isHome ? 'HOME' : 'AWAY'}
                       </span>

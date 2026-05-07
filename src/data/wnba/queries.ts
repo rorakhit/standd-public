@@ -57,7 +57,8 @@ async function d1query<T>(sql: string, params: unknown[] = []): Promise<T[]> {
 export async function getTeamSchedule(teamSlug: string): Promise<WNBAGame[]> {
   const rows = await d1query<Omit<WNBAGame, 'broadcast'> & { broadcast: string }>(
     `SELECT * FROM wnba_games
-     WHERE home_team = ? OR away_team = ?
+     WHERE (home_team = ? OR away_team = ?)
+       AND (season_type = '2' OR season_type = '3')
      ORDER BY date ASC`,
     [teamSlug, teamSlug]
   );

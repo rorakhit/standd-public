@@ -22,14 +22,14 @@ const items = [
 ];
 ---
 
-<nav class="border-b border-primary/10 bg-neutral">
+<nav class="border-b border-white/10 bg-primary">
   <div class="max-w-5xl mx-auto px-6 flex items-center gap-6 text-sm font-medium">
     {items.map(item => {
       const active = pathname === item.href || (item.href !== base && pathname.startsWith(item.href));
       return (
         <a
           href={item.href}
-          class={`py-3 border-b-2 transition-colors ${active ? 'border-accent text-primary' : 'border-transparent text-primary/50 hover:text-primary'}`}
+          class={`py-3 border-b-2 transition-colors ${active ? 'border-accent text-accent' : 'border-transparent text-neutral/50 hover:text-neutral'}`}
         >
           {item.label}
         </a>

@@ -90,12 +90,13 @@ export interface WNBAPlayer {
   height: string | null;
   birthplace: string | null;
   college: string | null;
+  rookie: number; // 1 = rookie, 0 = veteran
   updated_at: string;
 }
 
 export interface WNBAPlayerStats {
   espn_id: string;
-  split: 'regular_season' | 'career';
+  split: string; // 'career' | year string e.g. '2026', '2025'
   season: number | null;
   games_played: number | null;
   avg_minutes: number | null;

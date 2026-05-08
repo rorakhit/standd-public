@@ -9,11 +9,11 @@ const leagues = [
 const leaguesActive = leagues.some(l => pathname === l.href || pathname.startsWith(l.href + '/'));
 ---
 
-<header class="border-b border-primary/10 bg-neutral">
+<header class="border-b border-white/10 bg-primary">
   <div class="max-w-5xl mx-auto px-6 py-5 flex items-center justify-between">
     <a href="/" class="flex items-baseline gap-1 group" aria-label="Standd home">
-      <span class="font-display font-bold text-3xl text-primary leading-none tracking-tight">stan</span>
-      <span class="font-display font-bold text-xl text-accent leading-none tracking-tight px-1.5 py-1 rounded bg-primary">dd</span>
+      <span class="font-display font-bold text-3xl text-neutral leading-none tracking-tight">stan</span>
+      <span class="font-display font-bold text-xl text-primary leading-none tracking-tight px-1.5 py-1 rounded bg-accent">dd</span>
     </a>
     <nav class="flex items-center gap-6 text-sm font-medium">
       <!-- Leagues dropdown -->
@@ -23,7 +23,7 @@ const leaguesActive = leagues.some(l => pathname === l.href || pathname.startsWi
           aria-haspopup="true"
           aria-expanded="false"
           aria-controls="leagues-dropdown"
-          class={`flex items-center gap-1 transition-colors ${leaguesActive ? 'text-accent' : 'text-primary hover:text-accent'}`}
+          class={`flex items-center gap-1 transition-colors ${leaguesActive ? 'text-accent' : 'text-neutral/70 hover:text-neutral'}`}
         >
           Leagues
           <svg id="leagues-chevron" width="12" height="12" viewBox="0 0 12 12" fill="none" class="transition-transform duration-200" aria-hidden="true">
@@ -49,7 +49,7 @@ const leaguesActive = leagues.some(l => pathname === l.href || pathname.startsWi
           })}
         </div>
       </div>
-      <a href="/about" class={pathname === '/about' ? 'text-accent' : 'text-primary hover:text-accent transition-colors'}>
+      <a href="/about" class={pathname === '/about' ? 'text-accent' : 'text-neutral/70 hover:text-neutral transition-colors'}>
         About
       </a>
     </nav>

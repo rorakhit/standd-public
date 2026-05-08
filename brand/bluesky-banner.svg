@@ -1,0 +1,148 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3000 1000" width="3000" height="1000">
+  <defs>
+    <radialGradient id="arcGlow" cx="82%" cy="60%" r="40%">
+      <stop offset="0%" stop-color="#FF6B2C" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#0F2A2D" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="3000" height="1000" fill="#0F2A2D"/>
+  <rect width="3000" height="1000" fill="url(#arcGlow)"/>
+
+  <!-- ── STADIUM ARC MOTIF (right half) ── -->
+  <!-- Center of arc at x=2600, rising from bottom -->
+  <!-- Tier 1 outermost -->
+  <path d="M 1950,1020 A 820,720 0 0 1 3050,1020" fill="none" stroke="#FF6B2C" stroke-width="3" stroke-opacity="0.13"/>
+  <!-- Tier 2 -->
+  <path d="M 2020,1020 A 740,648 0 0 1 2980,1020" fill="none" stroke="#FF6B2C" stroke-width="3" stroke-opacity="0.17"/>
+  <!-- Tier 3 -->
+  <path d="M 2090,1020 A 660,576 0 0 1 2910,1020" fill="none" stroke="#FF6B2C" stroke-width="3.5" stroke-opacity="0.22"/>
+  <!-- Tier 4 -->
+  <path d="M 2170,1020 A 578,504 0 0 1 2830,1020" fill="none" stroke="#FF6B2C" stroke-width="4" stroke-opacity="0.28"/>
+  <!-- Tier 5 -->
+  <path d="M 2250,1020 A 496,432 0 0 1 2750,1020" fill="none" stroke="#FF6B2C" stroke-width="4" stroke-opacity="0.36"/>
+  <!-- Tier 6 -->
+  <path d="M 2330,1020 A 414,360 0 0 1 2670,1020" fill="none" stroke="#FF6B2C" stroke-width="4.5" stroke-opacity="0.45"/>
+  <!-- Tier 7 innermost / brightest -->
+  <path d="M 2410,1020 A 330,288 0 0 1 2590,1020" fill="none" stroke="#FF6B2C" stroke-width="5" stroke-opacity="0.60"/>
+
+  <!-- Radial ribs from focal point -->
+  <line x1="2500" y1="1020" x2="2040" y2="390"  stroke="#FF6B2C" stroke-width="1.5" stroke-opacity="0.10"/>
+  <line x1="2500" y1="1020" x2="2180" y2="340"  stroke="#FF6B2C" stroke-width="1.5" stroke-opacity="0.10"/>
+  <line x1="2500" y1="1020" x2="2340" y2="318"  stroke="#FF6B2C" stroke-width="1.5" stroke-opacity="0.12"/>
+  <line x1="2500" y1="1020" x2="2500" y2="312"  stroke="#FF6B2C" stroke-width="2"   stroke-opacity="0.15"/>
+  <line x1="2500" y1="1020" x2="2660" y2="318"  stroke="#FF6B2C" stroke-width="1.5" stroke-opacity="0.12"/>
+  <line x1="2500" y1="1020" x2="2820" y2="340"  stroke="#FF6B2C" stroke-width="1.5" stroke-opacity="0.10"/>
+  <line x1="2500" y1="1020" x2="2960" y2="390"  stroke="#FF6B2C" stroke-width="1.5" stroke-opacity="0.10"/>
+
+  <!-- Crowd dots — fans in the stands -->
+  <!-- Tier 5 row -->
+  <circle cx="2255" cy="630" r="5"   fill="#FAF6F0" opacity="0.22"/>
+  <circle cx="2295" cy="615" r="5"   fill="#FF6B2C" opacity="0.50"/>
+  <circle cx="2335" cy="603" r="5"   fill="#FAF6F0" opacity="0.25"/>
+  <circle cx="2375" cy="594" r="5"   fill="#FAF6F0" opacity="0.22"/>
+  <circle cx="2415" cy="588" r="5"   fill="#FAF6F0" opacity="0.28"/>
+  <circle cx="2455" cy="585" r="5"   fill="#FF6B2C" opacity="0.55"/>
+  <circle cx="2500" cy="583" r="5"   fill="#FAF6F0" opacity="0.30"/>
+  <circle cx="2545" cy="585" r="5"   fill="#FAF6F0" opacity="0.25"/>
+  <circle cx="2585" cy="588" r="5"   fill="#FF6B2C" opacity="0.45"/>
+  <circle cx="2625" cy="594" r="5"   fill="#FAF6F0" opacity="0.22"/>
+  <circle cx="2665" cy="603" r="5"   fill="#FAF6F0" opacity="0.20"/>
+  <circle cx="2705" cy="615" r="5"   fill="#FAF6F0" opacity="0.18"/>
+  <circle cx="2745" cy="630" r="5"   fill="#FAF6F0" opacity="0.16"/>
+  <!-- Tier 6 row -->
+  <circle cx="2335" cy="710" r="5.5" fill="#FAF6F0" opacity="0.18"/>
+  <circle cx="2375" cy="698" r="5.5" fill="#FF6B2C" opacity="0.40"/>
+  <circle cx="2415" cy="688" r="5.5" fill="#FAF6F0" opacity="0.22"/>
+  <circle cx="2455" cy="682" r="5.5" fill="#FAF6F0" opacity="0.28"/>
+  <circle cx="2500" cy="679" r="5.5" fill="#FAF6F0" opacity="0.30"/>
+  <circle cx="2545" cy="682" r="5.5" fill="#FF6B2C" opacity="0.38"/>
+  <circle cx="2585" cy="688" r="5.5" fill="#FAF6F0" opacity="0.22"/>
+  <circle cx="2625" cy="698" r="5"   fill="#FAF6F0" opacity="0.18"/>
+  <circle cx="2665" cy="710" r="5"   fill="#FAF6F0" opacity="0.15"/>
+  <!-- Tier 7 front row -->
+  <circle cx="2415" cy="790" r="7"   fill="#FAF6F0" opacity="0.28"/>
+  <circle cx="2455" cy="782" r="7"   fill="#FF6B2C" opacity="0.65"/>
+  <circle cx="2500" cy="779" r="7"   fill="#FAF6F0" opacity="0.35"/>
+  <circle cx="2545" cy="782" r="7"   fill="#FAF6F0" opacity="0.28"/>
+  <circle cx="2585" cy="790" r="7"   fill="#FF6B2C" opacity="0.55"/>
+
+  <!-- ── WORDMARK — shifted right, avatar-safe zone starts ~x=700 ── -->
+  <!-- "stan" kicker -->
+  <text
+    x="820"
+    y="330"
+    font-family="Helvetica Neue, Helvetica, Arial, sans-serif"
+    font-weight="900"
+    font-size="155"
+    fill="#FAF6F0"
+    letter-spacing="-4"
+    opacity="0.90"
+  >stan</text>
+
+  <!-- "dd" dominant -->
+  <text
+    x="800"
+    y="860"
+    font-family="Helvetica Neue, Helvetica, Arial, sans-serif"
+    font-weight="900"
+    font-size="570"
+    fill="#FF6B2C"
+    letter-spacing="-14"
+  >dd</text>
+
+  <!-- ── TAGLINE block — sits between wordmark and arc ── -->
+  <!-- Vertically centered in the banner -->
+  <text
+    x="1720"
+    y="350"
+    font-family="Helvetica Neue, Helvetica, Arial, sans-serif"
+    font-weight="700"
+    font-size="68"
+    fill="#FAF6F0"
+    opacity="0.85"
+  >Your home for</text>
+  <text
+    x="1720"
+    y="438"
+    font-family="Helvetica Neue, Helvetica, Arial, sans-serif"
+    font-weight="900"
+    font-size="68"
+    fill="#FF6B2C"
+  >women's pro sports.</text>
+
+  <!-- League strip -->
+  <text
+    x="1720"
+    y="550"
+    font-family="Helvetica Neue, Helvetica, Arial, sans-serif"
+    font-weight="700"
+    font-size="42"
+    fill="#FAF6F0"
+    opacity="0.75"
+    letter-spacing="4"
+  >NWSL · WNBA · WSL · PWHL · LOVB</text>
+
+  <!-- URL -->
+  <text
+    x="1720"
+    y="800"
+    font-family="Helvetica Neue, Helvetica, Arial, sans-serif"
+    font-weight="700"
+    font-size="46"
+    fill="#FF6B2C"
+    opacity="1"
+  >standd.fan</text>
+
+  <!-- Trust line -->
+  <text
+    x="1720"
+    y="860"
+    font-family="Helvetica Neue, Helvetica, Arial, sans-serif"
+    font-weight="600"
+    font-size="40"
+    fill="#FAF6F0"
+    opacity="0.70"
+  >No ads · No paid placement · Built by a fan.</text>
+</svg>

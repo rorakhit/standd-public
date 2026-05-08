@@ -1,12 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
-  <rect width="1200" height="630" fill="#0F2A2D"/>
-  <!-- Headline text — REPLACE per page (e.g., "Boston Legacy 2026 Season Tracker") -->
+  <rect width="1200" height="630" fill="#0F2A2D"></rect>
+  
   <text x="80" y="280" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-weight="900" font-size="84" fill="#FAF6F0" letter-spacing="-3">Boston Legacy</text>
   <text x="80" y="380" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-weight="900" font-size="84" fill="#FAF6F0" letter-spacing="-3">2026 Season Tracker</text>
-  <!-- H1-style brand mark bottom-left: big stan + dd badge -->
+  
   <text x="80" y="555" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-weight="900" font-size="84" fill="#FAF6F0" letter-spacing="-4">stan</text>
-  <rect x="248" y="494" width="68" height="44" rx="6" fill="#FAF6F0"/>
+  <rect x="248" y="494" width="68" height="44" rx="6" fill="#FAF6F0"></rect>
   <text x="282" y="528" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-weight="900" font-size="40" fill="#FF6B2C" text-anchor="middle" letter-spacing="-2">dd</text>
-  <!-- URL bottom-right -->
+  
   <text x="1120" y="555" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-weight="500" font-size="28" fill="#FAF6F0" text-anchor="end" letter-spacing="2" opacity="0.7">standd.fan</text>
 </svg>

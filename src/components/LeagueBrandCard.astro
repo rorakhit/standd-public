@@ -145,14 +145,14 @@ const sportSvg = sportSvgs[league.sportIcon] ?? '';
     <div class="flex-1"></div>
 
     <!-- Stats row -->
-    <dl class="flex gap-8 mt-6 items-end">
+    <dl class="flex flex-wrap gap-x-8 gap-y-3 mt-6 items-end">
       <div>
         <dd class="tabular font-display font-bold text-3xl text-neutral leading-none">{league.teamCount}</dd>
         <dt class="text-[10px] font-bold uppercase tracking-[0.18em] text-neutral/60 mt-1">Teams</dt>
       </div>
       {leader && (
         <div>
-          <dd class={`font-display font-bold text-neutral leading-none whitespace-nowrap ${leaderFontClass(leaderDisplay)}`}>{leaderDisplay}</dd>
+          <dd class={`font-display font-bold text-neutral leading-none ${leaderFontClass(leaderDisplay)}`}>{leaderDisplay}</dd>
           <dt class="text-[10px] font-bold uppercase tracking-[0.18em] [word-spacing:-0.1em] text-neutral/60 mt-1">
             League Leader
           </dt>
@@ -165,12 +165,12 @@ const sportSvg = sportSvgs[league.sportIcon] ?? '';
     </dl>
 
     <!-- Crest row -->
-    <div class="flex items-center gap-1 mt-4" aria-hidden="true">
+    <div class="flex flex-wrap items-center gap-1 mt-4" aria-hidden="true">
       {league.crests.slice(0, CREST_SHOW).map((src, i) => (
-        <img src={src} alt="" height="32" class="h-10 w-auto object-contain flex-shrink-0" loading={i === 0 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : undefined} />
+        <img src={src} alt="" height="32" class="h-8 sm:h-10 w-auto object-contain flex-shrink-0" loading={i === 0 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : undefined} />
       ))}
       {extraCrests > 0 && (
-        <span class="ml-auto w-10 h-10 rounded-full bg-neutral/25 flex-shrink-0 flex items-center justify-center tabular text-[11px] font-bold text-neutral">
+        <span class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-neutral/25 flex-shrink-0 flex items-center justify-center tabular text-[11px] font-bold text-neutral">
           +{extraCrests}
         </span>
       )}

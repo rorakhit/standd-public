@@ -51,7 +51,8 @@ function displayName(s: string): string {
   return SLUG_DISPLAY[s] ?? s.split('-').filter(Boolean).map(w => w[0].toUpperCase() + w.slice(1)).join(' ');
 }
 
-const d1Games = await getNwslTeamSchedule(team.slug).catch(() => []);
+const db = Astro.locals.runtime?.env?.DB;
+const d1Games = await getNwslTeamSchedule(team.slug, db).catch(() => []);
 
 type GameMatch = {
   date: string; time: string | null; utcDatetime: string | null; opponent: string; opponentSlug: string;

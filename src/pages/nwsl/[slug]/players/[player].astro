@@ -41,14 +41,15 @@ const { slug, player: nameSlug } = Astro.params;
 const team = teamBySlug.get(slug ?? '');
 if (!team || !nameSlug) return Astro.redirect('/nwsl');
 
-const rosterEntry = await getNwslPlayerByNameSlug(team.slug, nameSlug).catch(() => null);
+const db = Astro.locals.runtime?.env?.DB;
+const rosterEntry = await getNwslPlayerByNameSlug(team.slug, nameSlug, db).catch(() => null);
 if (!rosterEntry) return Astro.redirect(`/nwsl/${slug}/squad`);
 
 const espnId = rosterEntry.id;
 
 const [seasonStats, matchLog] = await Promise.all([
-  getNwslPlayerSeasonStats(espnId).catch(() => null),
-  getNwslPlayerMatchLog(espnId).catch(() => []),
+  getNwslPlayerSeasonStats(espnId, db).catch(() => null),
+  getNwslPlayerMatchLog(espnId, db).catch(() => []),
 ]);
 
 const playerName = rosterEntry.name;

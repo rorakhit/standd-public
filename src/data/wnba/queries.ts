@@ -1,3 +1,4 @@
+/// <reference types="@cloudflare/workers-types" />
 import type { WNBAGame, WNBAStanding, WNBATeamStats } from './types';
 import type { WNBAPlayer, WNBAPlayerStats } from '../shared/types';
 
@@ -13,9 +14,16 @@ interface D1Response<T> {
   result?: Array<{ results: T[] }>;
 }
 
-async function d1query<T>(sql: string, params: unknown[] = []): Promise<T[]> {
+async function d1query<T>(sql: string, params: unknown[] = [], db?: D1Database): Promise<T[]> {
+  // Use native binding when available (Cloudflare Workers runtime)
+  if (db) {
+    const stmt = db.prepare(sql);
+    const result = await stmt.bind(...params).all<T>();
+    return result.results ?? [];
+  }
+  // Fall back to REST API (GitHub Actions / local dev with env vars)
   if (!ACCOUNT_ID || !DB_ID || !API_TOKEN) {
-    console.warn('[queries] D1 env vars not set — returning empty data (expected during local dev)');
+    console.warn('[wnba/queries] D1 env vars not set — returning empty data (expected during local dev)');
     return [];
   }
   const controller = new AbortController();
@@ -55,13 +63,14 @@ async function d1query<T>(sql: string, params: unknown[] = []): Promise<T[]> {
   return json.result?.[0]?.results ?? [];
 }
 
-export async function getTeamSchedule(teamSlug: string): Promise<WNBAGame[]> {
+export async function getTeamSchedule(teamSlug: string, db?: D1Database): Promise<WNBAGame[]> {
   const rows = await d1query<Omit<WNBAGame, 'broadcast'> & { broadcast: string }>(
     `SELECT * FROM wnba_games
      WHERE (home_team = ? OR away_team = ?)
        AND (season_type = '2' OR season_type = '3')
      ORDER BY date ASC`,
-    [teamSlug, teamSlug]
+    [teamSlug, teamSlug],
+    db
   );
   return rows.map(r => {
     let broadcast: string[];
@@ -74,26 +83,30 @@ export async function getTeamSchedule(teamSlug: string): Promise<WNBAGame[]> {
   });
 }
 
-export async function getStandings(): Promise<WNBAStanding[]> {
+export async function getStandings(db?: D1Database): Promise<WNBAStanding[]> {
   return d1query<WNBAStanding>(
-    `SELECT * FROM wnba_standings ORDER BY wins DESC, losses ASC`
+    `SELECT * FROM wnba_standings ORDER BY wins DESC, losses ASC`,
+    [],
+    db
   );
 }
 
-export async function getTeamStats(teamSlug: string): Promise<WNBATeamStats | null> {
+export async function getTeamStats(teamSlug: string, db?: D1Database): Promise<WNBATeamStats | null> {
   const rows = await d1query<WNBATeamStats>(
     `SELECT * FROM wnba_team_stats WHERE team = ?`,
-    [teamSlug]
+    [teamSlug],
+    db
   );
   return rows[0] ?? null;
 }
 
-export async function getTeamRoster(teamSlug: string): Promise<WNBAPlayer[]> {
+export async function getTeamRoster(teamSlug: string, db?: D1Database): Promise<WNBAPlayer[]> {
   return d1query<WNBAPlayer>(
     `SELECT * FROM wnba_players WHERE team_slug = ? ORDER BY
        CASE position WHEN 'G' THEN 1 WHEN 'F' THEN 2 WHEN 'C' THEN 3 ELSE 4 END,
        CAST(jersey AS INTEGER) ASC`,
-    [teamSlug]
+    [teamSlug],
+    db
   );
 }
 
@@ -101,14 +114,15 @@ function todayET(): string {
   return new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
 }
 
-export async function getTodaysGames(): Promise<WNBAGame[]> {
+export async function getTodaysGames(db?: D1Database): Promise<WNBAGame[]> {
   const today = todayET();
   const rows = await d1query<Omit<WNBAGame, 'broadcast'> & { broadcast: string }>(
     `SELECT * FROM wnba_games
      WHERE date = ?
        AND (season_type = '2' OR season_type = '3')
      ORDER BY time ASC`,
-    [today]
+    [today],
+    db
   );
   return rows.map(r => {
     let broadcast: string[];
@@ -117,16 +131,17 @@ export async function getTodaysGames(): Promise<WNBAGame[]> {
   });
 }
 
-export async function getUpcomingGames(days = 7): Promise<WNBAGame[]> {
+export async function getUpcomingGames(days = 7, db?: D1Database): Promise<WNBAGame[]> {
   const today = todayET();
-  const until = new Date(Date.now() - 4 * 60 * 60 * 1000 + days * 86_400_000).toISOString().slice(0, 10);
+  const until = new Date(Date.now() + days * 86_400_000).toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
   const rows = await d1query<Omit<WNBAGame, 'broadcast'> & { broadcast: string }>(
     `SELECT * FROM wnba_games
      WHERE date >= ? AND date <= ?
        AND (season_type = '2' OR season_type = '3')
      ORDER BY date ASC, time ASC
      LIMIT 8`,
-    [today, until]
+    [today, until],
+    db
   );
   return rows.map(r => {
     let broadcast: string[];
@@ -135,11 +150,12 @@ export async function getUpcomingGames(days = 7): Promise<WNBAGame[]> {
   });
 }
 
-export async function getPlayerStats(espnIds: string[]): Promise<WNBAPlayerStats[]> {
+export async function getPlayerStats(espnIds: string[], db?: D1Database): Promise<WNBAPlayerStats[]> {
   if (espnIds.length === 0) return [];
   const placeholders = espnIds.map(() => '?').join(', ');
   return d1query<WNBAPlayerStats>(
     `SELECT * FROM wnba_player_stats WHERE espn_id IN (${placeholders})`,
-    espnIds
+    espnIds,
+    db
   );
 }

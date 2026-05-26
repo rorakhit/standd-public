@@ -1,3 +1,4 @@
+/// <reference types="@cloudflare/workers-types" />
 import type { NWSLGame, NWSLGameStats, NWSLPlayer, NWSLPlayerEvent, NWSLStanding } from './types';
 
 const ACCOUNT_ID = import.meta.env.CLOUDFLARE_ACCOUNT_ID;
@@ -12,7 +13,14 @@ interface D1Response<T> {
   result?: Array<{ results: T[] }>;
 }
 
-async function d1query<T>(sql: string, params: unknown[] = []): Promise<T[]> {
+async function d1query<T>(sql: string, params: unknown[] = [], db?: D1Database): Promise<T[]> {
+  // Use native binding when available (Cloudflare Workers runtime)
+  if (db) {
+    const stmt = db.prepare(sql);
+    const result = await stmt.bind(...params).all<T>();
+    return result.results ?? [];
+  }
+  // Fall back to REST API (GitHub Actions / local dev with env vars)
   if (!ACCOUNT_ID || !DB_ID || !API_TOKEN) {
     console.warn('[nwsl/queries] D1 env vars not set — returning empty data (expected during local dev)');
     return [];
@@ -66,36 +74,41 @@ function parseGames(rows: Array<Omit<NWSLGame, 'broadcast'> & { broadcast: strin
   });
 }
 
-export async function getNwslTodaysGames(): Promise<NWSLGame[]> {
+export async function getNwslTodaysGames(db?: D1Database): Promise<NWSLGame[]> {
   const today = todayET();
   const rows = await d1query<Omit<NWSLGame, 'broadcast'> & { broadcast: string }>(
     `SELECT * FROM nwsl_games WHERE date = ? ORDER BY time ASC`,
-    [today]
+    [today],
+    db
   );
   return parseGames(rows);
 }
 
-export async function getNwslTeamSchedule(teamSlug: string): Promise<NWSLGame[]> {
+export async function getNwslTeamSchedule(teamSlug: string, db?: D1Database): Promise<NWSLGame[]> {
   const rows = await d1query<Omit<NWSLGame, 'broadcast'> & { broadcast: string }>(
     `SELECT * FROM nwsl_games
      WHERE (home_team = ? OR away_team = ?)
      ORDER BY date ASC`,
-    [teamSlug, teamSlug]
+    [teamSlug, teamSlug],
+    db
   );
   return parseGames(rows);
 }
 
-export async function getNwslStandings(): Promise<NWSLStanding[]> {
+export async function getNwslStandings(db?: D1Database): Promise<NWSLStanding[]> {
   return d1query<NWSLStanding>(
-    `SELECT * FROM nwsl_standings ORDER BY points DESC, goal_differential DESC`
+    `SELECT * FROM nwsl_standings ORDER BY points DESC, goal_differential DESC`,
+    [],
+    db
   );
 }
 
-export async function getNwslTeamRoster(teamSlug: string): Promise<NWSLPlayer[]> {
+export async function getNwslTeamRoster(teamSlug: string, db?: D1Database): Promise<NWSLPlayer[]> {
   return d1query<NWSLPlayer>(
     `SELECT * FROM nwsl_players WHERE team_slug = ?
      ORDER BY CASE position WHEN 'GK' THEN 0 WHEN 'DEF' THEN 1 WHEN 'MID' THEN 2 WHEN 'FWD' THEN 3 ELSE 4 END, number ASC`,
-    [teamSlug]
+    [teamSlug],
+    db
   );
 }
 
@@ -106,15 +119,15 @@ export function playerNameToSlug(name: string): string {
     .replace(/^-|-$/g, '');
 }
 
-export async function getNwslPlayerByNameSlug(teamSlug: string, nameSlug: string): Promise<NWSLPlayer | null> {
-  const roster = await getNwslTeamRoster(teamSlug);
+export async function getNwslPlayerByNameSlug(teamSlug: string, nameSlug: string, db?: D1Database): Promise<NWSLPlayer | null> {
+  const roster = await getNwslTeamRoster(teamSlug, db);
   const matches = roster.filter(p => playerNameToSlug(p.name) === nameSlug);
   // Prefer starter/lower number when slugs collide (two players same name)
   if (matches.length > 1) matches.sort((a, b) => (a.number ?? 999) - (b.number ?? 999));
   return matches[0] ?? null;
 }
 
-export async function getNwslPlayerSeasonStats(espnId: string): Promise<{
+export async function getNwslPlayerSeasonStats(espnId: string, db?: D1Database): Promise<{
   espn_id: string; player_name: string; team_slug: string;
   goals: number; assists: number; appearances: number;
   saves: number; goals_conceded: number; yellow_cards: number; red_cards: number; own_goals: number; penalty_goals: number;
@@ -130,12 +143,13 @@ export async function getNwslPlayerSeasonStats(espnId: string): Promise<{
             SUM(yellow_cards) AS yellow_cards, SUM(red_cards) AS red_cards,
             SUM(own_goals) AS own_goals, SUM(penalty_goals) AS penalty_goals
      FROM nwsl_player_events WHERE espn_id = ? GROUP BY espn_id`,
-    [espnId]
+    [espnId],
+    db
   );
   return rows[0] ?? null;
 }
 
-export async function getNwslPlayerMatchLog(espnId: string): Promise<Array<NWSLPlayerEvent & {
+export async function getNwslPlayerMatchLog(espnId: string, db?: D1Database): Promise<Array<NWSLPlayerEvent & {
   date: string; home_team: string; away_team: string; home_score: number | null; away_score: number | null;
 }>> {
   return d1query(
@@ -144,26 +158,29 @@ export async function getNwslPlayerMatchLog(espnId: string): Promise<Array<NWSLP
      JOIN nwsl_games g ON pe.event_id = g.id
      WHERE pe.espn_id = ?
      ORDER BY g.date DESC`,
-    [espnId]
+    [espnId],
+    db
   );
 }
 
-export async function getNwslGameStats(eventId: string): Promise<NWSLGameStats[]> {
+export async function getNwslGameStats(eventId: string, db?: D1Database): Promise<NWSLGameStats[]> {
   return d1query<NWSLGameStats>(
     `SELECT * FROM nwsl_game_stats WHERE event_id = ?`,
-    [eventId]
+    [eventId],
+    db
   );
 }
 
-export async function getNwslPlayerEventsByTeam(teamSlug: string): Promise<NWSLPlayerEvent[]> {
+export async function getNwslPlayerEventsByTeam(teamSlug: string, db?: D1Database): Promise<NWSLPlayerEvent[]> {
   return d1query<NWSLPlayerEvent>(
     `SELECT * FROM nwsl_player_events WHERE team_slug = ?
      ORDER BY event_id DESC`,
-    [teamSlug]
+    [teamSlug],
+    db
   );
 }
 
-export async function getNwslTopScorers(limit = 10): Promise<Array<{ espn_id: string; player_name: string; team_slug: string; goals: number; assists: number; appearances: number }>> {
+export async function getNwslTopScorers(limit = 10, db?: D1Database): Promise<Array<{ espn_id: string; player_name: string; team_slug: string; goals: number; assists: number; appearances: number }>> {
   return d1query(
     `SELECT espn_id, player_name, team_slug,
             SUM(goals) AS goals,
@@ -173,11 +190,12 @@ export async function getNwslTopScorers(limit = 10): Promise<Array<{ espn_id: st
      GROUP BY espn_id
      ORDER BY goals DESC, assists DESC
      LIMIT ?`,
-    [limit]
+    [limit],
+    db
   );
 }
 
-export async function getLastMatchFormation(teamSlug: string): Promise<Array<NWSLPlayerEvent & { formation: string | null; game_date: string; opp_slug: string; team_score: number | null; opp_score: number | null }>> {
+export async function getLastMatchFormation(teamSlug: string, db?: D1Database): Promise<Array<NWSLPlayerEvent & { formation: string | null; game_date: string; opp_slug: string; team_score: number | null; opp_score: number | null }>> {
   return d1query(
     `SELECT pe.*, gs.formation,
             g.date AS game_date,
@@ -196,11 +214,12 @@ export async function getLastMatchFormation(teamSlug: string): Promise<Array<NWS
      ) last ON pe.event_id = last.event_id
      WHERE pe.team_slug = ?
      ORDER BY pe.starter DESC, pe.formation_place ASC`,
-    [teamSlug, teamSlug, teamSlug, teamSlug, teamSlug]
+    [teamSlug, teamSlug, teamSlug, teamSlug, teamSlug],
+    db
   );
 }
 
-export async function getNwslUpcomingGames(days = 7): Promise<NWSLGame[]> {
+export async function getNwslUpcomingGames(days = 7, db?: D1Database): Promise<NWSLGame[]> {
   const today = todayET();
   const until = new Date(Date.now() + days * 86_400_000).toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
   const rows = await d1query<Omit<NWSLGame, 'broadcast'> & { broadcast: string }>(
@@ -208,7 +227,8 @@ export async function getNwslUpcomingGames(days = 7): Promise<NWSLGame[]> {
      WHERE date >= ? AND date <= ?
      ORDER BY date ASC, time ASC
      LIMIT 8`,
-    [today, until]
+    [today, until],
+    db
   );
   return parseGames(rows);
 }

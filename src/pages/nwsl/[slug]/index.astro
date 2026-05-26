@@ -83,11 +83,12 @@ function displayName(s: string): string {
 }
 
 // ── Data ──────────────────────────────────────────────────────────────────────
+const db = Astro.locals.runtime?.env?.DB;
 const [nwslStandings, d1Games, lastXI, d1Roster] = await Promise.all([
-  getNwslStandings().catch(() => []),
-  getNwslTeamSchedule(team.slug).catch(() => []),
-  getLastMatchFormation(team.slug).catch(() => []),
-  getNwslTeamRoster(team.slug).catch(() => []),
+  getNwslStandings(db).catch(() => []),
+  getNwslTeamSchedule(team.slug, db).catch(() => []),
+  getLastMatchFormation(team.slug, db).catch(() => []),
+  getNwslTeamRoster(team.slug, db).catch(() => []),
 ]);
 
 type GameMatch = {

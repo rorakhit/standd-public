@@ -1,6 +1,6 @@
-import type { TeamConfig } from '../../shared/types';
+import type { WNBATeamConfig } from '../../shared/types';
 
-export const team: TeamConfig = {
+export const team: WNBATeamConfig = {
   name: 'Chicago Sky',
   slug: 'chicago-sky',
   color: '#4175A6',

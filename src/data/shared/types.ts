@@ -1,12 +1,33 @@
-export interface TeamConfig {
+/** Fields shared by every team regardless of league. */
+export interface BaseTeamConfig {
   name: string;
   slug: string;
   color: string;
   badge?: string;
-  standingsKey: string;
   officialUrl: string;
   ticketsUrl: string;
 }
+
+/** NWSL-specific team config. */
+export interface NWSLTeamConfig extends BaseTeamConfig {
+  short: string;
+  /** On-color hex for text rendered on top of `color`. */
+  text: string;
+  standingsKey: string;
+  city: string;
+  venue: string;
+  supporter: string;
+  tagline: string;
+  est: number;
+}
+
+/** WNBA-specific team config. */
+export interface WNBATeamConfig extends BaseTeamConfig {
+  standingsKey: string;
+}
+
+/** Union of all league-specific configs — use at call sites that accept any team. */
+export type TeamConfig = NWSLTeamConfig | WNBATeamConfig;
 
 export interface MatchResult {
   teamScore: number;

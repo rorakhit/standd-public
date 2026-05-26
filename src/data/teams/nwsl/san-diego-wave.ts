@@ -1,15 +1,51 @@
 import type { Player } from '../../shared/types';
-import type { Match, TeamConfig } from '../../shared/types';
+import type { NWSLTeamConfig } from '../../shared/types';
 
-export const team: TeamConfig = {
-  name: 'San Diego Wave',
+export const team: NWSLTeamConfig = {
+  name: 'San Diego Wave FC',
   slug: 'san-diego-wave',
-  color: '#21C6D9',
+  short: 'San Diego Wave',
+  color: '#0E315B',
+  text: '#FAF6F0',
   badge: 'https://images.nwslsoccer.com/image/private/t_q-best/v1710436105/prd/assets/teams/san-diego-wave-fc.svg',
   standingsKey: 'San Diego Wave',
   officialUrl: 'https://sandiegowavefc.com/',
   ticketsUrl: 'https://seatgeek.com/san-diego-wave-fc-tickets',
+  city: 'San Diego',
+  venue: 'Snapdragon Stadium',
+  supporter: 'The Sirens',
+  tagline: 'Ride the wave.',
+  est: 2022,
 };
+
+
+export const roster: Player[] = [
+  { number: 1, name: "Luisa Agudelo", position: 'GK', hometown: "Cali, Colombia", leagueSlug: 'nwsl', teamSlug: 'san-diego-wave', teamName: "San Diego Wave", countryCode: 'co', height: "5'7\"" },
+  { number: 31, name: "DiDi Haracic", position: 'GK', hometown: "Sarajevo, Bosnia", leagueSlug: 'nwsl', teamSlug: 'san-diego-wave', teamName: "San Diego Wave", height: "5'9\"", photo: '/players/nwsl/san-diego-wave/haracic-d.webp' },
+  { number: 99, name: "Leah Freeman", position: 'GK', hometown: "Berkeley, California", leagueSlug: 'nwsl', teamSlug: 'san-diego-wave', teamName: "San Diego Wave", countryCode: 'us', height: "5'10\"", photo: '/players/nwsl/san-diego-wave/freeman-l.webp' },
+  { number: 2, name: "Kennedy Wesley", position: 'DEF', hometown: "Seal Beach, California", leagueSlug: 'nwsl', teamSlug: 'san-diego-wave', teamName: "San Diego Wave", countryCode: 'us', height: "5'5\"", photo: '/players/nwsl/san-diego-wave/wesley-k.webp' },
+  { number: 3, name: "Trinity Armstrong", position: 'DEF', hometown: "Frisco, Texas", leagueSlug: 'nwsl', teamSlug: 'san-diego-wave', teamName: "San Diego Wave", countryCode: 'us', height: "5'6\"", photo: '/players/nwsl/san-diego-wave/armstrong-t.webp' },
+  { number: 14, name: "Kristen McNabb", position: 'DEF', hometown: "Montville, New Jersey", leagueSlug: 'nwsl', teamSlug: 'san-diego-wave', teamName: "San Diego Wave", countryCode: 'us', height: "5'5\"", photo: '/players/nwsl/san-diego-wave/mcnabb-k.webp' },
+  { number: 16, name: "Amelia Donna Van Zanten", position: 'DEF', hometown: "Buffalo Grove, Illinois", leagueSlug: 'nwsl', teamSlug: 'san-diego-wave', teamName: "San Diego Wave", countryCode: 'jm', height: "5'5\"" },
+  { number: 23, name: "Nya Harrison", position: 'DEF', hometown: "San Diego, California", leagueSlug: 'nwsl', teamSlug: 'san-diego-wave', teamName: "San Diego Wave", height: "5'4\"", photo: '/players/nwsl/san-diego-wave/harrison-n.webp' },
+  { number: 30, name: "Daniela Arias", position: 'DEF', hometown: "Bucaramanga, Colombia", leagueSlug: 'nwsl', teamSlug: 'san-diego-wave', teamName: "San Diego Wave", countryCode: 'co', height: "5'7\"", photo: '/players/nwsl/san-diego-wave/arias-d.webp' },
+  { number: 75, name: "Perle Morroni", position: 'DEF', hometown: "Montpellier, France", leagueSlug: 'nwsl', teamSlug: 'san-diego-wave', teamName: "San Diego Wave", countryCode: 'fr', height: "5'2\"", photo: '/players/nwsl/san-diego-wave/morroni-p.webp' },
+  { number: 8, name: "Kimmi Ascanio", position: 'MID', hometown: "Doral, Florida", leagueSlug: 'nwsl', teamSlug: 'san-diego-wave', teamName: "San Diego Wave", countryCode: 'us', height: "5'5\"", photo: '/players/nwsl/san-diego-wave/ascanio-k.webp' },
+  { number: 10, name: "Kenza Dali", position: 'MID', hometown: "Sainte-Colombe, France", leagueSlug: 'nwsl', teamSlug: 'san-diego-wave', teamName: "San Diego Wave", countryCode: 'fr', height: "5'4\"", photo: '/players/nwsl/san-diego-wave/dali-k.webp' },
+  { number: 11, name: "Gia Corley", position: 'MID', hometown: "Tacoma, Washington", leagueSlug: 'nwsl', teamSlug: 'san-diego-wave', teamName: "San Diego Wave", countryCode: 'us', height: "5'3\"", photo: '/players/nwsl/san-diego-wave/corley-g.webp' },
+  { number: 18, name: "Laurina Fazer", position: 'MID', hometown: "Argenteuil, France", leagueSlug: 'nwsl', teamSlug: 'san-diego-wave', teamName: "San Diego Wave", countryCode: 'fr', height: "5'5\"", photo: '/players/nwsl/san-diego-wave/fazer-l.webp' },
+  { number: 19, name: "Tatum Wynalda", position: 'MID', hometown: "Thousand Oaks, California", leagueSlug: 'nwsl', teamSlug: 'san-diego-wave', teamName: "San Diego Wave", countryCode: 'us', height: "5'5\"" },
+  { number: 22, name: "Lia Godfrey", position: 'MID', hometown: "Fleming Island, Florida", leagueSlug: 'nwsl', teamSlug: 'san-diego-wave', teamName: "San Diego Wave", countryCode: 'us', height: "5'4\"" },
+  { number: 28, name: "Jordan Fusco", position: 'MID', hometown: "Olmsted Township, Ohio", leagueSlug: 'nwsl', teamSlug: 'san-diego-wave', teamName: "San Diego Wave", countryCode: 'us', height: "5'9\"", photo: '/players/nwsl/san-diego-wave/fusco-j.webp' },
+  { number: 33, name: "Kiki Pickett", position: 'MID', hometown: "Santa Barbara, California", leagueSlug: 'nwsl', teamSlug: 'san-diego-wave', teamName: "San Diego Wave", countryCode: 'us', height: "5'0\"", photo: '/players/nwsl/san-diego-wave/pickett-k.webp' },
+  { number: 7, name: "Melanie Barcenas", position: 'FWD', hometown: "San Diego, California", leagueSlug: 'nwsl', teamSlug: 'san-diego-wave', teamName: "San Diego Wave", countryCode: 'us', height: "5'4\"", photo: '/players/nwsl/san-diego-wave/barcenas-m.webp' },
+  { number: 9, name: "Adriana Leon", position: 'FWD', hometown: "Ontario, Canada", leagueSlug: 'nwsl', teamSlug: 'san-diego-wave', teamName: "San Diego Wave", countryCode: 'ca', height: "5'3\"", photo: '/players/nwsl/san-diego-wave/leon-a.webp' },
+  { number: 15, name: "Trinity Byars", position: 'FWD', hometown: "Richardson, Texas", leagueSlug: 'nwsl', teamSlug: 'san-diego-wave', teamName: "San Diego Wave", countryCode: 'us', height: "5'5\"", photo: '/players/nwsl/san-diego-wave/byars-t.webp' },
+  { number: 17, name: "Ludmila da Silva", position: 'FWD', hometown: "Guarulhos, São Paulo, Brazil", leagueSlug: 'nwsl', teamSlug: 'san-diego-wave', teamName: "San Diego Wave", countryCode: 'br', height: "5'4\"", photo: '/players/nwsl/san-diego-wave/silva-l.webp' },
+  { number: 20, name: "Catarina Macário", position: 'FWD', hometown: "San Diego, California", leagueSlug: 'nwsl', teamSlug: 'san-diego-wave', teamName: "San Diego Wave", countryCode: 'us', height: "5'5\"" },
+  { number: 81, name: "Gabrielle Jordão Portilho", position: 'FWD', hometown: "Brasília, Brazil", leagueSlug: 'nwsl', teamSlug: 'san-diego-wave', teamName: "San Diego Wave", countryCode: 'br', height: "5'2\"", photo: '/players/nwsl/san-diego-wave/portilho-g.webp' },
+  { number: 88, name: "Maria Eduarda Rodrigues Silva", position: 'FWD', hometown: "São Paulo, Brazil", leagueSlug: 'nwsl', teamSlug: 'san-diego-wave', teamName: "San Diego Wave", countryCode: 'br', height: "5'2\"", photo: '/players/nwsl/san-diego-wave/silva-m.webp' },
+];
 
 export const matches: Match[] = [
   {
@@ -70,11 +106,11 @@ export const matches: Match[] = [
   },
   {
     date: '2026-05-03',
-    time: '7:00 PM',
     opponent: 'Bay',
     homeAway: 'home',
     venue: 'Snapdragon Stadium, San Diego, California',
     broadcast: ['Victory+'],
+    result: { teamScore: 0, opponentScore: 1 },
   },
   {
     date: '2026-05-09',
@@ -252,32 +288,4 @@ export const matches: Match[] = [
     venue: 'PayPal Park, San Jose, California',
     broadcast: ['espn tbd'],
   },
-];
-
-export const roster: Player[] = [
-  { number: 1, name: "Luisa Agudelo", position: 'GK', hometown: "Cali, Colombia", leagueSlug: 'nwsl', teamSlug: 'san-diego-wave', teamName: "San Diego Wave", countryCode: 'co', height: "5'7\"" },
-  { number: 31, name: "DiDi Haracic", position: 'GK', hometown: "Sarajevo, Bosnia", leagueSlug: 'nwsl', teamSlug: 'san-diego-wave', teamName: "San Diego Wave", height: "5'9\"", photo: '/players/nwsl/san-diego-wave/haracic-d.webp' },
-  { number: 99, name: "Leah Freeman", position: 'GK', hometown: "Berkeley, California", leagueSlug: 'nwsl', teamSlug: 'san-diego-wave', teamName: "San Diego Wave", countryCode: 'us', height: "5'10\"", photo: '/players/nwsl/san-diego-wave/freeman-l.webp' },
-  { number: 2, name: "Kennedy Wesley", position: 'DEF', hometown: "Seal Beach, California", leagueSlug: 'nwsl', teamSlug: 'san-diego-wave', teamName: "San Diego Wave", countryCode: 'us', height: "5'5\"", photo: '/players/nwsl/san-diego-wave/wesley-k.webp' },
-  { number: 3, name: "Trinity Armstrong", position: 'DEF', hometown: "Frisco, Texas", leagueSlug: 'nwsl', teamSlug: 'san-diego-wave', teamName: "San Diego Wave", countryCode: 'us', height: "5'6\"", photo: '/players/nwsl/san-diego-wave/armstrong-t.webp' },
-  { number: 14, name: "Kristen McNabb", position: 'DEF', hometown: "Montville, New Jersey", leagueSlug: 'nwsl', teamSlug: 'san-diego-wave', teamName: "San Diego Wave", countryCode: 'us', height: "5'5\"", photo: '/players/nwsl/san-diego-wave/mcnabb-k.webp' },
-  { number: 16, name: "Amelia Donna Van Zanten", position: 'DEF', hometown: "Buffalo Grove, Illinois", leagueSlug: 'nwsl', teamSlug: 'san-diego-wave', teamName: "San Diego Wave", countryCode: 'jm', height: "5'5\"" },
-  { number: 23, name: "Nya Harrison", position: 'DEF', hometown: "San Diego, California", leagueSlug: 'nwsl', teamSlug: 'san-diego-wave', teamName: "San Diego Wave", height: "5'4\"", photo: '/players/nwsl/san-diego-wave/harrison-n.webp' },
-  { number: 30, name: "Daniela Arias", position: 'DEF', hometown: "Bucaramanga, Colombia", leagueSlug: 'nwsl', teamSlug: 'san-diego-wave', teamName: "San Diego Wave", countryCode: 'co', height: "5'7\"", photo: '/players/nwsl/san-diego-wave/arias-d.webp' },
-  { number: 75, name: "Perle Morroni", position: 'DEF', hometown: "Montpellier, France", leagueSlug: 'nwsl', teamSlug: 'san-diego-wave', teamName: "San Diego Wave", countryCode: 'fr', height: "5'2\"", photo: '/players/nwsl/san-diego-wave/morroni-p.webp' },
-  { number: 8, name: "Kimmi Ascanio", position: 'MID', hometown: "Doral, Florida", leagueSlug: 'nwsl', teamSlug: 'san-diego-wave', teamName: "San Diego Wave", countryCode: 'us', height: "5'5\"", photo: '/players/nwsl/san-diego-wave/ascanio-k.webp' },
-  { number: 10, name: "Kenza Dali", position: 'MID', hometown: "Sainte-Colombe, France", leagueSlug: 'nwsl', teamSlug: 'san-diego-wave', teamName: "San Diego Wave", countryCode: 'fr', height: "5'4\"", photo: '/players/nwsl/san-diego-wave/dali-k.webp' },
-  { number: 11, name: "Gia Corley", position: 'MID', hometown: "Tacoma, Washington", leagueSlug: 'nwsl', teamSlug: 'san-diego-wave', teamName: "San Diego Wave", countryCode: 'us', height: "5'3\"", photo: '/players/nwsl/san-diego-wave/corley-g.webp' },
-  { number: 18, name: "Laurina Fazer", position: 'MID', hometown: "Argenteuil, France", leagueSlug: 'nwsl', teamSlug: 'san-diego-wave', teamName: "San Diego Wave", countryCode: 'fr', height: "5'5\"", photo: '/players/nwsl/san-diego-wave/fazer-l.webp' },
-  { number: 19, name: "Tatum Wynalda", position: 'MID', hometown: "Thousand Oaks, California", leagueSlug: 'nwsl', teamSlug: 'san-diego-wave', teamName: "San Diego Wave", countryCode: 'us', height: "5'5\"" },
-  { number: 22, name: "Lia Godfrey", position: 'MID', hometown: "Fleming Island, Florida", leagueSlug: 'nwsl', teamSlug: 'san-diego-wave', teamName: "San Diego Wave", countryCode: 'us', height: "5'4\"" },
-  { number: 28, name: "Jordan Fusco", position: 'MID', hometown: "Olmsted Township, Ohio", leagueSlug: 'nwsl', teamSlug: 'san-diego-wave', teamName: "San Diego Wave", countryCode: 'us', height: "5'9\"", photo: '/players/nwsl/san-diego-wave/fusco-j.webp' },
-  { number: 33, name: "Kiki Pickett", position: 'MID', hometown: "Santa Barbara, California", leagueSlug: 'nwsl', teamSlug: 'san-diego-wave', teamName: "San Diego Wave", countryCode: 'us', height: "5'0\"", photo: '/players/nwsl/san-diego-wave/pickett-k.webp' },
-  { number: 7, name: "Melanie Barcenas", position: 'FWD', hometown: "San Diego, California", leagueSlug: 'nwsl', teamSlug: 'san-diego-wave', teamName: "San Diego Wave", countryCode: 'us', height: "5'4\"", photo: '/players/nwsl/san-diego-wave/barcenas-m.webp' },
-  { number: 9, name: "Adriana Leon", position: 'FWD', hometown: "Ontario, Canada", leagueSlug: 'nwsl', teamSlug: 'san-diego-wave', teamName: "San Diego Wave", countryCode: 'ca', height: "5'3\"", photo: '/players/nwsl/san-diego-wave/leon-a.webp' },
-  { number: 15, name: "Trinity Byars", position: 'FWD', hometown: "Richardson, Texas", leagueSlug: 'nwsl', teamSlug: 'san-diego-wave', teamName: "San Diego Wave", countryCode: 'us', height: "5'5\"", photo: '/players/nwsl/san-diego-wave/byars-t.webp' },
-  { number: 17, name: "Ludmila da Silva", position: 'FWD', hometown: "Guarulhos, São Paulo, Brazil", leagueSlug: 'nwsl', teamSlug: 'san-diego-wave', teamName: "San Diego Wave", countryCode: 'br', height: "5'4\"", photo: '/players/nwsl/san-diego-wave/silva-l.webp' },
-  { number: 20, name: "Catarina Macário", position: 'FWD', hometown: "San Diego, California", leagueSlug: 'nwsl', teamSlug: 'san-diego-wave', teamName: "San Diego Wave", countryCode: 'us', height: "5'5\"" },
-  { number: 81, name: "Gabrielle Jordão Portilho", position: 'FWD', hometown: "Brasília, Brazil", leagueSlug: 'nwsl', teamSlug: 'san-diego-wave', teamName: "San Diego Wave", countryCode: 'br', height: "5'2\"", photo: '/players/nwsl/san-diego-wave/portilho-g.webp' },
-  { number: 88, name: "Maria Eduarda Rodrigues Silva", position: 'FWD', hometown: "São Paulo, Brazil", leagueSlug: 'nwsl', teamSlug: 'san-diego-wave', teamName: "San Diego Wave", countryCode: 'br', height: "5'2\"", photo: '/players/nwsl/san-diego-wave/silva-m.webp' },
 ];

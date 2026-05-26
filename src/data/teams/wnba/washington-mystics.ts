@@ -1,6 +1,6 @@
-import type { TeamConfig } from '../../shared/types';
+import type { WNBATeamConfig } from '../../shared/types';
 
-export const team: TeamConfig = {
+export const team: WNBATeamConfig = {
   name: 'Washington Mystics',
   slug: 'washington-mystics',
   color: '#D0363A',

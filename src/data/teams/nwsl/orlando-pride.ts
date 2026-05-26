@@ -1,15 +1,54 @@
 import type { Player } from '../../shared/types';
-import type { Match, TeamConfig } from '../../shared/types';
+import type { NWSLTeamConfig } from '../../shared/types';
 
-export const team: TeamConfig = {
+export const team: NWSLTeamConfig = {
   name: 'Orlando Pride',
   slug: 'orlando-pride',
-  color: '#7B35C0',
+  short: 'Orlando Pride',
+  color: '#582C83',
+  text: '#FAF6F0',
   badge: 'https://images.nwslsoccer.com/image/private/t_q-best/v1710436099/prd/assets/teams/orlando-pride.svg',
   standingsKey: 'Orlando Pride',
   officialUrl: 'https://www.orlandocitysc.com/pride/',
   ticketsUrl: 'https://seatgeek.com/orlando-pride-tickets',
+  city: 'Orlando',
+  venue: 'Inter&Co Stadium',
+  supporter: 'The Black Swans',
+  tagline: 'Champions of the Sunshine State.',
+  est: 2016,
 };
+
+
+export const roster: Player[] = [
+  { number: 1, name: "Anna Moorhouse", position: 'GK', hometown: "Oldham, England", leagueSlug: 'nwsl', teamSlug: 'orlando-pride', teamName: "Orlando Pride", countryCode: 'gb', height: "6'1\"", photo: '/players/nwsl/orlando-pride/moorhouse-a.webp' },
+  { number: 31, name: "Cara Martin", position: 'GK', hometown: "Alexandria, Virginia", leagueSlug: 'nwsl', teamSlug: 'orlando-pride', teamName: "Orlando Pride", countryCode: 'us', height: "5'10\"", photo: '/players/nwsl/orlando-pride/martin-c.webp' },
+  { number: 36, name: "Kat Asman", position: 'GK', hometown: "Roswell, Georgia", leagueSlug: 'nwsl', teamSlug: 'orlando-pride', teamName: "Orlando Pride", countryCode: 'us', height: "5'10\"", photo: '/players/nwsl/orlando-pride/asman-k.webp' },
+  { number: 40, name: "McKinley Crone", position: 'GK', hometown: "Maitland, Florida", leagueSlug: 'nwsl', teamSlug: 'orlando-pride', teamName: "Orlando Pride", countryCode: 'us', height: "5'9\"", photo: '/players/nwsl/orlando-pride/crone-m.webp' },
+  { number: 77, name: "Cosette Morché", position: 'GK', hometown: "Lawrenceville, Georgia", leagueSlug: 'nwsl', teamSlug: 'orlando-pride', teamName: "Orlando Pride", countryCode: 'us', height: "6'2\"", photo: '/players/nwsl/orlando-pride/morche-c.webp' },
+  { number: 2, name: "Haley McCutcheon", position: 'DEF', hometown: "Overland Park, Kansas", leagueSlug: 'nwsl', teamSlug: 'orlando-pride', teamName: "Orlando Pride", countryCode: 'us', height: "5'6\"", photo: '/players/nwsl/orlando-pride/mccutcheon-h.webp' },
+  { number: 3, name: "Kylie Nadaner", position: 'DEF', hometown: "Endicott, New York", leagueSlug: 'nwsl', teamSlug: 'orlando-pride', teamName: "Orlando Pride", countryCode: 'us', height: "5'8\"", photo: '/players/nwsl/orlando-pride/nadaner-k.webp' },
+  { number: 4, name: "Rafaelle Leone Carvalho Souza", position: 'DEF', hometown: "Cipó, Brazil", leagueSlug: 'nwsl', teamSlug: 'orlando-pride', teamName: "Orlando Pride", countryCode: 'br', height: "5'9\"", photo: '/players/nwsl/orlando-pride/souza-r.webp' },
+  { number: 16, name: "Zara Chavoshi", position: 'DEF', hometown: "Potomac, Maryland", leagueSlug: 'nwsl', teamSlug: 'orlando-pride', teamName: "Orlando Pride", countryCode: 'ca', height: "5'7\"", photo: '/players/nwsl/orlando-pride/chavoshi-z.webp' },
+  { number: 21, name: "Oihane Hernández", position: 'DEF', hometown: "Sopela, Spain", leagueSlug: 'nwsl', teamSlug: 'orlando-pride', teamName: "Orlando Pride", countryCode: 'es', height: "5'5\"", photo: '/players/nwsl/orlando-pride/hernandez-o.webp' },
+  { number: 23, name: "Nicole Payne", position: 'DEF', hometown: "Birmingham, Alabama", leagueSlug: 'nwsl', teamSlug: 'orlando-pride', teamName: "Orlando Pride", countryCode: 'ng', height: "5'5\"", photo: '/players/nwsl/orlando-pride/payne-n.webp' },
+  { number: 25, name: "Kerry Abello", position: 'DEF', hometown: "Elmhurst, Illinois", leagueSlug: 'nwsl', teamSlug: 'orlando-pride', teamName: "Orlando Pride", countryCode: 'us', height: "5'5\"", photo: '/players/nwsl/orlando-pride/abello-k.webp' },
+  { number: 41, name: "Hannah Anderson", position: 'DEF', hometown: "Plano, Texas", leagueSlug: 'nwsl', teamSlug: 'orlando-pride', teamName: "Orlando Pride", countryCode: 'us', height: "5'10\"", photo: '/players/nwsl/orlando-pride/anderson-h.webp' },
+  { number: 5, name: "Hailie Mace", position: 'MID', hometown: "Ventura, California", leagueSlug: 'nwsl', teamSlug: 'orlando-pride', teamName: "Orlando Pride", countryCode: 'us', height: "5'7\"", photo: '/players/nwsl/orlando-pride/mace-h.webp' },
+  { number: 6, name: "Ally Lemos", position: 'MID', hometown: "Glendora, California", leagueSlug: 'nwsl', teamSlug: 'orlando-pride', teamName: "Orlando Pride", countryCode: 'us', height: "5'7\"", photo: '/players/nwsl/orlando-pride/lemos-a.webp' },
+  { number: 7, name: "Angelina Alonso Costantino", position: 'MID', hometown: "Jersey City, New Jersey", leagueSlug: 'nwsl', teamSlug: 'orlando-pride', teamName: "Orlando Pride", countryCode: 'br', height: "5'5\"", photo: '/players/nwsl/orlando-pride/costantino-a.webp' },
+  { number: 8, name: "Luana Bertolucci Paixão", position: 'MID', hometown: "São Bernardo do Campo, Brazil", leagueSlug: 'nwsl', teamSlug: 'orlando-pride', teamName: "Orlando Pride", countryCode: 'br', height: "5'4\"", photo: '/players/nwsl/orlando-pride/paixao-l.webp' },
+  { number: 12, name: "Cori Dyke", position: 'MID', hometown: "Littleton, Colorado", leagueSlug: 'nwsl', teamSlug: 'orlando-pride', teamName: "Orlando Pride", countryCode: 'us', height: "5'6\"", photo: '/players/nwsl/orlando-pride/dyke-c.webp' },
+  { number: 14, name: "Viviana Villacorta", position: 'MID', hometown: "Torrance, California", leagueSlug: 'nwsl', teamSlug: 'orlando-pride', teamName: "Orlando Pride", countryCode: 'us', height: "5'7\"", photo: '/players/nwsl/orlando-pride/villacorta-v.webp' },
+  { number: 20, name: "Julie Doyle", position: 'MID', hometown: "Newport Beach, California", leagueSlug: 'nwsl', teamSlug: 'orlando-pride', teamName: "Orlando Pride", countryCode: 'us', height: "5'8\"", photo: '/players/nwsl/orlando-pride/doyle-j.webp' },
+  { number: 10, name: "Marta Marta", position: 'FWD', hometown: "Dois Riachos, Brazil", leagueSlug: 'nwsl', teamSlug: 'orlando-pride', teamName: "Orlando Pride", countryCode: 'br', height: "5'4\"", photo: '/players/nwsl/orlando-pride/marta-m.webp' },
+  { number: 11, name: "Barbra Banda", position: 'FWD', hometown: "Lusaka, Zambia", leagueSlug: 'nwsl', teamSlug: 'orlando-pride', teamName: "Orlando Pride", height: "5'10\"", photo: '/players/nwsl/orlando-pride/banda-b.webp' },
+  { number: 13, name: "Jacqueline Ovalle", position: 'FWD', hometown: "Aguascalientes, Mexico", leagueSlug: 'nwsl', teamSlug: 'orlando-pride', teamName: "Orlando Pride", countryCode: 'mx', height: "5'4\"", photo: '/players/nwsl/orlando-pride/ovalle-j.webp' },
+  { number: 28, name: "Summer Yates", position: 'FWD', hometown: "Pasco, Washington", leagueSlug: 'nwsl', teamSlug: 'orlando-pride', teamName: "Orlando Pride", countryCode: 'us', height: "5'4\"", photo: '/players/nwsl/orlando-pride/yates-s.webp' },
+  { number: 29, name: "Solai Washington", position: 'FWD', hometown: "Atlanta, Georgia", leagueSlug: 'nwsl', teamSlug: 'orlando-pride', teamName: "Orlando Pride", countryCode: 'jm', height: "5'6\"", photo: '/players/nwsl/orlando-pride/washington-s.webp' },
+  { number: 30, name: "Seven Castain", position: 'FWD', hometown: "Draper, Utah", leagueSlug: 'nwsl', teamSlug: 'orlando-pride', teamName: "Orlando Pride", countryCode: 'us', height: "5'4\"", photo: '/players/nwsl/orlando-pride/castain-s.webp' },
+  { number: 38, name: "Reagan Raabe", position: 'FWD', hometown: "Omaha, Nebraska", leagueSlug: 'nwsl', teamSlug: 'orlando-pride', teamName: "Orlando Pride", countryCode: 'us', height: "5'5\"" },
+  { number: 80, name: "Simone Jackson", position: 'FWD', hometown: "Redondo Beach, California", leagueSlug: 'nwsl', teamSlug: 'orlando-pride', teamName: "Orlando Pride", countryCode: 'us', height: "5'4\"", photo: '/players/nwsl/orlando-pride/jackson-s.webp' },
+];
 
 export const matches: Match[] = [
   {
@@ -59,6 +98,14 @@ export const matches: Match[] = [
     venue: 'Lynn Family Stadium, Louisville, Kentucky',
     broadcast: ['Victory+'],
     result: { teamScore: 2, opponentScore: 3 },
+  },
+  {
+    date: '2026-05-02',
+    opponent: 'Washington Spirit',
+    homeAway: 'home',
+    venue: 'Inter&Co Stadium, Orlando, Florida',
+    broadcast: ['ION'],
+    result: { teamScore: 2, opponentScore: 4 },
   },
   {
     date: '2026-05-08',
@@ -244,35 +291,4 @@ export const matches: Match[] = [
     venue: 'Lumen Field, Seattle, Washington',
     broadcast: ['espn tbd'],
   },
-];
-
-export const roster: Player[] = [
-  { number: 1, name: "Anna Moorhouse", position: 'GK', hometown: "Oldham, England", leagueSlug: 'nwsl', teamSlug: 'orlando-pride', teamName: "Orlando Pride", countryCode: 'gb', height: "6'1\"", photo: '/players/nwsl/orlando-pride/moorhouse-a.webp' },
-  { number: 31, name: "Cara Martin", position: 'GK', hometown: "Alexandria, Virginia", leagueSlug: 'nwsl', teamSlug: 'orlando-pride', teamName: "Orlando Pride", countryCode: 'us', height: "5'10\"", photo: '/players/nwsl/orlando-pride/martin-c.webp' },
-  { number: 36, name: "Kat Asman", position: 'GK', hometown: "Roswell, Georgia", leagueSlug: 'nwsl', teamSlug: 'orlando-pride', teamName: "Orlando Pride", countryCode: 'us', height: "5'10\"", photo: '/players/nwsl/orlando-pride/asman-k.webp' },
-  { number: 40, name: "McKinley Crone", position: 'GK', hometown: "Maitland, Florida", leagueSlug: 'nwsl', teamSlug: 'orlando-pride', teamName: "Orlando Pride", countryCode: 'us', height: "5'9\"", photo: '/players/nwsl/orlando-pride/crone-m.webp' },
-  { number: 77, name: "Cosette Morché", position: 'GK', hometown: "Lawrenceville, Georgia", leagueSlug: 'nwsl', teamSlug: 'orlando-pride', teamName: "Orlando Pride", countryCode: 'us', height: "6'2\"", photo: '/players/nwsl/orlando-pride/morche-c.webp' },
-  { number: 2, name: "Haley McCutcheon", position: 'DEF', hometown: "Overland Park, Kansas", leagueSlug: 'nwsl', teamSlug: 'orlando-pride', teamName: "Orlando Pride", countryCode: 'us', height: "5'6\"", photo: '/players/nwsl/orlando-pride/mccutcheon-h.webp' },
-  { number: 3, name: "Kylie Nadaner", position: 'DEF', hometown: "Endicott, New York", leagueSlug: 'nwsl', teamSlug: 'orlando-pride', teamName: "Orlando Pride", countryCode: 'us', height: "5'8\"", photo: '/players/nwsl/orlando-pride/nadaner-k.webp' },
-  { number: 4, name: "Rafaelle Leone Carvalho Souza", position: 'DEF', hometown: "Cipó, Brazil", leagueSlug: 'nwsl', teamSlug: 'orlando-pride', teamName: "Orlando Pride", countryCode: 'br', height: "5'9\"", photo: '/players/nwsl/orlando-pride/souza-r.webp' },
-  { number: 16, name: "Zara Chavoshi", position: 'DEF', hometown: "Potomac, Maryland", leagueSlug: 'nwsl', teamSlug: 'orlando-pride', teamName: "Orlando Pride", countryCode: 'ca', height: "5'7\"", photo: '/players/nwsl/orlando-pride/chavoshi-z.webp' },
-  { number: 21, name: "Oihane Hernández", position: 'DEF', hometown: "Sopela, Spain", leagueSlug: 'nwsl', teamSlug: 'orlando-pride', teamName: "Orlando Pride", countryCode: 'es', height: "5'5\"", photo: '/players/nwsl/orlando-pride/hernandez-o.webp' },
-  { number: 23, name: "Nicole Payne", position: 'DEF', hometown: "Birmingham, Alabama", leagueSlug: 'nwsl', teamSlug: 'orlando-pride', teamName: "Orlando Pride", countryCode: 'ng', height: "5'5\"", photo: '/players/nwsl/orlando-pride/payne-n.webp' },
-  { number: 25, name: "Kerry Abello", position: 'DEF', hometown: "Elmhurst, Illinois", leagueSlug: 'nwsl', teamSlug: 'orlando-pride', teamName: "Orlando Pride", countryCode: 'us', height: "5'5\"", photo: '/players/nwsl/orlando-pride/abello-k.webp' },
-  { number: 41, name: "Hannah Anderson", position: 'DEF', hometown: "Plano, Texas", leagueSlug: 'nwsl', teamSlug: 'orlando-pride', teamName: "Orlando Pride", countryCode: 'us', height: "5'10\"", photo: '/players/nwsl/orlando-pride/anderson-h.webp' },
-  { number: 5, name: "Hailie Mace", position: 'MID', hometown: "Ventura, California", leagueSlug: 'nwsl', teamSlug: 'orlando-pride', teamName: "Orlando Pride", countryCode: 'us', height: "5'7\"", photo: '/players/nwsl/orlando-pride/mace-h.webp' },
-  { number: 6, name: "Ally Lemos", position: 'MID', hometown: "Glendora, California", leagueSlug: 'nwsl', teamSlug: 'orlando-pride', teamName: "Orlando Pride", countryCode: 'us', height: "5'7\"", photo: '/players/nwsl/orlando-pride/lemos-a.webp' },
-  { number: 7, name: "Angelina Alonso Costantino", position: 'MID', hometown: "Jersey City, New Jersey", leagueSlug: 'nwsl', teamSlug: 'orlando-pride', teamName: "Orlando Pride", countryCode: 'br', height: "5'5\"", photo: '/players/nwsl/orlando-pride/costantino-a.webp' },
-  { number: 8, name: "Luana Bertolucci Paixão", position: 'MID', hometown: "São Bernardo do Campo, Brazil", leagueSlug: 'nwsl', teamSlug: 'orlando-pride', teamName: "Orlando Pride", countryCode: 'br', height: "5'4\"", photo: '/players/nwsl/orlando-pride/paixao-l.webp' },
-  { number: 12, name: "Cori Dyke", position: 'MID', hometown: "Littleton, Colorado", leagueSlug: 'nwsl', teamSlug: 'orlando-pride', teamName: "Orlando Pride", countryCode: 'us', height: "5'6\"", photo: '/players/nwsl/orlando-pride/dyke-c.webp' },
-  { number: 14, name: "Viviana Villacorta", position: 'MID', hometown: "Torrance, California", leagueSlug: 'nwsl', teamSlug: 'orlando-pride', teamName: "Orlando Pride", countryCode: 'us', height: "5'7\"", photo: '/players/nwsl/orlando-pride/villacorta-v.webp' },
-  { number: 20, name: "Julie Doyle", position: 'MID', hometown: "Newport Beach, California", leagueSlug: 'nwsl', teamSlug: 'orlando-pride', teamName: "Orlando Pride", countryCode: 'us', height: "5'8\"", photo: '/players/nwsl/orlando-pride/doyle-j.webp' },
-  { number: 10, name: "Marta Marta", position: 'FWD', hometown: "Dois Riachos, Brazil", leagueSlug: 'nwsl', teamSlug: 'orlando-pride', teamName: "Orlando Pride", countryCode: 'br', height: "5'4\"", photo: '/players/nwsl/orlando-pride/marta-m.webp' },
-  { number: 11, name: "Barbra Banda", position: 'FWD', hometown: "Lusaka, Zambia", leagueSlug: 'nwsl', teamSlug: 'orlando-pride', teamName: "Orlando Pride", height: "5'10\"", photo: '/players/nwsl/orlando-pride/banda-b.webp' },
-  { number: 13, name: "Jacqueline Ovalle", position: 'FWD', hometown: "Aguascalientes, Mexico", leagueSlug: 'nwsl', teamSlug: 'orlando-pride', teamName: "Orlando Pride", countryCode: 'mx', height: "5'4\"", photo: '/players/nwsl/orlando-pride/ovalle-j.webp' },
-  { number: 28, name: "Summer Yates", position: 'FWD', hometown: "Pasco, Washington", leagueSlug: 'nwsl', teamSlug: 'orlando-pride', teamName: "Orlando Pride", countryCode: 'us', height: "5'4\"", photo: '/players/nwsl/orlando-pride/yates-s.webp' },
-  { number: 29, name: "Solai Washington", position: 'FWD', hometown: "Atlanta, Georgia", leagueSlug: 'nwsl', teamSlug: 'orlando-pride', teamName: "Orlando Pride", countryCode: 'jm', height: "5'6\"", photo: '/players/nwsl/orlando-pride/washington-s.webp' },
-  { number: 30, name: "Seven Castain", position: 'FWD', hometown: "Draper, Utah", leagueSlug: 'nwsl', teamSlug: 'orlando-pride', teamName: "Orlando Pride", countryCode: 'us', height: "5'4\"", photo: '/players/nwsl/orlando-pride/castain-s.webp' },
-  { number: 38, name: "Reagan Raabe", position: 'FWD', hometown: "Omaha, Nebraska", leagueSlug: 'nwsl', teamSlug: 'orlando-pride', teamName: "Orlando Pride", countryCode: 'us', height: "5'5\"" },
-  { number: 80, name: "Simone Jackson", position: 'FWD', hometown: "Redondo Beach, California", leagueSlug: 'nwsl', teamSlug: 'orlando-pride', teamName: "Orlando Pride", countryCode: 'us', height: "5'4\"", photo: '/players/nwsl/orlando-pride/jackson-s.webp' },
 ];

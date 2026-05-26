@@ -1,15 +1,55 @@
 import type { Player } from '../../shared/types';
-import type { Match, TeamConfig } from '../../shared/types';
+import type { NWSLTeamConfig } from '../../shared/types';
 
-export const team: TeamConfig = {
-  name: 'Racing Louisville',
+export const team: NWSLTeamConfig = {
+  name: 'Racing Louisville FC',
   slug: 'racing-louisville',
-  color: '#C5B5F2',
+  short: 'Racing Louisville',
+  color: '#9F2241',
+  text: '#FAF6F0',
   badge: 'https://images.nwslsoccer.com/image/private/t_q-best/v1710436103/prd/assets/teams/racing-louisville-fc.svg',
   standingsKey: 'Racing Louisville',
   officialUrl: 'https://www.racingloufc.com/',
   ticketsUrl: 'https://seatgeek.com/racing-louisville-fc-tickets',
+  city: 'Louisville',
+  venue: 'Lynn Family Stadium',
+  supporter: 'The Lavender Legion',
+  tagline: 'For the love of the city.',
+  est: 2021,
 };
+
+
+export const roster: Player[] = [
+  { number: 1, name: "Maddie Prohaska", position: 'GK', hometown: "West Chester, Ohio", leagueSlug: 'nwsl', teamSlug: 'racing-louisville', teamName: "Racing Louisville", countryCode: 'us', height: "5'11\"", photo: '/players/nwsl/racing-louisville/prohaska-m.webp' },
+  { number: 24, name: "Jordyn Bloomer", position: 'GK', hometown: "Hartland, Wisconsin", leagueSlug: 'nwsl', teamSlug: 'racing-louisville', teamName: "Racing Louisville", countryCode: 'us', height: "5'8\"", photo: '/players/nwsl/racing-louisville/bloomer-j.webp' },
+  { number: 30, name: "Erynn Floyd", position: 'GK', hometown: "Wilton, Connecticut", leagueSlug: 'nwsl', teamSlug: 'racing-louisville', teamName: "Racing Louisville", countryCode: 'us' },
+  { number: 33, name: "Cristina Roque", position: 'GK', hometown: "Winter Garden, Florida", leagueSlug: 'nwsl', teamSlug: 'racing-louisville', teamName: "Racing Louisville", height: "5'7\"", photo: '/players/nwsl/racing-louisville/roque-c.webp' },
+  { number: 99, name: "Olivia Sekany", position: 'GK', hometown: "Livermore, California", leagueSlug: 'nwsl', teamSlug: 'racing-louisville', teamName: "Racing Louisville", countryCode: 'us', height: "6'0\"", photo: '/players/nwsl/racing-louisville/sekany-o.webp' },
+  { number: 3, name: "Arin Wright", position: 'DEF', hometown: "Wilmore, Kentucky", leagueSlug: 'nwsl', teamSlug: 'racing-louisville', teamName: "Racing Louisville", countryCode: 'us', height: "5'7\"", photo: '/players/nwsl/racing-louisville/wright-a.webp' },
+  { number: 5, name: "Ellie Jean", position: 'DEF', hometown: "Coventry, Connecticut", leagueSlug: 'nwsl', teamSlug: 'racing-louisville', teamName: "Racing Louisville", countryCode: 'us', height: "5'6\"", photo: '/players/nwsl/racing-louisville/jean-e.webp' },
+  { number: 6, name: "Ella Hase", position: 'DEF', hometown: "Orland Park, Illinois", leagueSlug: 'nwsl', teamSlug: 'racing-louisville', teamName: "Racing Louisville", countryCode: 'us', height: "5'5\"", photo: '/players/nwsl/racing-louisville/hase-e.webp' },
+  { number: 8, name: "Courtney Petersen", position: 'DEF', hometown: "Canton, Michigan", leagueSlug: 'nwsl', teamSlug: 'racing-louisville', teamName: "Racing Louisville", countryCode: 'us', height: "5'5\"", photo: '/players/nwsl/racing-louisville/petersen-c.webp' },
+  { number: 12, name: "Quincy McMahon", position: 'DEF', hometown: "Carmel, Indiana", leagueSlug: 'nwsl', teamSlug: 'racing-louisville', teamName: "Racing Louisville", countryCode: 'us', height: "5'7\"", photo: '/players/nwsl/racing-louisville/mcmahon-q.webp' },
+  { number: 15, name: "Mirann Gacioch", position: 'DEF', hometown: "Buffalo, New York", leagueSlug: 'nwsl', teamSlug: 'racing-louisville', teamName: "Racing Louisville", countryCode: 'us', height: "5'5\"", photo: '/players/nwsl/racing-louisville/gacioch-m.webp' },
+  { number: 23, name: "Macy Blackburn", position: 'DEF', hometown: "Keller, Texas", leagueSlug: 'nwsl', teamSlug: 'racing-louisville', teamName: "Racing Louisville", countryCode: 'us', height: "5'7\"", photo: '/players/nwsl/racing-louisville/blackburn-m.webp' },
+  { number: 2, name: "Lauren Milliet", position: 'MID', hometown: "Durango, Colorado", leagueSlug: 'nwsl', teamSlug: 'racing-louisville', teamName: "Racing Louisville", countryCode: 'us', height: "5'1\"", photo: '/players/nwsl/racing-louisville/milliet-l.webp' },
+  { number: 4, name: "Makenna Morris", position: 'MID', hometown: "Germantown, Maryland", leagueSlug: 'nwsl', teamSlug: 'racing-louisville', teamName: "Racing Louisville", countryCode: 'us', height: "5'5\"", photo: '/players/nwsl/racing-louisville/morris-m.webp' },
+  { number: 7, name: "Savannah DeMelo", position: 'MID', hometown: "Bellflower, California", leagueSlug: 'nwsl', teamSlug: 'racing-louisville', teamName: "Racing Louisville", countryCode: 'us', height: "5'5\"", photo: '/players/nwsl/racing-louisville/demelo-s.webp' },
+  { number: 9, name: "Kayla Fischer", position: 'MID', hometown: "Kent, Ohio", leagueSlug: 'nwsl', teamSlug: 'racing-louisville', teamName: "Racing Louisville", countryCode: 'us', height: "5'8\"", photo: '/players/nwsl/racing-louisville/fischer-k.webp' },
+  { number: 10, name: "Macey Hodge", position: 'MID', hometown: "Douglasville, Georgia", leagueSlug: 'nwsl', teamSlug: 'racing-louisville', teamName: "Racing Louisville", countryCode: 'us', height: "5'6\"", photo: '/players/nwsl/racing-louisville/hodge-m.webp' },
+  { number: 14, name: "Marisa DiGrande", position: 'MID', hometown: "Macomb, Michigan", leagueSlug: 'nwsl', teamSlug: 'racing-louisville', teamName: "Racing Louisville", countryCode: 'us', height: "5'4\"", photo: '/players/nwsl/racing-louisville/digrande-m.webp' },
+  { number: 17, name: "Maddie Pokorny", position: 'MID', hometown: "St. Louis, Missouri", leagueSlug: 'nwsl', teamSlug: 'racing-louisville', teamName: "Racing Louisville", countryCode: 'us', height: "5'3\"", photo: '/players/nwsl/racing-louisville/pokorny-m.webp' },
+  { number: 19, name: "Avery Ciorbu", position: 'MID', hometown: "Saline, Michigan", leagueSlug: 'nwsl', teamSlug: 'racing-louisville', teamName: "Racing Louisville", countryCode: 'us', height: "5'9\"", photo: '/players/nwsl/racing-louisville/ciorbu-a.webp' },
+  { number: 20, name: "Katie O'Kane", position: 'MID', hometown: "USA", leagueSlug: 'nwsl', teamSlug: 'racing-louisville', teamName: "Racing Louisville", countryCode: 'us', height: "5'4\"", photo: '/players/nwsl/racing-louisville/okane-k.webp' },
+  { number: 22, name: "Natalie Mitchell", position: 'MID', hometown: "Temecula, California", leagueSlug: 'nwsl', teamSlug: 'racing-louisville', teamName: "Racing Louisville", countryCode: 'us', height: "5'8\"" },
+  { number: 26, name: "Taylor Flint", position: 'MID', hometown: "Las Vegas, Nevada", leagueSlug: 'nwsl', teamSlug: 'racing-louisville', teamName: "Racing Louisville", countryCode: 'us', height: "6'1\"", photo: '/players/nwsl/racing-louisville/flint-t.webp' },
+  { number: 11, name: "Taylor White", position: 'FWD', hometown: "Cincinnati, Ohio", leagueSlug: 'nwsl', teamSlug: 'racing-louisville', teamName: "Racing Louisville", countryCode: 'us', height: "5'6\"", photo: '/players/nwsl/racing-louisville/white-t.webp' },
+  { number: 13, name: "Emma Sears", position: 'FWD', hometown: "Dublin, Ohio", leagueSlug: 'nwsl', teamSlug: 'racing-louisville', teamName: "Racing Louisville", countryCode: 'us', height: "5'9\"", photo: '/players/nwsl/racing-louisville/sears-e.webp' },
+  { number: 16, name: "Maja Lardner", position: 'FWD', hometown: "Dallas, Texas", leagueSlug: 'nwsl', teamSlug: 'racing-louisville', teamName: "Racing Louisville", countryCode: 'us', height: "5'8\"", photo: '/players/nwsl/racing-louisville/lardner-m.webp' },
+  { number: 21, name: "Rachel Hill", position: 'FWD', hometown: "Rollinsford, New Hampshire", leagueSlug: 'nwsl', teamSlug: 'racing-louisville', teamName: "Racing Louisville", countryCode: 'us', height: "5'5\"", photo: '/players/nwsl/racing-louisville/hill-r.webp' },
+  { number: 42, name: "Sarah Weber", position: 'FWD', hometown: "Gretna, Nebraska", leagueSlug: 'nwsl', teamSlug: 'racing-louisville', teamName: "Racing Louisville", countryCode: 'us', height: "5'6\"", photo: '/players/nwsl/racing-louisville/weber-s.webp' },
+  { number: 88, name: "Audrey McKeen", position: 'FWD', hometown: "Vienna, Virginia", leagueSlug: 'nwsl', teamSlug: 'racing-louisville', teamName: "Racing Louisville", countryCode: 'us', height: "5'8\"", photo: '/players/nwsl/racing-louisville/mckeen-a.webp' },
+];
 
 export const matches: Match[] = [
   {
@@ -62,11 +102,11 @@ export const matches: Match[] = [
   },
   {
     date: '2026-05-03',
-    time: '5:00 PM',
     opponent: 'NJ/NY Gotham FC',
     homeAway: 'away',
     venue: 'Sports Illustrated Stadium, Harrison, New Jersey',
     broadcast: ['CBS Sports'],
+    result: { teamScore: 0, opponentScore: 1 },
   },
   {
     date: '2026-05-08',
@@ -252,36 +292,4 @@ export const matches: Match[] = [
     venue: 'Lynn Family Stadium, Louisville, Kentucky',
     broadcast: ['espn tbd', '5:00 PMNWSL'],
   },
-];
-
-export const roster: Player[] = [
-  { number: 1, name: "Maddie Prohaska", position: 'GK', hometown: "West Chester, Ohio", leagueSlug: 'nwsl', teamSlug: 'racing-louisville', teamName: "Racing Louisville", countryCode: 'us', height: "5'11\"", photo: '/players/nwsl/racing-louisville/prohaska-m.webp' },
-  { number: 24, name: "Jordyn Bloomer", position: 'GK', hometown: "Hartland, Wisconsin", leagueSlug: 'nwsl', teamSlug: 'racing-louisville', teamName: "Racing Louisville", countryCode: 'us', height: "5'8\"", photo: '/players/nwsl/racing-louisville/bloomer-j.webp' },
-  { number: 30, name: "Erynn Floyd", position: 'GK', hometown: "Wilton, Connecticut", leagueSlug: 'nwsl', teamSlug: 'racing-louisville', teamName: "Racing Louisville", countryCode: 'us' },
-  { number: 33, name: "Cristina Roque", position: 'GK', hometown: "Winter Garden, Florida", leagueSlug: 'nwsl', teamSlug: 'racing-louisville', teamName: "Racing Louisville", height: "5'7\"", photo: '/players/nwsl/racing-louisville/roque-c.webp' },
-  { number: 99, name: "Olivia Sekany", position: 'GK', hometown: "Livermore, California", leagueSlug: 'nwsl', teamSlug: 'racing-louisville', teamName: "Racing Louisville", countryCode: 'us', height: "6'0\"", photo: '/players/nwsl/racing-louisville/sekany-o.webp' },
-  { number: 3, name: "Arin Wright", position: 'DEF', hometown: "Wilmore, Kentucky", leagueSlug: 'nwsl', teamSlug: 'racing-louisville', teamName: "Racing Louisville", countryCode: 'us', height: "5'7\"", photo: '/players/nwsl/racing-louisville/wright-a.webp' },
-  { number: 5, name: "Ellie Jean", position: 'DEF', hometown: "Coventry, Connecticut", leagueSlug: 'nwsl', teamSlug: 'racing-louisville', teamName: "Racing Louisville", countryCode: 'us', height: "5'6\"", photo: '/players/nwsl/racing-louisville/jean-e.webp' },
-  { number: 6, name: "Ella Hase", position: 'DEF', hometown: "Orland Park, Illinois", leagueSlug: 'nwsl', teamSlug: 'racing-louisville', teamName: "Racing Louisville", countryCode: 'us', height: "5'5\"", photo: '/players/nwsl/racing-louisville/hase-e.webp' },
-  { number: 8, name: "Courtney Petersen", position: 'DEF', hometown: "Canton, Michigan", leagueSlug: 'nwsl', teamSlug: 'racing-louisville', teamName: "Racing Louisville", countryCode: 'us', height: "5'5\"", photo: '/players/nwsl/racing-louisville/petersen-c.webp' },
-  { number: 12, name: "Quincy McMahon", position: 'DEF', hometown: "Carmel, Indiana", leagueSlug: 'nwsl', teamSlug: 'racing-louisville', teamName: "Racing Louisville", countryCode: 'us', height: "5'7\"", photo: '/players/nwsl/racing-louisville/mcmahon-q.webp' },
-  { number: 15, name: "Mirann Gacioch", position: 'DEF', hometown: "Buffalo, New York", leagueSlug: 'nwsl', teamSlug: 'racing-louisville', teamName: "Racing Louisville", countryCode: 'us', height: "5'5\"", photo: '/players/nwsl/racing-louisville/gacioch-m.webp' },
-  { number: 23, name: "Macy Blackburn", position: 'DEF', hometown: "Keller, Texas", leagueSlug: 'nwsl', teamSlug: 'racing-louisville', teamName: "Racing Louisville", countryCode: 'us', height: "5'7\"", photo: '/players/nwsl/racing-louisville/blackburn-m.webp' },
-  { number: 2, name: "Lauren Milliet", position: 'MID', hometown: "Durango, Colorado", leagueSlug: 'nwsl', teamSlug: 'racing-louisville', teamName: "Racing Louisville", countryCode: 'us', height: "5'1\"", photo: '/players/nwsl/racing-louisville/milliet-l.webp' },
-  { number: 4, name: "Makenna Morris", position: 'MID', hometown: "Germantown, Maryland", leagueSlug: 'nwsl', teamSlug: 'racing-louisville', teamName: "Racing Louisville", countryCode: 'us', height: "5'5\"", photo: '/players/nwsl/racing-louisville/morris-m.webp' },
-  { number: 7, name: "Savannah DeMelo", position: 'MID', hometown: "Bellflower, California", leagueSlug: 'nwsl', teamSlug: 'racing-louisville', teamName: "Racing Louisville", countryCode: 'us', height: "5'5\"", photo: '/players/nwsl/racing-louisville/demelo-s.webp' },
-  { number: 9, name: "Kayla Fischer", position: 'MID', hometown: "Kent, Ohio", leagueSlug: 'nwsl', teamSlug: 'racing-louisville', teamName: "Racing Louisville", countryCode: 'us', height: "5'8\"", photo: '/players/nwsl/racing-louisville/fischer-k.webp' },
-  { number: 10, name: "Macey Hodge", position: 'MID', hometown: "Douglasville, Georgia", leagueSlug: 'nwsl', teamSlug: 'racing-louisville', teamName: "Racing Louisville", countryCode: 'us', height: "5'6\"", photo: '/players/nwsl/racing-louisville/hodge-m.webp' },
-  { number: 14, name: "Marisa DiGrande", position: 'MID', hometown: "Macomb, Michigan", leagueSlug: 'nwsl', teamSlug: 'racing-louisville', teamName: "Racing Louisville", countryCode: 'us', height: "5'4\"", photo: '/players/nwsl/racing-louisville/digrande-m.webp' },
-  { number: 17, name: "Maddie Pokorny", position: 'MID', hometown: "St. Louis, Missouri", leagueSlug: 'nwsl', teamSlug: 'racing-louisville', teamName: "Racing Louisville", countryCode: 'us', height: "5'3\"", photo: '/players/nwsl/racing-louisville/pokorny-m.webp' },
-  { number: 19, name: "Avery Ciorbu", position: 'MID', hometown: "Saline, Michigan", leagueSlug: 'nwsl', teamSlug: 'racing-louisville', teamName: "Racing Louisville", countryCode: 'us', height: "5'9\"", photo: '/players/nwsl/racing-louisville/ciorbu-a.webp' },
-  { number: 20, name: "Katie O'Kane", position: 'MID', hometown: "USA", leagueSlug: 'nwsl', teamSlug: 'racing-louisville', teamName: "Racing Louisville", countryCode: 'us', height: "5'4\"", photo: '/players/nwsl/racing-louisville/okane-k.webp' },
-  { number: 22, name: "Natalie Mitchell", position: 'MID', hometown: "Temecula, California", leagueSlug: 'nwsl', teamSlug: 'racing-louisville', teamName: "Racing Louisville", countryCode: 'us', height: "5'8\"" },
-  { number: 26, name: "Taylor Flint", position: 'MID', hometown: "Las Vegas, Nevada", leagueSlug: 'nwsl', teamSlug: 'racing-louisville', teamName: "Racing Louisville", countryCode: 'us', height: "6'1\"", photo: '/players/nwsl/racing-louisville/flint-t.webp' },
-  { number: 11, name: "Taylor White", position: 'FWD', hometown: "Cincinnati, Ohio", leagueSlug: 'nwsl', teamSlug: 'racing-louisville', teamName: "Racing Louisville", countryCode: 'us', height: "5'6\"", photo: '/players/nwsl/racing-louisville/white-t.webp' },
-  { number: 13, name: "Emma Sears", position: 'FWD', hometown: "Dublin, Ohio", leagueSlug: 'nwsl', teamSlug: 'racing-louisville', teamName: "Racing Louisville", countryCode: 'us', height: "5'9\"", photo: '/players/nwsl/racing-louisville/sears-e.webp' },
-  { number: 16, name: "Maja Lardner", position: 'FWD', hometown: "Dallas, Texas", leagueSlug: 'nwsl', teamSlug: 'racing-louisville', teamName: "Racing Louisville", countryCode: 'us', height: "5'8\"", photo: '/players/nwsl/racing-louisville/lardner-m.webp' },
-  { number: 21, name: "Rachel Hill", position: 'FWD', hometown: "Rollinsford, New Hampshire", leagueSlug: 'nwsl', teamSlug: 'racing-louisville', teamName: "Racing Louisville", countryCode: 'us', height: "5'5\"", photo: '/players/nwsl/racing-louisville/hill-r.webp' },
-  { number: 42, name: "Sarah Weber", position: 'FWD', hometown: "Gretna, Nebraska", leagueSlug: 'nwsl', teamSlug: 'racing-louisville', teamName: "Racing Louisville", countryCode: 'us', height: "5'6\"", photo: '/players/nwsl/racing-louisville/weber-s.webp' },
-  { number: 88, name: "Audrey McKeen", position: 'FWD', hometown: "Vienna, Virginia", leagueSlug: 'nwsl', teamSlug: 'racing-louisville', teamName: "Racing Louisville", countryCode: 'us', height: "5'8\"", photo: '/players/nwsl/racing-louisville/mckeen-a.webp' },
 ];

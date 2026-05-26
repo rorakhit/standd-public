@@ -6,7 +6,9 @@ export default {
       colors: {
         primary: '#0F2A2D',     // deep midnight teal
         accent: '#FF6B2C',      // warm sodium-orange
-        neutral: '#FAF6F0',     // off-white
+        neutral: '#FAF6F0',     // off-white (used for text on dark bg)
+        cream: '#DDD5C4',       // warm page background
+        paper: '#F4EFE4',       // warm card bg
         muted: '#5A5A5A',       // secondary text
       },
       fontFamily: {

@@ -6,7 +6,9 @@ const leagues = [
   { href: '/wnba', label: 'WNBA', sport: 'Basketball' },
 ];
 
-const leaguesActive = leagues.some(l => pathname === l.href || pathname.startsWith(l.href + '/'));
+const leaguesActive =
+  pathname === '/leagues' ||
+  leagues.some(l => pathname === l.href || pathname.startsWith(l.href + '/'));
 ---
 
 <header class="border-b border-white/10 bg-primary">
@@ -35,6 +37,12 @@ const leaguesActive = leagues.some(l => pathname === l.href || pathname.startsWi
           aria-labelledby="leagues-trigger"
           class="absolute right-0 top-full mt-2 w-44 bg-neutral border border-primary/15 rounded-xl shadow-lg overflow-hidden z-50 hidden"
         >
+          <a
+            href="/leagues"
+            class={`flex items-center justify-between px-4 py-3 text-sm hover:bg-primary/5 transition-colors border-b border-primary/10 ${pathname === '/leagues' ? 'text-accent font-bold' : 'text-primary'}`}
+          >
+            <span class="font-display font-bold">All leagues</span>
+          </a>
           {leagues.map(league => {
             const active = pathname === league.href || pathname.startsWith(league.href + '/');
             return (

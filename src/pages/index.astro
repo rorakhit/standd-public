@@ -3,19 +3,125 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import EmailSignup from '../components/EmailSignup.astro';
+import { LEAGUES, LIVE_LEAGUES, COMING_LEAGUES } from '../data/leagues';
+import { getTodaysGames } from '../data/wnba/queries';
+import { WNBA_ESPN_TEAMS } from '../data/wnba/espn-teams';
+import { getNwslTodaysGames } from '../data/nwsl/queries';
+import { NWSL_ESPN_TEAMS } from '../data/nwsl/espn-teams';
 
-const title = "Standd - All your women's pro sports in one place";
+const title = "Standd — All your women's pro sports in one place";
+const description =
+  "Track NWSL and WNBA schedules, standings, and broadcast info in one place. " +
+  "Know where every game airs, every week.";
 
-const currentSeason = new Date().getFullYear();
+const currentYear = new Date().getFullYear();
 
-const comingSoon = [
-  { title: 'LOVB Pro, WSL, PWHL.', subtitle: 'More leagues on the way. One home for all of it.' },
-  { title: 'Picks.', subtitle: 'Pick five faves a week. Across every league. No friend group required.' },
-  { title: 'Your year, wrapped.', subtitle: 'Your Picks. Your hit rate. Your fandom, in receipts.' },
-];
+// Team display data for schedule rail (slug → full name + brand color)
+const WNBA_TEAM: Record<string, { name: string; color: string }> = {
+  'atlanta-dream':          { name: 'Atlanta Dream',          color: '#C8102E' },
+  'chicago-sky':            { name: 'Chicago Sky',            color: '#5091CD' },
+  'connecticut-sun':        { name: 'Connecticut Sun',        color: '#F8712E' },
+  'dallas-wings':           { name: 'Dallas Wings',           color: '#C4D600' },
+  'golden-state-valkyries': { name: 'Golden State Valkyries', color: '#1D428A' },
+  'indiana-fever':          { name: 'Indiana Fever',          color: '#002D62' },
+  'las-vegas-aces':         { name: 'Las Vegas Aces',         color: '#010101' },
+  'los-angeles-sparks':     { name: 'Los Angeles Sparks',     color: '#702F8A' },
+  'minnesota-lynx':         { name: 'Minnesota Lynx',         color: '#266092' },
+  'new-york-liberty':       { name: 'New York Liberty',       color: '#6EA4BF' },
+  'phoenix-mercury':        { name: 'Phoenix Mercury',        color: '#E56020' },
+  'portland-fire':          { name: 'Portland Fire',          color: '#C8102E' },
+  'seattle-storm':          { name: 'Seattle Storm',          color: '#2C5234' },
+  'toronto-tempo':          { name: 'Toronto Tempo',          color: '#A50034' },
+  'washington-mystics':     { name: 'Washington Mystics',     color: '#002B5C' },
+};
+
+const NWSL_TEAM: Record<string, { name: string; color: string }> = {
+  'angel-city':              { name: 'Angel City FC',          color: '#F1B1A5' },
+  'bay-fc':                  { name: 'Bay FC',                 color: '#FF5049' },
+  'boston-legacy':           { name: 'Boston Legacy FC',       color: '#5CE88A' },
+  'chicago-stars':           { name: 'Chicago Stars FC',       color: '#3AB5E8' },
+  'denver-summit':           { name: 'Denver Summit FC',       color: '#E4B83E' },
+  'gotham-fc':               { name: 'Gotham FC',              color: '#A9F1FD' },
+  'houston-dash':            { name: 'Houston Dash',           color: '#FF6900' },
+  'kansas-city-current':     { name: 'Kansas City Current',    color: '#62CBC9' },
+  'north-carolina-courage':  { name: 'North Carolina Courage', color: '#AB0033' },
+  'orlando-pride':           { name: 'Orlando Pride',          color: '#7B35C0' },
+  'portland-thorns':         { name: 'Portland Thorns FC',     color: '#EE202F' },
+  'racing-louisville':       { name: 'Racing Louisville FC',   color: '#C5B5F2' },
+  'san-diego-wave':          { name: 'San Diego Wave FC',      color: '#21C6D9' },
+  'seattle-reign':           { name: 'Seattle Reign FC',       color: '#D0A66B' },
+  'utah-royals':             { name: 'Utah Royals FC',         color: '#FDB71A' },
+  'washington-spirit':       { name: 'Washington Spirit',      color: '#EDE939' },
+};
+
+// ESPN broadcast name → clean display label
+const BROADCAST_LABEL: Record<string, string> = {
+  'Amazon Prime Video': 'Prime Video',
+  'CBS Sports Network': 'CBS Sports',
+  'CBSSN':              'CBS Sports',
+  'WNBA League Pass':   'League Pass',
+  'ESPN U':             'ESPNU',
+  'ESPN Unlmtd':        'ESPN',
+  'USA Net':            'USA Network',
+  'PeachtreeTV':        'Peachtree TV',
+  'NBC Sports BO':      'NBC Sports Boston',
+  'NBC Sports PH':      'NBC Sports Philadelphia',
+  'NBC Sports CH':      'NBC Sports Chicago',
+  'NBC Sports DC':      'NBC Sports Washington',
+  'MNMT':               'Monumental',
+  'MNMT2':              'Monumental 2',
+};
+
+// Expansion teams don't have ID-based ESPN logo URLs — use abbreviation instead
+const WNBA_LOGO_OVERRIDES: Record<string, string> = {
+  'portland-fire':          'https://a.espncdn.com/i/teamlogos/wnba/500/por.png',
+  'toronto-tempo':          'https://a.espncdn.com/i/teamlogos/wnba/500/tor.png',
+  'golden-state-valkyries': 'https://a.espncdn.com/i/teamlogos/wnba/500/gs.png',
+};
+
+function wnbaLogoUrl(slug: string): string {
+  if (WNBA_LOGO_OVERRIDES[slug]) return WNBA_LOGO_OVERRIDES[slug];
+  const id = WNBA_ESPN_TEAMS[slug];
+  return id != null ? `https://a.espncdn.com/i/teamlogos/wnba/500/${id}.png` : '';
+}
+
+function nwslLogoUrl(slug: string): string {
+  const id = NWSL_ESPN_TEAMS[slug];
+  return id != null ? `https://a.espncdn.com/i/teamlogos/soccer/500/${id}.png` : '';
+}
+
+// Quarter-format ETA for the league strip + 101 cards (homepage display only)
+const ETA_QUARTER: Record<string, string> = {
+  'pwhl':          'Q4 2026',
+  'nsl':           'Q1 2027',
+  'liga-mx-femenil': 'Q2 2027',
+  'lovb-pro':      'Q3 2027',
+  'wsl':           'Q4 2027',
+};
+
+function timeToMinutes(t: string | null): number {
+  if (!t) return 9999;
+  const m = t.match(/^(\d+):(\d+)\s*(AM|PM)$/i);
+  if (!m) return 9999;
+  let h = parseInt(m[1], 10);
+  const min = parseInt(m[2], 10);
+  if (m[3].toUpperCase() === 'PM' && h !== 12) h += 12;
+  if (m[3].toUpperCase() === 'AM' && h === 12) h = 0;
+  return h * 60 + min;
+}
+
+// Today's games — WNBA + NWSL merged and sorted by kickoff time
+const [wnbaToday, nwslToday] = await Promise.all([
+  getTodaysGames().catch(() => []),
+  getNwslTodaysGames().catch(() => []),
+]);
+const scheduleSlate = [
+  ...wnbaToday.map(g => ({ league: 'WNBA' as const, game: g })),
+  ...nwslToday.map(g => ({ league: 'NWSL' as const, game: g })),
+].sort((a, b) => timeToMinutes(a.game.time) - timeToMinutes(b.game.time));
 ---
 
-<BaseLayout title={title} description="Track NWSL and WNBA standings, schedules, and broadcast guides in one place. Find out where every game airs, from free over-the-air TV to streaming services.">
+<BaseLayout title={title} description={description}>
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
     "@graph": [
@@ -36,102 +142,187 @@ const comingSoon = [
           "url": "https://standd.fan/og-default.png",
           "width": 1200,
           "height": 630
-        },
-        "sameAs": []
+        }
       }
     ]
   })} />
   <Header />
 
   <main class="flex-1">
-    <!-- Hero: cream → teal section with massive dd -->
-    <section class="bg-neutral pt-12 pb-20 border-b-[12px] border-accent">
+
+    <!-- ─── 1. HERO ────────────────────────────────────────────────── -->
+    <section class="bg-cream pt-16 pb-14 border-b-[12px] border-accent">
       <div class="max-w-5xl mx-auto px-6">
-        <p class="text-sm font-bold text-accent uppercase tracking-[0.2em] mb-6">Now tracking · NWSL + WNBA · {currentSeason}</p>
+        <p class="text-[11px] font-bold text-accent uppercase tracking-[0.22em] font-mono mb-6">
+          Now tracking · NWSL + WNBA · {currentYear}
+        </p>
         <h1 class="sr-only">Women's Pro Sports Tracker — Standings, Schedules & How to Watch</h1>
-        <div class="md:grid md:grid-cols-[auto_1fr] md:items-end md:gap-12">
-          <div class="font-display font-bold leading-[0.85]">
-            <div class="text-6xl md:text-8xl text-primary">stan</div>
-            <div class="text-[9rem] md:text-[14rem] text-accent -mt-4 md:-mt-8 tracking-[-0.04em] ml-8 md:ml-16">dd</div>
+        <div class="md:grid md:grid-cols-[1.2fr_1fr] md:gap-14 md:items-center">
+          <!-- Stacked wordmark -->
+          <div class="font-display font-bold leading-[0.85] select-none" aria-hidden="true">
+            <div class="text-[4.5rem] md:text-[5.5rem] text-primary tracking-[-0.04em]">stan</div>
+            <div class="text-[10rem] md:text-[15rem] text-accent -mt-2 md:-mt-4 tracking-[-0.05em] ml-12 md:ml-20">dd</div>
           </div>
-          <p class="mt-10 md:mt-0 md:pb-6 text-xl md:text-2xl text-primary leading-snug font-medium">
-            All your women's pro sports in one place — every team, every league.
-          </p>
+          <!-- Value prop -->
+          <div class="mt-8 md:mt-0">
+            <p class="text-[1.5rem] md:text-[1.625rem] text-primary leading-[1.2] font-medium text-balance">
+              All your women's pro sports in one place — every team, every league, every weekend.
+            </p>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- League grid: NWSL + WNBA -->
-    <section class="bg-primary py-16">
+    <!-- ─── 2. WHAT'S ON TODAY ─────────────────────────────────────── -->
+    <section class="bg-primary py-10">
       <div class="max-w-5xl mx-auto px-6">
-        <p class="text-sm font-bold text-accent uppercase tracking-[0.2em] mb-6">Live now</p>
-        <div class="grid md:grid-cols-2 gap-4">
-          <a
-            href="/nwsl"
-            class="block text-neutral p-8 rounded-2xl hover:opacity-90 transition-opacity group"
-            style="background-color: #003865;"
-          >
-            <div class="flex flex-col gap-4">
-              <div>
-                <p class="text-xs font-bold uppercase tracking-[0.2em] text-neutral/60 mb-1">NWSL · {currentSeason}</p>
-                <h2 class="font-display font-bold text-3xl md:text-4xl leading-tight">
-                  National Women's Soccer League
-                </h2>
-                <p class="mt-2 text-base font-medium text-neutral/80">
-                  All 16 teams. Scores, fixtures, standings, squad pages.
-                </p>
-              </div>
-              <span class="self-start text-4xl font-display font-bold leading-none text-neutral group-hover:translate-x-1 transition-transform">→</span>
+        <div class="flex items-center justify-between mb-6">
+          <div class="flex items-center gap-3">
+            <span class="w-2 h-2 rounded-full bg-accent flex-shrink-0" aria-hidden="true"></span>
+            <span class="text-[11px] font-bold uppercase tracking-[0.22em] text-accent font-mono">
+              What's on today
+            </span>
+          </div>
+          {scheduleSlate.length > 0 && (
+            <span class="text-[12px] font-mono text-neutral/50 hidden sm:block">
+              {scheduleSlate.length} {scheduleSlate.length === 1 ? 'match' : 'matches'} today · WNBA + NWSL · where to watch
+            </span>
+          )}
+        </div>
+
+        {scheduleSlate.length > 0 ? (
+          <div class="grid gap-3" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr))">
+            {scheduleSlate.map(({ league, game }) => {
+              const isWNBA = league === 'WNBA';
+              const teamMap = isWNBA ? WNBA_TEAM : NWSL_TEAM;
+              const home = teamMap[game.home_team] ?? { name: game.home_team };
+              const away = teamMap[game.away_team] ?? { name: game.away_team };
+              const rawBroadcast = game.broadcast[0] ?? '';
+              const broadcaster = (BROADCAST_LABEL[rawBroadcast] ?? rawBroadcast) || 'TBD';
+              const kickoff = game.status === 'final'
+                ? 'Final'
+                : game.time ? `${game.time} ET` : 'TBD';
+              const utcDatetime = game.status !== 'final' ? (game.utc_datetime ?? null) : null;
+              const homeLogo = isWNBA ? wnbaLogoUrl(game.home_team) : nwslLogoUrl(game.home_team);
+              const awayLogo = isWNBA ? wnbaLogoUrl(game.away_team) : nwslLogoUrl(game.away_team);
+              return (
+                <div class="bg-neutral/[0.06] border border-neutral/10 rounded-xl p-4 flex flex-col gap-3">
+                  <div class="flex items-center justify-between">
+                    <span class="text-[10px] font-bold tracking-[0.16em] uppercase text-neutral/60 font-mono">{league}</span>
+                    <time
+                      class="text-[10px] font-bold tracking-[0.14em] text-accent font-mono"
+                      datetime={utcDatetime ?? undefined}
+                      data-local-time={utcDatetime ? 'true' : undefined}
+                    >{kickoff}</time>
+                  </div>
+                  <div class="flex flex-col gap-1.5">
+                    <div class="flex items-center justify-between gap-2">
+                      <span class="font-display font-bold text-[17px] text-neutral flex items-center gap-2 min-w-0">
+                        {homeLogo
+                          ? <img src={homeLogo} alt="" width="20" height="20" class="w-5 h-5 flex-shrink-0 object-contain" aria-hidden="true" />
+                          : <span class="w-5 h-5 rounded-sm flex-shrink-0 bg-neutral/20" aria-hidden="true"></span>
+                        }
+                        <span class="truncate">{home.name}</span>
+                      </span>
+                      {game.status === 'final' && game.home_score != null &&
+                        <span class="font-mono font-bold text-[17px] text-neutral flex-shrink-0">{game.home_score}</span>
+                      }
+                    </div>
+                    <span class="text-[12px] text-neutral/50 pl-7 font-display">vs</span>
+                    <div class="flex items-center justify-between gap-2">
+                      <span class="font-display font-bold text-[17px] text-neutral flex items-center gap-2 min-w-0">
+                        {awayLogo
+                          ? <img src={awayLogo} alt="" width="20" height="20" class="w-5 h-5 flex-shrink-0 object-contain" aria-hidden="true" />
+                          : <span class="w-5 h-5 rounded-sm flex-shrink-0 bg-neutral/20" aria-hidden="true"></span>
+                        }
+                        <span class="truncate">{away.name}</span>
+                      </span>
+                      {game.status === 'final' && game.away_score != null &&
+                        <span class="font-mono font-bold text-[17px] text-neutral flex-shrink-0">{game.away_score}</span>
+                      }
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-1.5 pt-2 border-t border-neutral/10 font-mono text-[11px] text-neutral/70">
+                    <span class="opacity-55">Watch on</span>
+                    <span class="font-semibold text-neutral">{broadcaster}</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <p class="text-neutral/40 text-sm font-mono">No games scheduled in the next 7 days — check back soon.</p>
+        )}
+      </div>
+    </section>
+
+    <!-- ─── 3. PICK YOUR LEAGUE STRIP ──────────────────────────────── -->
+    <section class="bg-cream py-10">
+      <div class="max-w-5xl mx-auto px-6">
+        <a
+          href="/leagues"
+          class="group block border-2 border-primary rounded-2xl px-6 py-5 hover:bg-primary/[0.04] transition-colors"
+        >
+          <div class="flex items-center justify-between gap-6 flex-wrap">
+            <div class="flex flex-col gap-1.5 flex-shrink-0">
+              <span class="text-[11px] font-bold uppercase tracking-[0.2em] text-accent font-mono">
+                Now tracking · {LIVE_LEAGUES.length} leagues live · {COMING_LEAGUES.length} coming
+              </span>
+              <span class="font-display font-bold text-[1.75rem] text-primary tracking-[-0.02em] leading-none">
+                Pick your league.
+              </span>
             </div>
-          </a>
-          <a
-            href="/wnba"
-            class="block text-neutral p-8 rounded-2xl hover:opacity-90 transition-opacity group"
-            style="background-color: #E85D00;"
-          >
-            <div class="flex flex-col gap-4">
-              <div>
-                <p class="text-xs font-bold uppercase tracking-[0.2em] text-neutral/60 mb-1">WNBA · {currentSeason}</p>
-                <h2 class="font-display font-bold text-3xl md:text-4xl leading-tight">
-                  Women's National Basketball Association
-                </h2>
-                <p class="mt-2 text-base font-medium text-neutral/80">
-                  All 15 teams. Schedules, broadcast info, player pages.
-                </p>
-              </div>
-              <span class="self-start text-4xl font-display font-bold leading-none text-neutral group-hover:translate-x-1 transition-transform">→</span>
+            <div class="flex items-center gap-4 flex-wrap flex-1">
+              {LEAGUES.map(l => (
+                <div class={`flex items-center gap-2 ${l.status === 'coming-soon' ? 'opacity-45' : ''}`}>
+                  <span class="w-2 h-6 rounded-sm flex-shrink-0" style={`background:${l.color}`} aria-hidden="true"></span>
+                  <span class="font-display font-bold text-[15px] text-primary leading-none">{l.name}</span>
+                </div>
+              ))}
             </div>
-          </a>
+            <div class="flex-shrink-0 border-l-2 border-primary/15 pl-5 flex flex-col items-center gap-0.5 self-stretch justify-center min-w-[72px]">
+              <span class="font-display font-bold text-primary/50 text-[11px] uppercase tracking-[0.14em]">See all</span>
+              <span class="font-display font-bold text-accent text-[44px] leading-none group-hover:translate-x-1 transition-transform">→</span>
+            </div>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- ─── 4. GET TO KNOW EACH LEAGUE — 101 CARDS ─────────────────── -->
+    <section class="bg-cream pt-10 pb-10 border-t border-primary/10">
+      <div class="max-w-5xl mx-auto px-6">
+        <div class="grid md:grid-cols-[auto_1fr] gap-6 md:gap-8 items-center">
+          <div
+            class="font-display font-bold text-[clamp(56px,8vw,96px)] leading-[0.85] tracking-[-0.05em] text-accent"
+            aria-hidden="true"
+          >101</div>
+          <div>
+            <p class="text-[11px] font-bold uppercase tracking-[0.2em] text-accent font-mono mb-2">
+              New to women's pro sports?
+            </p>
+            <h2 class="font-display font-bold text-[clamp(28px,3.5vw,48px)] text-primary tracking-[-0.03em] leading-[1.05]">
+              Get to know each league —<br class="hidden md:block" />in a couple of minutes.
+            </h2>
+            <p class="font-mono font-bold text-[13px] uppercase tracking-[0.16em] text-primary/40 mt-4">Coming soon</p>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- Coming soon: vibrant cards with color rotation -->
-    <section class="bg-neutral py-16">
-      <div class="max-w-5xl mx-auto px-6">
-        <p class="text-sm font-bold text-accent uppercase tracking-[0.2em] mb-2">Coming soon</p>
-        <h2 class="font-display font-bold text-4xl md:text-5xl text-primary mb-10">What we're building.</h2>
-        <ul class="grid md:grid-cols-2 gap-4">
-          {comingSoon.map((item, i) => {
-            // Rotating color treatments for visual rhythm
-            const variants = [
-              'bg-primary text-neutral hover:bg-accent hover:text-primary',
-              'bg-accent text-primary hover:bg-primary hover:text-neutral',
-              'bg-primary text-neutral hover:bg-accent hover:text-primary',
-              'bg-accent text-primary hover:bg-primary hover:text-neutral',
-            ];
-            return (
-              <li class={`p-6 rounded-2xl transition-colors ${variants[i % variants.length]}`}>
-                <h3 class="font-display font-bold text-2xl md:text-3xl leading-tight">{item.title}</h3>
-                <p class="mt-2 text-base md:text-lg opacity-80">{item.subtitle}</p>
-              </li>
-            );
-          })}
-        </ul>
-      </div>
-    </section>
+
     <EmailSignup />
   </main>
 
   <Footer />
 </BaseLayout>
+
+<script>
+  document.querySelectorAll<HTMLElement>('time[data-local-time]').forEach(el => {
+    const utc = el.getAttribute('datetime');
+    if (!utc) return;
+    const date = new Date(utc);
+    if (isNaN(date.getTime())) return;
+    el.textContent = date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+  });
+</script>

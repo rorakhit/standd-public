@@ -1,0 +1,9 @@
+name = "standd"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+pages_build_output_dir = "./dist"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "standd"
+database_id = "614f19e4-3a1c-4004-8d67-7dae44219d32"

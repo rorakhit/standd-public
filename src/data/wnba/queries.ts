@@ -97,6 +97,44 @@ export async function getTeamRoster(teamSlug: string): Promise<WNBAPlayer[]> {
   );
 }
 
+function todayET(): string {
+  return new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
+}
+
+export async function getTodaysGames(): Promise<WNBAGame[]> {
+  const today = todayET();
+  const rows = await d1query<Omit<WNBAGame, 'broadcast'> & { broadcast: string }>(
+    `SELECT * FROM wnba_games
+     WHERE date = ?
+       AND (season_type = '2' OR season_type = '3')
+     ORDER BY time ASC`,
+    [today]
+  );
+  return rows.map(r => {
+    let broadcast: string[];
+    try { broadcast = JSON.parse(r.broadcast) as string[]; } catch { broadcast = []; }
+    return { ...r, broadcast };
+  });
+}
+
+export async function getUpcomingGames(days = 7): Promise<WNBAGame[]> {
+  const today = todayET();
+  const until = new Date(Date.now() - 4 * 60 * 60 * 1000 + days * 86_400_000).toISOString().slice(0, 10);
+  const rows = await d1query<Omit<WNBAGame, 'broadcast'> & { broadcast: string }>(
+    `SELECT * FROM wnba_games
+     WHERE date >= ? AND date <= ?
+       AND (season_type = '2' OR season_type = '3')
+     ORDER BY date ASC, time ASC
+     LIMIT 8`,
+    [today, until]
+  );
+  return rows.map(r => {
+    let broadcast: string[];
+    try { broadcast = JSON.parse(r.broadcast) as string[]; } catch { broadcast = []; }
+    return { ...r, broadcast };
+  });
+}
+
 export async function getPlayerStats(espnIds: string[]): Promise<WNBAPlayerStats[]> {
   if (espnIds.length === 0) return [];
   const placeholders = espnIds.map(() => '?').join(', ');

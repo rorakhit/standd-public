@@ -1,6 +1,6 @@
-import type { TeamConfig } from '../../shared/types';
+import type { WNBATeamConfig } from '../../shared/types';
 
-export const team: TeamConfig = {
+export const team: WNBATeamConfig = {
   name: 'Indiana Fever',
   slug: 'indiana-fever',
   color: '#002D62',

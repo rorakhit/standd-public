@@ -1,6 +1,6 @@
-import type { TeamConfig } from '../../shared/types';
+import type { WNBATeamConfig } from '../../shared/types';
 
-export const team: TeamConfig = {
+export const team: WNBATeamConfig = {
   name: 'Phoenix Mercury',
   slug: 'phoenix-mercury',
   color: '#BC4F1A',

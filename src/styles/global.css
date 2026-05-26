@@ -8,13 +8,21 @@
   --color-primary: #0F2A2D;
   --color-accent: #FF6B2C;
   --color-neutral: #FAF6F0;
+  --color-paper: #F4EFE4;
   --color-text: #000000;
   --color-muted: #5A5A5A;
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, monospace;
+  --radius-sm: 12px;
+  --radius-md: 14px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
 }
 
 html {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  background-color: var(--color-neutral);
+  background-color: #DDD5C4; /* warm cream page bg */
   color: var(--color-text);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -34,6 +42,9 @@ h1, h2, h3, h4, h5, h6 {
   font-family: 'Geist Mono', ui-monospace, monospace;
   font-variant-numeric: tabular-nums;
 }
+
+/* Tables inherit page background — prevent browser default white */
+table { background-color: inherit; }
 
 /* Selection styling */
 ::selection {

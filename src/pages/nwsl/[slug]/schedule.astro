@@ -1,0 +1,393 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Header from '../../../components/Header.astro';
+import Footer from '../../../components/Footer.astro';
+import { getNwslTeamSchedule } from '../../../data/nwsl/queries';
+
+import { team as angelCity }            from '../../../data/teams/nwsl/angel-city.team';
+import { team as bayFc }                from '../../../data/teams/nwsl/bay-fc.team';
+import { team as bostonLegacy }         from '../../../data/teams/nwsl/boston-legacy.team';
+import { team as chicagoStars }         from '../../../data/teams/nwsl/chicago-stars.team';
+import { team as denverSummit }         from '../../../data/teams/nwsl/denver-summit.team';
+import { team as gothamFc }             from '../../../data/teams/nwsl/gotham-fc.team';
+import { team as houstonDash }          from '../../../data/teams/nwsl/houston-dash.team';
+import { team as kansasCityCurrent }    from '../../../data/teams/nwsl/kansas-city-current.team';
+import { team as northCarolinaCourage } from '../../../data/teams/nwsl/north-carolina-courage.team';
+import { team as orlandoPride }         from '../../../data/teams/nwsl/orlando-pride.team';
+import { team as portlandThorns }       from '../../../data/teams/nwsl/portland-thorns.team';
+import { team as racingLouisville }     from '../../../data/teams/nwsl/racing-louisville.team';
+import { team as sanDiegoWave }         from '../../../data/teams/nwsl/san-diego-wave.team';
+import { team as seattleReign }         from '../../../data/teams/nwsl/seattle-reign.team';
+import { team as utahRoyals }           from '../../../data/teams/nwsl/utah-royals.team';
+import { team as washingtonSpirit }     from '../../../data/teams/nwsl/washington-spirit.team';
+
+import type { NWSLTeamConfig } from '../../../data/shared/types';
+
+export const prerender = false;
+
+const ALL_TEAMS: NWSLTeamConfig[] = [
+  angelCity, bayFc, bostonLegacy, chicagoStars, denverSummit, gothamFc,
+  houstonDash, kansasCityCurrent, northCarolinaCourage, orlandoPride,
+  portlandThorns, racingLouisville, sanDiegoWave, seattleReign, utahRoyals,
+  washingtonSpirit,
+];
+
+const { slug } = Astro.params;
+const team = ALL_TEAMS.find(t => t.slug === slug);
+if (!team) return Astro.redirect('/nwsl');
+const teamBySlug = new Map(ALL_TEAMS.map(t => [t.slug, t]));
+
+const SLUG_DISPLAY: Record<string, string> = {
+  'angel-city': 'Angel City FC', 'bay-fc': 'Bay FC',
+  'boston-legacy': 'Boston Legacy', 'chicago-stars': 'Chicago Stars',
+  'denver-summit': 'Denver Summit', 'gotham-fc': 'Gotham FC',
+  'houston-dash': 'Houston Dash', 'kansas-city-current': 'Kansas City Current',
+  'north-carolina-courage': 'NC Courage', 'orlando-pride': 'Orlando Pride',
+  'portland-thorns': 'Portland Thorns', 'racing-louisville': 'Racing Louisville',
+  'san-diego-wave': 'San Diego Wave', 'seattle-reign': 'Seattle Reign',
+  'utah-royals': 'Utah Royals', 'washington-spirit': 'Washington Spirit',
+};
+function displayName(s: string): string {
+  return SLUG_DISPLAY[s] ?? s.split('-').filter(Boolean).map(w => w[0].toUpperCase() + w.slice(1)).join(' ');
+}
+
+const d1Games = await getNwslTeamSchedule(team.slug).catch(() => []);
+
+type GameMatch = {
+  date: string; time: string | null; utcDatetime: string | null; opponent: string; opponentSlug: string;
+  opponentBadge?: string; homeAway: 'home' | 'away'; venue: string;
+  broadcast: string[]; result?: { teamScore: number; opponentScore: number };
+};
+
+const matches: GameMatch[] = d1Games.map(g => {
+  const isHome = g.home_team === team.slug;
+  const opponentSlug = isHome ? g.away_team : g.home_team;
+  const oppTeam = teamBySlug.get(opponentSlug);
+  const teamScore  = isHome ? g.home_score  : g.away_score;
+  const opponentScore = isHome ? g.away_score : g.home_score;
+  return {
+    date: g.date,
+    time: g.time ?? null,
+    utcDatetime: g.utc_datetime ?? null,
+    opponent: oppTeam?.name ?? displayName(opponentSlug),
+    opponentSlug,
+    opponentBadge: oppTeam?.badge,
+    homeAway: isHome ? 'home' : 'away',
+    venue: g.venue ?? '',
+    broadcast: g.broadcast,
+    result: g.status === 'final' && teamScore != null && opponentScore != null
+      ? { teamScore, opponentScore } : undefined,
+  };
+}).sort((a, b) => a.date.localeCompare(b.date));
+
+const today = new Date().toISOString().slice(0, 10);
+const played = matches.filter(m => m.result);
+const upcoming = matches.filter(m => !m.result);
+const wins = played.filter(m => m.result!.teamScore > m.result!.opponentScore).length;
+const draws = played.filter(m => m.result!.teamScore === m.result!.opponentScore).length;
+const losses = played.filter(m => m.result!.teamScore < m.result!.opponentScore).length;
+const nextMatch = upcoming[0] ?? null;
+const FREE_BROADCASTS = new Set(['ION', 'Victory+', 'NWSL+', 'ABC', 'Disney+']);
+function isFree(b: string): boolean { return FREE_BROADCASTS.has(b); }
+
+function formatDayLine(iso: string): string {
+  const d = new Date(iso + 'T12:00:00Z');
+  const dow = d.toLocaleDateString('en-US', { weekday: 'short', timeZone: 'UTC' }).toUpperCase();
+  const day = d.getUTCDate();
+  return `${dow} ${day}`;
+}
+
+function formatMonthHeader(iso: string): string {
+  const d = new Date(iso + 'T12:00:00Z');
+  return d.toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' }).toUpperCase();
+}
+
+function matchMonth(iso: string): string {
+  return iso.slice(0, 7); // "2026-05"
+}
+
+function formatTime(t: string | null): string {
+  return t ? `${t} ET` : 'TBD';
+}
+
+// Group matches by month for the timeline layout
+type MonthGroup = { monthKey: string; label: string; matches: typeof matches };
+const monthGroups: MonthGroup[] = [];
+for (const m of matches) {
+  const key = matchMonth(m.date);
+  const last = monthGroups[monthGroups.length - 1];
+  if (!last || last.monthKey !== key) {
+    monthGroups.push({ monthKey: key, label: formatMonthHeader(m.date), matches: [m] });
+  } else {
+    last.matches.push(m);
+  }
+}
+
+const teamColor = team.color;
+const teamOn = team.text;
+
+// Contrast helpers — same as team tracker
+function hexToRgb(hex: string): [number, number, number] {
+  const h = hex.replace('#', '');
+  return [parseInt(h.slice(0,2),16), parseInt(h.slice(2,4),16), parseInt(h.slice(4,6),16)];
+}
+function luminance([r,g,b]: [number,number,number]): number {
+  return [r,g,b].reduce((acc, c, i) => {
+    const lin = (c/255) <= 0.04045 ? (c/255)/12.92 : Math.pow(((c/255)+0.055)/1.055, 2.4);
+    return acc + lin * [0.2126,0.7152,0.0722][i];
+  }, 0);
+}
+function contrast(a: [number,number,number], b: [number,number,number]): number {
+  const [la, lb] = [luminance(a), luminance(b)];
+  return (Math.max(la,lb)+0.05) / (Math.min(la,lb)+0.05);
+}
+function mixToward(color: [number,number,number], target: [number,number,number], t: number): [number,number,number] {
+  return [0,1,2].map(i => color[i] + (target[i] - color[i]) * t) as [number,number,number];
+}
+function rgbToHex([r,g,b]: [number,number,number]): string {
+  return '#' + [r,g,b].map(c => Math.round(c).toString(16).padStart(2,'0')).join('');
+}
+
+// statBandColor: team color lightened until readable on #0F2A2D
+const bandRgb = hexToRgb('#0F2A2D');
+let statColorRgb = hexToRgb(teamColor);
+for (let t = 0.05; t <= 1 && contrast(statColorRgb, bandRgb) < 3; t += 0.05) {
+  statColorRgb = mixToward(hexToRgb(teamColor), [255,255,255], t);
+}
+const statBandColor = rgbToHex(statColorRgb);
+
+// monthLabelColor: team color darkened toward primary until readable on #EDE8DE background
+const bgRgb = hexToRgb('#EDE8DE');
+let labelRgb = hexToRgb(teamColor);
+for (let t = 0.05; t <= 1 && contrast(labelRgb, bgRgb) < 4.5; t += 0.05) {
+  labelRgb = mixToward(hexToRgb(teamColor), [15, 42, 45], t);
+}
+const monthLabelColor = rgbToHex(labelRgb);
+
+// accentOnTeam: #FF6B2C lightened until readable on teamColor
+const teamRgb = hexToRgb(teamColor);
+let accentOnTeamRgb = hexToRgb('#FF6B2C');
+for (let t = 0.05; t <= 1 && contrast(accentOnTeamRgb, teamRgb) < 3; t += 0.05) {
+  accentOnTeamRgb = mixToward(hexToRgb('#FF6B2C'), [255,255,255], t);
+}
+const accentOnTeam = rgbToHex(accentOnTeamRgb);
+
+// Hero h1 split
+const shortParts = team.short.trim().split(' ');
+const heroSecondLine = shortParts.pop() ?? '';
+const heroFirstLine = shortParts.join(' ');
+
+const title = `${team.name} 2026 Schedule — Full Season`;
+const description = `${team.name}'s complete 2026 NWSL season schedule: results, upcoming fixtures, broadcast info, and venues.`;
+---
+
+<BaseLayout title={title} description={description}>
+  <Header />
+
+  <!-- Breadcrumb band -->
+  <div style={`background:${teamColor}; color:${teamOn};`} class="px-8 py-3">
+    <div class="max-w-screen-xl mx-auto flex items-center justify-between">
+      <span class="font-mono text-[12px] font-semibold tracking-[0.08em]">
+        <a href="/nwsl" style={`opacity:0.7; color:${teamOn}; text-decoration:none;`}>NWSL</a>
+        <span style="opacity:0.4"> › </span>
+        <a href={`/nwsl/${team.slug}`} style={`opacity:0.7; color:${teamOn}; text-decoration:none;`}>{team.name.toUpperCase()}</a>
+        <span style="opacity:0.4"> › </span>
+        <span>2026 SCHEDULE</span>
+      </span>
+      <span class="font-mono text-[12px] font-semibold tracking-[0.08em]" style="opacity:0.7;">
+        EST. {team.est} · {team.city.toUpperCase()}
+      </span>
+    </div>
+  </div>
+
+  <!-- Hero -->
+  <section
+    class="relative overflow-hidden"
+    style={`background:${teamColor}; color:${teamOn}; padding:48px 64px 56px;`}
+  >
+    {team.badge && (
+      <img src={team.badge} alt="" aria-hidden="true"
+        style="position:absolute; right:-100px; top:-30px; height:500px; opacity:0.10; pointer-events:none;" />
+    )}
+    <div class="max-w-screen-xl mx-auto relative z-10">
+      <div class="flex items-end gap-6 mb-2">
+        {team.badge && <img src={team.badge} alt={team.name} style="width:80px;height:80px;object-fit:contain;flex-shrink:0;" />}
+        <h1 class="font-display font-bold leading-[0.9] tracking-[-0.04em]" style="font-size:clamp(52px,7vw,96px);">
+          {heroFirstLine && <span style="display:block;">{heroFirstLine}</span>}
+          <span style={`display:block; color:${accentOnTeam};`}>{heroSecondLine}</span>
+        </h1>
+      </div>
+      <p class="font-mono text-[13px] font-bold tracking-[0.15em] mt-4" style="opacity:0.65;">2026 NWSL SEASON · FULL SCHEDULE</p>
+    </div>
+  </section>
+
+  <!-- Stat band: record -->
+  <div style="background:#0F2A2D; color:#FAF6F0;">
+    <div class="max-w-screen-xl mx-auto grid grid-cols-4 divide-x" style="border-color:rgba(250,246,240,0.10);">
+      {[
+        { label: 'WINS', value: String(wins) },
+        { label: 'DRAWS', value: String(draws) },
+        { label: 'LOSSES', value: String(losses) },
+        { label: 'REMAINING', value: String(upcoming.length) },
+      ].map(({ label, value }) => (
+        <div class="px-8 py-5 text-center">
+          <div class="font-display font-bold tabular-nums" style={`font-size:40px; line-height:1; color:${statBandColor};`}>{value}</div>
+          <div class="font-mono text-[10px] font-bold tracking-[0.15em] mt-1" style="opacity:0.5;">{label}</div>
+        </div>
+      ))}
+    </div>
+    <div style={`height:3px; background:${teamColor};`}></div>
+  </div>
+
+  <!-- Timeline schedule -->
+  <div style="background:#EDE8DE; flex:1;">
+  <main class="max-w-3xl mx-auto px-6 py-10">
+
+    {matches.length === 0 ? (
+      <p class="text-muted text-[15px]">Schedule not yet available.</p>
+    ) : monthGroups.map(group => (
+      <section class="mb-10">
+
+        <!-- Month header -->
+        <div class="flex items-center gap-3 mb-4">
+          <div style={`height:2px; width:20px; background:${monthLabelColor}; flex-shrink:0;`}></div>
+          <h2 class="font-display text-[18px] tracking-[0.06em]" style={`color:${monthLabelColor}; font-weight:800;`}>
+            {group.label}
+          </h2>
+          <div style={`height:1px; flex:1; background:${monthLabelColor}; opacity:0.25;`}></div>
+        </div>
+
+        <!-- Match cards -->
+        <div class="flex flex-col gap-2">
+          {group.matches.map(m => {
+            const isPlayed = !!m.result;
+            const isNext = m === nextMatch;
+
+            let wdlBadge = '';
+            let wdlBg = '';
+            let wdlFg = '#FAF6F0';
+            if (isPlayed && m.result) {
+              const { teamScore, opponentScore } = m.result;
+              if (teamScore > opponentScore)      { wdlBadge = 'W'; wdlBg = teamColor; wdlFg = teamOn; }
+              else if (teamScore < opponentScore) { wdlBadge = 'L'; wdlBg = '#0F2A2D'; }
+              else                                { wdlBadge = 'D'; wdlBg = '#6B7280'; }
+            }
+
+            return (
+              <div
+                style={
+                  isNext
+                    ? `background:${teamColor}; color:${teamOn}; border-radius:12px; padding:14px 16px;`
+                    : isPlayed
+                      ? `background:#F4EFE4; border-radius:12px; padding:14px 16px; opacity:0.75;`
+                      : `background:#EDE8DE; border:1px solid rgba(15,42,45,0.10); border-radius:12px; padding:14px 16px;`
+                }
+              >
+                <div style="display:grid; grid-template-columns:52px 1fr auto; gap:12px; align-items:center;">
+
+                  <!-- Date column -->
+                  <div style="text-align:center;">
+                    <div class="font-mono font-bold" style={`font-size:22px; line-height:1; ${isNext ? '' : 'color:#0F2A2D;'}`}>
+                      {new Date(m.date + 'T12:00:00Z').getUTCDate()}
+                    </div>
+                    <div class="font-mono text-[9px] font-bold tracking-[0.12em] mt-0.5" style={isNext ? 'opacity:0.7;' : 'color:#5A5A5A;'}>
+                      {new Date(m.date + 'T12:00:00Z').toLocaleDateString('en-US', { weekday: 'short', timeZone: 'UTC' }).toUpperCase()}
+                    </div>
+                  </div>
+
+                  <!-- Opponent + meta -->
+                  <div>
+                    <div class="flex items-center gap-2 mb-1">
+                      <!-- H/A pill -->
+                      <span
+                        class="font-mono text-[9px] font-bold tracking-[0.08em] px-1.5 py-0.5 rounded"
+                        style={isNext
+                          ? `background:rgba(0,0,0,0.20); color:${teamOn};`
+                          : m.homeAway === 'home'
+                            ? `background:${teamColor}; color:${teamOn};`
+                            : `background:rgba(15,42,45,0.08); color:#5A5A5A;`}
+                      >{m.homeAway === 'home' ? 'HOME' : 'AWAY'}</span>
+                      {isNext && (
+                        <span class="font-mono text-[9px] font-bold tracking-[0.08em] px-1.5 py-0.5 rounded" style="background:rgba(0,0,0,0.20);">
+                          NEXT
+                        </span>
+                      )}
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                      {m.opponentBadge && (
+                        <img src={m.opponentBadge} alt={m.opponent}
+                          style={`width:22px;height:22px;object-fit:contain;flex-shrink:0;${isPlayed && !isNext ? 'opacity:0.6;' : ''}`} />
+                      )}
+                      <a href={`/nwsl/${m.opponentSlug}`} class="font-display font-bold text-[16px] leading-tight hover:text-accent transition-colors" style="color:inherit; text-decoration:none;">{m.opponent}</a>
+                    </div>
+
+                    <div class="font-mono text-[10px] mt-1 flex flex-wrap gap-x-3 gap-y-0.5" style={isNext ? 'opacity:0.7;' : 'color:#5A5A5A;'}>
+                      {!isPlayed && (
+                      m.utcDatetime
+                        ? <time data-utc={m.utcDatetime} class="kickoff-time">{m.time ? `${m.time} ET` : 'TBD'}</time>
+                        : <span>{m.time ? `${m.time} ET` : 'TBD'}</span>
+                    )}
+                      {m.venue && <span class="truncate">{m.venue}</span>}
+                    </div>
+                  </div>
+
+                  <!-- Right: score+WDL or broadcast -->
+                  <div class="flex flex-col items-end gap-1.5 flex-shrink-0">
+                    {isPlayed && m.result ? (
+                      <div class="flex items-center gap-1.5">
+                        <span class="font-display font-bold tabular-nums text-[18px]">
+                          {m.result.teamScore}–{m.result.opponentScore}
+                        </span>
+                        <span
+                          class="font-mono text-[10px] font-bold flex items-center justify-center rounded"
+                          style={`width:20px;height:20px;background:${wdlBg};color:${wdlFg};flex-shrink:0;`}
+                        >{wdlBadge}</span>
+                      </div>
+                    ) : m.broadcast.length > 0 ? (
+                      m.broadcast.map(b => (
+                        <span
+                          class="font-mono text-[9px] font-bold px-2 py-0.5 rounded whitespace-nowrap"
+                          style={isNext
+                            ? `background:#0F2A2D; color:#FF6B2C;`
+                            : isFree(b)
+                              ? `background:#FF6B2C; color:#FAF6F0;`
+                              : `background:rgba(15,42,45,0.10); color:#0F2A2D;`}
+                        >{b}</span>
+                      ))
+                    ) : (
+                      <span class="font-mono text-[10px]" style="opacity:0.35;">TBD</span>
+                    )}
+                  </div>
+
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+    ))}
+
+    <p class="mt-4 text-xs text-muted">
+      ← <a href={`/nwsl/${team.slug}`} class="hover:text-primary transition-colors">Back to {team.name} tracker</a>
+    </p>
+  </main>
+  </div>
+
+  <Footer />
+</BaseLayout>
+
+<script>
+  // Rewrite kickoff times from UTC to user's local timezone
+  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  document.querySelectorAll<HTMLElement>('time[data-utc]').forEach(el => {
+    const utc = el.getAttribute('data-utc');
+    if (!utc) return;
+    try {
+      const d = new Date(utc);
+      const timeStr = d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: tz });
+      const tzAbbr = Intl.DateTimeFormat('en-US', { timeZoneName: 'short', timeZone: tz }).formatToParts(d).find(p => p.type === 'timeZoneName')?.value ?? tz;
+      el.textContent = `${timeStr} ${tzAbbr}`;
+    } catch {}
+  });
+</script>

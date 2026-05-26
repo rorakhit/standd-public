@@ -1,0 +1,272 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Header from '../../../components/Header.astro';
+import Footer from '../../../components/Footer.astro';
+import { getNwslTeamRoster, playerNameToSlug } from '../../../data/nwsl/queries';
+
+import { team as angelCity }            from '../../../data/teams/nwsl/angel-city.team';
+import { team as bayFc }                from '../../../data/teams/nwsl/bay-fc.team';
+import { team as bostonLegacy }         from '../../../data/teams/nwsl/boston-legacy.team';
+import { team as chicagoStars }         from '../../../data/teams/nwsl/chicago-stars.team';
+import { team as denverSummit }         from '../../../data/teams/nwsl/denver-summit.team';
+import { team as gothamFc }             from '../../../data/teams/nwsl/gotham-fc.team';
+import { team as houstonDash }          from '../../../data/teams/nwsl/houston-dash.team';
+import { team as kansasCityCurrent }    from '../../../data/teams/nwsl/kansas-city-current.team';
+import { team as northCarolinaCourage } from '../../../data/teams/nwsl/north-carolina-courage.team';
+import { team as orlandoPride }         from '../../../data/teams/nwsl/orlando-pride.team';
+import { team as portlandThorns }       from '../../../data/teams/nwsl/portland-thorns.team';
+import { team as racingLouisville }     from '../../../data/teams/nwsl/racing-louisville.team';
+import { team as sanDiegoWave }         from '../../../data/teams/nwsl/san-diego-wave.team';
+import { team as seattleReign }         from '../../../data/teams/nwsl/seattle-reign.team';
+import { team as utahRoyals }           from '../../../data/teams/nwsl/utah-royals.team';
+import { team as washingtonSpirit }     from '../../../data/teams/nwsl/washington-spirit.team';
+
+import { roster as angelCityRoster }            from '../../../data/teams/nwsl/angel-city';
+import { roster as bayFcRoster }                from '../../../data/teams/nwsl/bay-fc';
+import { roster as bostonLegacyRoster }         from '../../../data/teams/nwsl/boston-legacy';
+import { roster as chicagoStarsRoster }         from '../../../data/teams/nwsl/chicago-stars';
+import { roster as denverSummitRoster }         from '../../../data/teams/nwsl/denver-summit';
+import { roster as gothamFcRoster }             from '../../../data/teams/nwsl/gotham-fc';
+import { roster as houstonDashRoster }          from '../../../data/teams/nwsl/houston-dash';
+import { roster as kansasCityCurrentRoster }    from '../../../data/teams/nwsl/kansas-city-current';
+import { roster as northCarolinaCourageRoster } from '../../../data/teams/nwsl/north-carolina-courage';
+import { roster as orlandoPrideRoster }         from '../../../data/teams/nwsl/orlando-pride';
+import { roster as portlandThornsRoster }       from '../../../data/teams/nwsl/portland-thorns';
+import { roster as racingLouisvilleRoster }     from '../../../data/teams/nwsl/racing-louisville';
+import { roster as sanDiegoWaveRoster }         from '../../../data/teams/nwsl/san-diego-wave';
+import { roster as seattleReignRoster }         from '../../../data/teams/nwsl/seattle-reign';
+import { roster as utahRoyalsRoster }           from '../../../data/teams/nwsl/utah-royals';
+import { roster as washingtonSpiritRoster }     from '../../../data/teams/nwsl/washington-spirit';
+
+import type { NWSLTeamConfig, Player } from '../../../data/shared/types';
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const entries: { team: NWSLTeamConfig; roster: Player[] }[] = [
+    { team: angelCity,            roster: angelCityRoster },
+    { team: bayFc,                roster: bayFcRoster },
+    { team: bostonLegacy,         roster: bostonLegacyRoster },
+    { team: chicagoStars,         roster: chicagoStarsRoster },
+    { team: denverSummit,         roster: denverSummitRoster },
+    { team: gothamFc,             roster: gothamFcRoster },
+    { team: houstonDash,          roster: houstonDashRoster },
+    { team: kansasCityCurrent,    roster: kansasCityCurrentRoster },
+    { team: northCarolinaCourage, roster: northCarolinaCourageRoster },
+    { team: orlandoPride,         roster: orlandoPrideRoster },
+    { team: portlandThorns,       roster: portlandThornsRoster },
+    { team: racingLouisville,     roster: racingLouisvilleRoster },
+    { team: sanDiegoWave,         roster: sanDiegoWaveRoster },
+    { team: seattleReign,         roster: seattleReignRoster },
+    { team: utahRoyals,           roster: utahRoyalsRoster },
+    { team: washingtonSpirit,     roster: washingtonSpiritRoster },
+  ];
+  return entries.map(e => ({ params: { slug: e.team.slug }, props: e }));
+}
+
+const { team, roster: staticRoster } = Astro.props as { team: NWSLTeamConfig; roster: Player[] };
+
+// Prefer D1 live data; fall back to static if table not yet populated
+type RosterEntry = { name: string; number: number | null; position: string; height: string | null; country_code: string | null; hometown: string | null; photo_url: string | null };
+const d1Players = await getNwslTeamRoster(team.slug).catch(() => []);
+const roster: RosterEntry[] = d1Players.length > 0
+  ? d1Players
+  : staticRoster.map(p => ({
+      name: p.name,
+      number: p.number,
+      position: p.position,
+      height: p.height ?? null,
+      country_code: p.countryCode ?? null,
+      hometown: p.hometown ?? null,
+      photo_url: p.photo ?? null,
+    }));
+
+const goalkeepers  = roster.filter(p => p.position === 'GK');
+const defenders    = roster.filter(p => p.position === 'DEF');
+const midfielders  = roster.filter(p => p.position === 'MID');
+const forwards     = roster.filter(p => p.position === 'FWD');
+
+const nations = new Set(roster.map(p => p.country_code).filter(Boolean)).size;
+const avgAge = null; // not in data yet
+
+// ── Color helpers ──────────────────────────────────────────────────────────────
+const teamColor = team.color;
+const teamOn = team.text;
+
+function hexToRgb(hex: string): [number, number, number] {
+  const h = hex.replace('#', '');
+  return [parseInt(h.slice(0,2),16), parseInt(h.slice(2,4),16), parseInt(h.slice(4,6),16)];
+}
+function luminance([r,g,b]: [number,number,number]): number {
+  return [r,g,b].reduce((acc, c, i) => {
+    const lin = (c/255) <= 0.04045 ? (c/255)/12.92 : Math.pow(((c/255)+0.055)/1.055, 2.4);
+    return acc + lin * [0.2126,0.7152,0.0722][i];
+  }, 0);
+}
+function contrast(a: [number,number,number], b: [number,number,number]): number {
+  const [la, lb] = [luminance(a), luminance(b)];
+  return (Math.max(la,lb)+0.05) / (Math.min(la,lb)+0.05);
+}
+function mixToward(color: [number,number,number], target: [number,number,number], t: number): [number,number,number] {
+  return [0,1,2].map(i => color[i] + (target[i] - color[i]) * t) as [number,number,number];
+}
+function rgbToHex([r,g,b]: [number,number,number]): string {
+  return '#' + [r,g,b].map(c => Math.round(c).toString(16).padStart(2,'0')).join('');
+}
+
+// Accent on team-color bg
+const teamRgb = hexToRgb(teamColor);
+let accentOnTeamRgb = hexToRgb('#FF6B2C');
+for (let t = 0.05; t <= 1 && contrast(accentOnTeamRgb, teamRgb) < 3; t += 0.05) {
+  accentOnTeamRgb = mixToward(hexToRgb('#FF6B2C'), [255, 255, 255], t);
+}
+const accentOnTeam = rgbToHex(accentOnTeamRgb);
+
+// Country code → flag emoji
+function countryFlag(code?: string): string {
+  if (!code) return '';
+  const upper = code.toUpperCase();
+  if (upper.length !== 2) return '';
+  return [...upper].map(c => String.fromCodePoint(0x1F1E6 + c.charCodeAt(0) - 65)).join('');
+}
+
+function initials(name: string): string {
+  const parts = name.trim().split(/\s+/);
+  return (parts[0]?.[0] ?? '') + (parts[parts.length - 1]?.[0] ?? '');
+}
+
+const title = `${team.name} 2026 Squad — NWSL Roster | Standd`;
+const description = `Full ${team.name} NWSL 2026 squad — goalkeepers, defenders, midfielders, forwards.`;
+
+const groups = [
+  { label: 'Goalkeepers', players: goalkeepers },
+  { label: 'Defenders',   players: defenders },
+  { label: 'Midfielders', players: midfielders },
+  { label: 'Forwards',    players: forwards },
+];
+---
+
+<BaseLayout title={title} description={description}>
+  <Header />
+
+  <div style={`--team-color:${teamColor}; --team-on:${teamOn}; background:#EDE8DE;`}>
+
+  <!-- Breadcrumb -->
+  <div style="background:var(--team-color); color:var(--team-on); padding:12px 32px;">
+    <div class="max-w-screen-xl mx-auto">
+      <span class="font-mono text-[12px] font-bold tracking-[0.08em]">
+        <a href="/nwsl" style="opacity:0.65; color:inherit; text-decoration:none;">NWSL</a>
+        <span style="opacity:0.4"> › </span>
+        <a href={`/nwsl/${team.slug}`} style="opacity:0.65; color:inherit; text-decoration:none;">{team.name.toUpperCase()}</a>
+        <span style="opacity:0.4"> › </span>
+        <span>SQUAD</span>
+      </span>
+    </div>
+  </div>
+
+  <!-- Hero -->
+  <section class="relative overflow-hidden" style="background:var(--team-color); color:var(--team-on); padding:40px 64px 56px;">
+    {team.badge && (
+      <img src={team.badge} alt="" aria-hidden="true"
+        style="position:absolute; right:-100px; top:-60px; height:480px; opacity:0.15; pointer-events:none; user-select:none;" />
+    )}
+    <div class="max-w-screen-xl mx-auto relative z-10">
+      <!-- Top row: crest + headings -->
+      <div class="flex items-start gap-6 mb-8">
+        {team.badge && (
+          <img src={team.badge} alt={team.name} style="width:88px; height:88px; object-fit:contain; flex-shrink:0;" />
+        )}
+        <div>
+          <div class="font-mono text-[12px] font-bold tracking-[0.15em] mb-3" style="opacity:0.7;">
+            2026 ROSTER · {roster.length} PLAYERS
+          </div>
+          <h1 class="font-display font-bold leading-[0.95] tracking-[-0.04em]" style="font-size:80px;">
+            <span style="display:block;">{team.short}</span>
+            <span style={`display:block; opacity:0.6; color:${accentOnTeam};`}>squad.</span>
+          </h1>
+        </div>
+      </div>
+
+      <!-- Meta row -->
+      <div class="flex items-center gap-8 flex-wrap">
+        <div class="font-mono text-[13px]">
+          <span style="opacity:0.6;">NATIONS &nbsp;</span>
+          <span class="font-bold">{nations}</span>
+        </div>
+        <div class="font-mono text-[13px]">
+          <span style="opacity:0.6;">GK &nbsp;</span><span class="font-bold">{goalkeepers.length}</span>
+          <span style="opacity:0.4; margin:0 8px;">·</span>
+          <span style="opacity:0.6;">DEF &nbsp;</span><span class="font-bold">{defenders.length}</span>
+          <span style="opacity:0.4; margin:0 8px;">·</span>
+          <span style="opacity:0.6;">MID &nbsp;</span><span class="font-bold">{midfielders.length}</span>
+          <span style="opacity:0.4; margin:0 8px;">·</span>
+          <span style="opacity:0.6;">FWD &nbsp;</span><span class="font-bold">{forwards.length}</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Roster groups -->
+  <main class="max-w-screen-xl mx-auto px-8 py-12">
+    {groups.map(({ label, players }) => players.length > 0 && (
+      <div style="margin-bottom:48px;">
+        <!-- Group header -->
+        <div class="flex items-baseline gap-4 pb-3" style="border-bottom:2px solid #0F2A2D; margin-bottom:20px;">
+          <h2 class="font-display font-bold text-primary" style="font-size:28px;">{label}</h2>
+        </div>
+
+        <!-- Player grid: 4-col → 3 → 2 → 1 -->
+        <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:14px;" class="squad-grid">
+          {players.map(p => {
+            const inits = initials(p.name);
+            const flag = countryFlag(p.country_code ?? undefined);
+            const profileHref = `/nwsl/${team.slug}/players/${playerNameToSlug(p.name)}`;
+            return (
+              <a href={profileHref} style={`background:#EDE8DE; border:1px solid rgba(15,42,45,0.1); border-radius:12px; overflow:hidden; display:grid; grid-template-columns:92px 1fr; min-height:120px; text-decoration:none; transition:box-shadow 0.15s;`} class="player-card">
+                <!-- Photo / initials cell: initials always rendered beneath; img hides itself on 404 -->
+                <div style={`background:${teamColor}; position:relative; overflow:hidden;`}>
+                  <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center;">
+                    <span class="font-display font-bold" style={`font-size:36px; color:${teamOn}; opacity:0.5; line-height:1; text-transform:uppercase;`}>{inits}</span>
+                  </div>
+                  {p.photo_url && (
+                    <img src={p.photo_url} alt={p.name}
+                      style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;"
+                      onerror="this.style.display='none'" />
+                  )}
+                  <!-- Jersey number overlay -->
+                  {p.number != null && <span class="font-display font-bold" style="position:absolute; top:6px; left:6px; font-size:28px; line-height:1; color:#FAF6F0; text-shadow:0 1px 4px rgba(0,0,0,0.4);">{p.number}</span>}
+                </div>
+                <!-- Info cell -->
+                <div style="padding:14px; display:flex; flex-direction:column; justify-content:space-between;">
+                  <div>
+                    <div class="font-display font-bold text-primary" style="font-size:16px; line-height:1.15;">{p.name}</div>
+                    {p.hometown && (
+                      <div class="font-mono text-muted" style="font-size:11px; margin-top:4px; line-height:1.3;">{p.hometown}</div>
+                    )}
+                  </div>
+                  <div style="font-size:16px; margin-top:8px;" title={p.country_code?.toUpperCase()}>{flag}</div>
+                </div>
+              </a>
+            );
+          })}
+        </div>
+      </div>
+    ))}
+  </main>
+
+  <Footer />
+  </div>
+</BaseLayout>
+
+<style>
+  .player-card:hover { box-shadow: 0 4px 16px rgba(15,42,45,0.12); }
+  @media (max-width: 1024px) {
+    .squad-grid { grid-template-columns: repeat(3,1fr) !important; }
+  }
+  @media (max-width: 640px) {
+    .squad-grid { grid-template-columns: repeat(2,1fr) !important; }
+  }
+  @media (max-width: 400px) {
+    .squad-grid { grid-template-columns: 1fr !important; }
+  }
+</style>

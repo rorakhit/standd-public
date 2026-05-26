@@ -1,15 +1,53 @@
 import type { Player } from '../../shared/types';
-import type { Match, TeamConfig } from '../../shared/types';
+import type { NWSLTeamConfig } from '../../shared/types';
 
-export const team: TeamConfig = {
+export const team: NWSLTeamConfig = {
   name: 'Houston Dash',
   slug: 'houston-dash',
-  color: '#FF6900',
+  short: 'Houston Dash',
+  color: '#F47B20',
+  text: '#FAF6F0',
   badge: 'https://images.nwslsoccer.com/image/private/t_q-best/v1710436093/prd/assets/teams/houston-dash.svg',
   standingsKey: 'Houston Dash',
   officialUrl: 'https://www.houstondynamofc.com/houstondash/',
   ticketsUrl: 'https://seatgeek.com/houston-dash-tickets',
+  city: 'Houston',
+  venue: 'Shell Energy Stadium',
+  supporter: 'Bayou Brigade',
+  tagline: 'Forever orange.',
+  est: 2014,
 };
+
+
+export const roster: Player[] = [
+  { number: 1, name: "Jane Campbell", position: 'GK', hometown: "Kennesaw, Georgia", leagueSlug: 'nwsl', teamSlug: 'houston-dash', teamName: "Houston Dash", countryCode: 'us', height: "5'9\"", photo: '/players/nwsl/houston-dash/campbell-j.webp' },
+  { number: 21, name: "Hillary Beall", position: 'GK', hometown: "Laguna Beach, California", leagueSlug: 'nwsl', teamSlug: 'houston-dash', teamName: "Houston Dash", countryCode: 'us', height: "5'11\"", photo: '/players/nwsl/houston-dash/beall-h.webp' },
+  { number: 40, name: "Caroline DeLisle", position: 'GK', hometown: "Tampa, Florida", leagueSlug: 'nwsl', teamSlug: 'houston-dash', teamName: "Houston Dash", countryCode: 'us', photo: '/players/nwsl/houston-dash/delisle-c.webp' },
+  { number: 2, name: "Allysha Chapman", position: 'DEF', hometown: "Courtice, Ontario, Canada", leagueSlug: 'nwsl', teamSlug: 'houston-dash', teamName: "Houston Dash", countryCode: 'ca', height: "5'3\"", photo: '/players/nwsl/houston-dash/chapman-a.webp' },
+  { number: 4, name: "Leah Klenke", position: 'DEF', hometown: "Houston, Texas", leagueSlug: 'nwsl', teamSlug: 'houston-dash', teamName: "Houston Dash", countryCode: 'us', photo: '/players/nwsl/houston-dash/klenke-l.webp' },
+  { number: 7, name: "Evelina Duljan", position: 'DEF', hometown: "Kristianstad, Sweden", leagueSlug: 'nwsl', teamSlug: 'houston-dash', teamName: "Houston Dash", countryCode: 'se', height: "5'3\"", photo: '/players/nwsl/houston-dash/duljan-e.webp' },
+  { number: 10, name: "Malia Berkely", position: 'DEF', hometown: "Liberty Township, Ohio", leagueSlug: 'nwsl', teamSlug: 'houston-dash', teamName: "Houston Dash", countryCode: 'us', height: "5'8\"", photo: '/players/nwsl/houston-dash/berkely-m.webp' },
+  { number: 14, name: "Paige Nielsen", position: 'DEF', hometown: "Lincoln, Nebraska", leagueSlug: 'nwsl', teamSlug: 'houston-dash', teamName: "Houston Dash", countryCode: 'us', height: "5'5\"", photo: '/players/nwsl/houston-dash/nielsen-p.webp' },
+  { number: 18, name: "Cate Hardin", position: 'DEF', hometown: "Marietta, Georgia", leagueSlug: 'nwsl', teamSlug: 'houston-dash', teamName: "Houston Dash", countryCode: 'us', height: "5'8\"" },
+  { number: 20, name: "Christen Westphal", position: 'DEF', hometown: "Brecksville, Ohio", leagueSlug: 'nwsl', teamSlug: 'houston-dash', teamName: "Houston Dash", countryCode: 'us', height: "5'6\"", photo: '/players/nwsl/houston-dash/westphal-c.webp' },
+  { number: 27, name: "Lisa Boattin", position: 'DEF', hometown: "Portogruaro, Italy", leagueSlug: 'nwsl', teamSlug: 'houston-dash', teamName: "Houston Dash", countryCode: 'it', height: "5'3\"", photo: '/players/nwsl/houston-dash/boattin-l.webp' },
+  { number: 29, name: "Rebeca Costa da Silva", position: 'DEF', hometown: "Pindoretama, Brazil", leagueSlug: 'nwsl', teamSlug: 'houston-dash', teamName: "Houston Dash", countryCode: 'br', height: "5'6\"" },
+  { number: 8, name: "Delanie Sheehan", position: 'MID', hometown: "Walnut Creek, California", leagueSlug: 'nwsl', teamSlug: 'houston-dash', teamName: "Houston Dash", countryCode: 'us', height: "5'6\"", photo: '/players/nwsl/houston-dash/sheehan-d.webp' },
+  { number: 12, name: "Kiki Van Zanten", position: 'MID', hometown: "Buffalo Grove, Illinois", leagueSlug: 'nwsl', teamSlug: 'houston-dash', teamName: "Houston Dash", countryCode: 'jm', height: "5'1\"", photo: '/players/nwsl/houston-dash/zanten-k.webp' },
+  { number: 13, name: "Sophie Schmidt", position: 'MID', hometown: "Abbotsford, British Columbia, Canada", leagueSlug: 'nwsl', teamSlug: 'houston-dash', teamName: "Houston Dash", countryCode: 'ca', height: "5'8\"", photo: '/players/nwsl/houston-dash/schmidt-s.webp' },
+  { number: 17, name: "Sarah Puntigam", position: 'MID', hometown: "Raning, Austria", leagueSlug: 'nwsl', teamSlug: 'houston-dash', teamName: "Houston Dash", countryCode: 'at', height: "5'8\"", photo: '/players/nwsl/houston-dash/puntigam-s.webp' },
+  { number: 19, name: "Maggie Graham", position: 'MID', hometown: "Atlanta, Georgia", leagueSlug: 'nwsl', teamSlug: 'houston-dash', teamName: "Houston Dash", countryCode: 'us', height: "5'9\"", photo: '/players/nwsl/houston-dash/graham-m.webp' },
+  { number: 22, name: "Kat Rader", position: 'MID', hometown: "Stuart, Florida", leagueSlug: 'nwsl', teamSlug: 'houston-dash', teamName: "Houston Dash", countryCode: 'us', photo: '/players/nwsl/houston-dash/rader-k.webp' },
+  { number: 24, name: "Danielle Colaprico", position: 'MID', hometown: "Freehold Township, New Jersey", leagueSlug: 'nwsl', teamSlug: 'houston-dash', teamName: "Houston Dash", countryCode: 'us', height: "5'3\"", photo: '/players/nwsl/houston-dash/colaprico-d.webp' },
+  { number: 30, name: "Linda Ullmark", position: 'MID', hometown: "San Diego, California", leagueSlug: 'nwsl', teamSlug: 'houston-dash', teamName: "Houston Dash", countryCode: 'us', height: "5'6\"", photo: '/players/nwsl/houston-dash/ullmark-l.webp' },
+  { number: 6, name: "Messiah Bright", position: 'FWD', hometown: "Dallas, Texas", leagueSlug: 'nwsl', teamSlug: 'houston-dash', teamName: "Houston Dash", countryCode: 'us', height: "5'9\"", photo: '/players/nwsl/houston-dash/bright-m.webp' },
+  { number: 9, name: "Clarissa Laris­ey", position: 'FWD', hometown: "Ottawa, Ontario, Canada", leagueSlug: 'nwsl', teamSlug: 'houston-dash', teamName: "Houston Dash", countryCode: 'ca', height: "5'4\"", photo: '/players/nwsl/houston-dash/larisey-c.webp' },
+  { number: 11, name: "Yazmeen Ryan", position: 'FWD', hometown: "Norman, Oklahoma", leagueSlug: 'nwsl', teamSlug: 'houston-dash', teamName: "Houston Dash", countryCode: 'us', height: "5'6\"", photo: '/players/nwsl/houston-dash/ryan-y.webp' },
+  { number: 11, name: "Emina Ekic", position: 'FWD', hometown: "Bosnia and Herzegovina", leagueSlug: 'nwsl', teamSlug: 'houston-dash', teamName: "Houston Dash", height: "5'5\"" },
+  { number: 15, name: "Avery Patterson", position: 'FWD', hometown: "Jacksonville, Florida", leagueSlug: 'nwsl', teamSlug: 'houston-dash', teamName: "Houston Dash", countryCode: 'us', height: "5'6\"", photo: '/players/nwsl/houston-dash/patterson-a.webp' },
+  { number: 23, name: "Kate Faasse", position: 'FWD', hometown: "Phoenix, Arizona", leagueSlug: 'nwsl', teamSlug: 'houston-dash', teamName: "Houston Dash", countryCode: 'us', height: "5'7\"", photo: '/players/nwsl/houston-dash/faasse-k.webp' },
+  { number: 25, name: "Makenzy Robbe", position: 'FWD', hometown: "Chino Hills, California", leagueSlug: 'nwsl', teamSlug: 'houston-dash', teamName: "Houston Dash", countryCode: 'us', height: "5'8\"", photo: '/players/nwsl/houston-dash/robbe-m.webp' },
+];
 
 export const matches: Match[] = [
   {
@@ -62,11 +100,11 @@ export const matches: Match[] = [
   },
   {
     date: '2026-05-06',
-    time: '10:00 PM',
     opponent: 'Utah Royals',
     homeAway: 'away',
     venue: 'America First Field, Sandy, Utah',
     broadcast: ['CBS Sports'],
+    result: { teamScore: 0, opponentScore: 2 },
   },
   {
     date: '2026-05-09',
@@ -252,34 +290,4 @@ export const matches: Match[] = [
     venue: 'Shell Energy Stadium, Houston, Texas',
     broadcast: ['espn tbd'],
   },
-];
-
-export const roster: Player[] = [
-  { number: 1, name: "Jane Campbell", position: 'GK', hometown: "Kennesaw, Georgia", leagueSlug: 'nwsl', teamSlug: 'houston-dash', teamName: "Houston Dash", countryCode: 'us', height: "5'9\"", photo: '/players/nwsl/houston-dash/campbell-j.webp' },
-  { number: 21, name: "Hillary Beall", position: 'GK', hometown: "Laguna Beach, California", leagueSlug: 'nwsl', teamSlug: 'houston-dash', teamName: "Houston Dash", countryCode: 'us', height: "5'11\"", photo: '/players/nwsl/houston-dash/beall-h.webp' },
-  { number: 40, name: "Caroline DeLisle", position: 'GK', hometown: "Tampa, Florida", leagueSlug: 'nwsl', teamSlug: 'houston-dash', teamName: "Houston Dash", countryCode: 'us', photo: '/players/nwsl/houston-dash/delisle-c.webp' },
-  { number: 2, name: "Allysha Chapman", position: 'DEF', hometown: "Courtice, Ontario, Canada", leagueSlug: 'nwsl', teamSlug: 'houston-dash', teamName: "Houston Dash", countryCode: 'ca', height: "5'3\"", photo: '/players/nwsl/houston-dash/chapman-a.webp' },
-  { number: 4, name: "Leah Klenke", position: 'DEF', hometown: "Houston, Texas", leagueSlug: 'nwsl', teamSlug: 'houston-dash', teamName: "Houston Dash", countryCode: 'us', photo: '/players/nwsl/houston-dash/klenke-l.webp' },
-  { number: 7, name: "Evelina Duljan", position: 'DEF', hometown: "Kristianstad, Sweden", leagueSlug: 'nwsl', teamSlug: 'houston-dash', teamName: "Houston Dash", countryCode: 'se', height: "5'3\"", photo: '/players/nwsl/houston-dash/duljan-e.webp' },
-  { number: 10, name: "Malia Berkely", position: 'DEF', hometown: "Liberty Township, Ohio", leagueSlug: 'nwsl', teamSlug: 'houston-dash', teamName: "Houston Dash", countryCode: 'us', height: "5'8\"", photo: '/players/nwsl/houston-dash/berkely-m.webp' },
-  { number: 14, name: "Paige Nielsen", position: 'DEF', hometown: "Lincoln, Nebraska", leagueSlug: 'nwsl', teamSlug: 'houston-dash', teamName: "Houston Dash", countryCode: 'us', height: "5'5\"", photo: '/players/nwsl/houston-dash/nielsen-p.webp' },
-  { number: 18, name: "Cate Hardin", position: 'DEF', hometown: "Marietta, Georgia", leagueSlug: 'nwsl', teamSlug: 'houston-dash', teamName: "Houston Dash", countryCode: 'us', height: "5'8\"" },
-  { number: 20, name: "Christen Westphal", position: 'DEF', hometown: "Brecksville, Ohio", leagueSlug: 'nwsl', teamSlug: 'houston-dash', teamName: "Houston Dash", countryCode: 'us', height: "5'6\"", photo: '/players/nwsl/houston-dash/westphal-c.webp' },
-  { number: 27, name: "Lisa Boattin", position: 'DEF', hometown: "Portogruaro, Italy", leagueSlug: 'nwsl', teamSlug: 'houston-dash', teamName: "Houston Dash", countryCode: 'it', height: "5'3\"", photo: '/players/nwsl/houston-dash/boattin-l.webp' },
-  { number: 29, name: "Rebeca Costa da Silva", position: 'DEF', hometown: "Pindoretama, Brazil", leagueSlug: 'nwsl', teamSlug: 'houston-dash', teamName: "Houston Dash", countryCode: 'br', height: "5'6\"" },
-  { number: 8, name: "Delanie Sheehan", position: 'MID', hometown: "Walnut Creek, California", leagueSlug: 'nwsl', teamSlug: 'houston-dash', teamName: "Houston Dash", countryCode: 'us', height: "5'6\"", photo: '/players/nwsl/houston-dash/sheehan-d.webp' },
-  { number: 12, name: "Kiki Van Zanten", position: 'MID', hometown: "Buffalo Grove, Illinois", leagueSlug: 'nwsl', teamSlug: 'houston-dash', teamName: "Houston Dash", countryCode: 'jm', height: "5'1\"", photo: '/players/nwsl/houston-dash/zanten-k.webp' },
-  { number: 13, name: "Sophie Schmidt", position: 'MID', hometown: "Abbotsford, British Columbia, Canada", leagueSlug: 'nwsl', teamSlug: 'houston-dash', teamName: "Houston Dash", countryCode: 'ca', height: "5'8\"", photo: '/players/nwsl/houston-dash/schmidt-s.webp' },
-  { number: 17, name: "Sarah Puntigam", position: 'MID', hometown: "Raning, Austria", leagueSlug: 'nwsl', teamSlug: 'houston-dash', teamName: "Houston Dash", countryCode: 'at', height: "5'8\"", photo: '/players/nwsl/houston-dash/puntigam-s.webp' },
-  { number: 19, name: "Maggie Graham", position: 'MID', hometown: "Atlanta, Georgia", leagueSlug: 'nwsl', teamSlug: 'houston-dash', teamName: "Houston Dash", countryCode: 'us', height: "5'9\"", photo: '/players/nwsl/houston-dash/graham-m.webp' },
-  { number: 22, name: "Kat Rader", position: 'MID', hometown: "Stuart, Florida", leagueSlug: 'nwsl', teamSlug: 'houston-dash', teamName: "Houston Dash", countryCode: 'us', photo: '/players/nwsl/houston-dash/rader-k.webp' },
-  { number: 24, name: "Danielle Colaprico", position: 'MID', hometown: "Freehold Township, New Jersey", leagueSlug: 'nwsl', teamSlug: 'houston-dash', teamName: "Houston Dash", countryCode: 'us', height: "5'3\"", photo: '/players/nwsl/houston-dash/colaprico-d.webp' },
-  { number: 30, name: "Linda Ullmark", position: 'MID', hometown: "San Diego, California", leagueSlug: 'nwsl', teamSlug: 'houston-dash', teamName: "Houston Dash", countryCode: 'us', height: "5'6\"", photo: '/players/nwsl/houston-dash/ullmark-l.webp' },
-  { number: 6, name: "Messiah Bright", position: 'FWD', hometown: "Dallas, Texas", leagueSlug: 'nwsl', teamSlug: 'houston-dash', teamName: "Houston Dash", countryCode: 'us', height: "5'9\"", photo: '/players/nwsl/houston-dash/bright-m.webp' },
-  { number: 9, name: "Clarissa Laris­ey", position: 'FWD', hometown: "Ottawa, Ontario, Canada", leagueSlug: 'nwsl', teamSlug: 'houston-dash', teamName: "Houston Dash", countryCode: 'ca', height: "5'4\"", photo: '/players/nwsl/houston-dash/larisey-c.webp' },
-  { number: 11, name: "Yazmeen Ryan", position: 'FWD', hometown: "Norman, Oklahoma", leagueSlug: 'nwsl', teamSlug: 'houston-dash', teamName: "Houston Dash", countryCode: 'us', height: "5'6\"", photo: '/players/nwsl/houston-dash/ryan-y.webp' },
-  { number: 11, name: "Emina Ekic", position: 'FWD', hometown: "Bosnia and Herzegovina", leagueSlug: 'nwsl', teamSlug: 'houston-dash', teamName: "Houston Dash", height: "5'5\"" },
-  { number: 15, name: "Avery Patterson", position: 'FWD', hometown: "Jacksonville, Florida", leagueSlug: 'nwsl', teamSlug: 'houston-dash', teamName: "Houston Dash", countryCode: 'us', height: "5'6\"", photo: '/players/nwsl/houston-dash/patterson-a.webp' },
-  { number: 23, name: "Kate Faasse", position: 'FWD', hometown: "Phoenix, Arizona", leagueSlug: 'nwsl', teamSlug: 'houston-dash', teamName: "Houston Dash", countryCode: 'us', height: "5'7\"", photo: '/players/nwsl/houston-dash/faasse-k.webp' },
-  { number: 25, name: "Makenzy Robbe", position: 'FWD', hometown: "Chino Hills, California", leagueSlug: 'nwsl', teamSlug: 'houston-dash', teamName: "Houston Dash", countryCode: 'us', height: "5'8\"", photo: '/players/nwsl/houston-dash/robbe-m.webp' },
 ];

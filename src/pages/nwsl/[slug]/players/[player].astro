@@ -1,0 +1,341 @@
+---
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import Header from '../../../../components/Header.astro';
+import Footer from '../../../../components/Footer.astro';
+import {
+  getNwslPlayerByNameSlug,
+  getNwslPlayerSeasonStats,
+  getNwslPlayerMatchLog,
+} from '../../../../data/nwsl/queries';
+
+import { team as angelCity }            from '../../../../data/teams/nwsl/angel-city.team';
+import { team as bayFc }                from '../../../../data/teams/nwsl/bay-fc.team';
+import { team as bostonLegacy }         from '../../../../data/teams/nwsl/boston-legacy.team';
+import { team as chicagoStars }         from '../../../../data/teams/nwsl/chicago-stars.team';
+import { team as denverSummit }         from '../../../../data/teams/nwsl/denver-summit.team';
+import { team as gothamFc }             from '../../../../data/teams/nwsl/gotham-fc.team';
+import { team as houstonDash }          from '../../../../data/teams/nwsl/houston-dash.team';
+import { team as kansasCityCurrent }    from '../../../../data/teams/nwsl/kansas-city-current.team';
+import { team as northCarolinaCourage } from '../../../../data/teams/nwsl/north-carolina-courage.team';
+import { team as orlandoPride }         from '../../../../data/teams/nwsl/orlando-pride.team';
+import { team as portlandThorns }       from '../../../../data/teams/nwsl/portland-thorns.team';
+import { team as racingLouisville }     from '../../../../data/teams/nwsl/racing-louisville.team';
+import { team as sanDiegoWave }         from '../../../../data/teams/nwsl/san-diego-wave.team';
+import { team as seattleReign }         from '../../../../data/teams/nwsl/seattle-reign.team';
+import { team as utahRoyals }           from '../../../../data/teams/nwsl/utah-royals.team';
+import { team as washingtonSpirit }     from '../../../../data/teams/nwsl/washington-spirit.team';
+
+import type { NWSLTeamConfig } from '../../../../data/shared/types';
+
+export const prerender = false;
+
+const allTeams: NWSLTeamConfig[] = [
+  angelCity, bayFc, bostonLegacy, chicagoStars,
+  denverSummit, gothamFc, houstonDash, kansasCityCurrent,
+  northCarolinaCourage, orlandoPride, portlandThorns, racingLouisville,
+  sanDiegoWave, seattleReign, utahRoyals, washingtonSpirit,
+];
+const teamBySlug = new Map(allTeams.map(t => [t.slug, t]));
+
+const { slug, player: nameSlug } = Astro.params;
+const team = teamBySlug.get(slug ?? '');
+if (!team || !nameSlug) return Astro.redirect('/nwsl');
+
+const rosterEntry = await getNwslPlayerByNameSlug(team.slug, nameSlug).catch(() => null);
+if (!rosterEntry) return Astro.redirect(`/nwsl/${slug}/squad`);
+
+const espnId = rosterEntry.id;
+
+const [seasonStats, matchLog] = await Promise.all([
+  getNwslPlayerSeasonStats(espnId).catch(() => null),
+  getNwslPlayerMatchLog(espnId).catch(() => []),
+]);
+
+const playerName = rosterEntry.name;
+const position   = rosterEntry.position;
+const number     = rosterEntry.number;
+const photoUrl   = rosterEntry.photo_url;
+const countryCode = rosterEntry.country_code;
+const hometown   = rosterEntry.hometown;
+const height     = rosterEntry.height;
+
+// ── Color helpers ───────────────────────────────────────────────────────────
+function hexToRgb(hex: string): [number, number, number] {
+  const h = hex.replace('#', '');
+  return [parseInt(h.slice(0,2),16), parseInt(h.slice(2,4),16), parseInt(h.slice(4,6),16)];
+}
+function luminance([r,g,b]: [number,number,number]): number {
+  return [r,g,b].reduce((acc, c, i) => {
+    const lin = (c/255) <= 0.04045 ? (c/255)/12.92 : Math.pow(((c/255)+0.055)/1.055, 2.4);
+    return acc + lin * [0.2126,0.7152,0.0722][i];
+  }, 0);
+}
+function contrast(a: [number,number,number], b: [number,number,number]): number {
+  const [la, lb] = [luminance(a), luminance(b)];
+  return (Math.max(la,lb)+0.05) / (Math.min(la,lb)+0.05);
+}
+function mixToward(color: [number,number,number], target: [number,number,number], t: number): [number,number,number] {
+  return [0,1,2].map(i => color[i] + (target[i] - color[i]) * t) as [number,number,number];
+}
+function rgbToHex([r,g,b]: [number,number,number]): string {
+  return '#' + [r,g,b].map(c => Math.round(c).toString(16).padStart(2,'0')).join('');
+}
+const teamRgb = hexToRgb(team.color);
+let accentOnTeamRgb = hexToRgb('#FF6B2C');
+for (let t = 0.05; t <= 1 && contrast(accentOnTeamRgb, teamRgb) < 3; t += 0.05) {
+  accentOnTeamRgb = mixToward(hexToRgb('#FF6B2C'), [255, 255, 255], t);
+}
+const accentOnTeam = rgbToHex(accentOnTeamRgb);
+
+function countryFlag(code?: string | null): string {
+  if (!code) return '';
+  const upper = code.toUpperCase();
+  if (upper.length !== 2) return '';
+  if (!/^[A-Z]{2}$/.test(upper)) return '';
+  return [...upper].map(c => String.fromCodePoint(0x1F1E6 + c.charCodeAt(0) - 65)).join('');
+}
+function initials(name: string): string {
+  const parts = name.trim().split(/\s+/);
+  return (parts[0]?.[0] ?? '') + (parts[parts.length - 1]?.[0] ?? '');
+}
+function formatDate(dateStr: string): string {
+  const d = new Date(dateStr + 'T00:00:00');
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }).toUpperCase();
+}
+
+type MatchLogRow = Awaited<ReturnType<typeof getNwslPlayerMatchLog>>[number];
+function opponentInfo(log: MatchLogRow, mySlug: string) {
+  const isHome = log.home_team === mySlug;
+  const oppSlug = isHome ? log.away_team : log.home_team;
+  const oppTeam = teamBySlug.get(oppSlug);
+  const oppName = oppTeam?.short ?? oppTeam?.name ?? oppSlug;
+  const prefix = isHome ? 'vs' : '@';
+  const myScore = isHome ? log.home_score : log.away_score;
+  const oppScore = isHome ? log.away_score : log.home_score;
+  const scoreStr = myScore != null && oppScore != null ? `${myScore}–${oppScore}` : '';
+  const result = myScore != null && oppScore != null
+    ? myScore > oppScore ? 'W' : myScore < oppScore ? 'L' : 'D'
+    : '';
+  return { prefix, oppName, oppSlug, scoreStr, result, oppTeam };
+}
+
+const RESULT_COLOR: Record<string, string> = { W: '#2D7A3A', L: '#C0392B', D: '#888' };
+
+const title = `${playerName} — ${team.name} | Standd`;
+const description = `${playerName} 2026 NWSL season stats and match log for ${team.name}.`;
+---
+
+<BaseLayout title={title} description={description}>
+  <Header />
+
+  <div style={`--team-color:${team.color}; --team-on:${team.text}; background:#DDD5C4;`}>
+
+  <!-- Breadcrumb -->
+  <div style="background:var(--team-color); color:var(--team-on); padding:12px 32px;">
+    <div class="max-w-screen-xl mx-auto">
+      <span class="font-mono text-[12px] font-bold tracking-[0.08em]">
+        <a href="/nwsl" style="opacity:0.65; color:inherit; text-decoration:none;">NWSL</a>
+        <span style="opacity:0.4"> › </span>
+        <a href={`/nwsl/${team.slug}`} style="opacity:0.65; color:inherit; text-decoration:none;">{team.name.toUpperCase()}</a>
+        <span style="opacity:0.4"> › </span>
+        <a href={`/nwsl/${team.slug}/squad`} style="opacity:0.65; color:inherit; text-decoration:none;">SQUAD</a>
+        <span style="opacity:0.4"> › </span>
+        <span>{playerName.toUpperCase()}</span>
+      </span>
+    </div>
+  </div>
+
+  <!-- Hero -->
+  <section class="relative overflow-hidden" style="background:var(--team-color); color:var(--team-on); padding:40px 64px 48px;">
+    {team.badge && (
+      <img src={team.badge} alt="" aria-hidden="true"
+        style="position:absolute; right:-80px; top:-40px; height:420px; opacity:0.12; pointer-events:none; user-select:none;" />
+    )}
+    <div class="max-w-screen-xl mx-auto relative z-10">
+      <div class="flex items-end gap-8">
+        <!-- Photo -->
+        <div style={`width:120px; height:140px; border-radius:12px; background:rgba(0,0,0,0.2); position:relative; overflow:hidden; flex-shrink:0; border:2px solid rgba(255,255,255,0.15);`}>
+          <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center;">
+            <span class="font-display font-bold" style={`font-size:42px; color:${team.text}; opacity:0.4; text-transform:uppercase;`}>{initials(playerName)}</span>
+          </div>
+          {photoUrl && (
+            <img src={photoUrl} alt={playerName}
+              style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover;"
+              onerror="this.style.display='none'" />
+          )}
+          {number != null && (
+            <span class="font-display font-bold" style="position:absolute; top:6px; left:8px; font-size:22px; line-height:1; color:#FAF6F0; text-shadow:0 1px 4px rgba(0,0,0,0.5);">{number}</span>
+          )}
+        </div>
+
+        <!-- Info -->
+        <div>
+          <h1 class="font-display font-bold leading-[0.95] tracking-[-0.04em]" style="font-size:clamp(44px,5vw,72px);">
+            {playerName}
+          </h1>
+
+          <!-- Prominent metadata row -->
+          <div class="flex items-center flex-wrap" style="gap:20px; margin-top:18px;">
+            {/* Position badge */}
+            <div style={`background:rgba(0,0,0,0.25); border-radius:6px; padding:6px 14px; display:inline-flex; align-items:center;`}>
+              <span class="font-mono font-bold" style="font-size:14px; letter-spacing:0.1em; color:var(--team-on);">{position}</span>
+            </div>
+
+            {/* Team link */}
+            <a href={`/nwsl/${team.slug}`} class="font-display font-bold" style={`font-size:20px; color:${accentOnTeam}; text-decoration:none; line-height:1;`}>{team.name}</a>
+
+            {/* Flag + country */}
+            {countryCode && (
+              <div class="flex items-center gap-2">
+                <span style="font-size:34px; line-height:1;">{countryFlag(countryCode)}</span>
+                <span class="font-mono font-bold" style="font-size:13px; letter-spacing:0.08em; opacity:0.75;">{countryCode.toUpperCase()}</span>
+              </div>
+            )}
+
+            {/* Height */}
+            {height && (
+              <span class="font-display font-bold" style="font-size:20px; opacity:0.75; line-height:1;">{height}</span>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Season stat band -->
+  {seasonStats && (
+    <div style="background:var(--team-color); color:var(--team-on);">
+      <div class="max-w-screen-xl mx-auto stat-band">
+        {(position === 'GK'
+          ? [
+              { label: 'Saves',    val: seasonStats.saves },
+              { label: 'Conceded', val: seasonStats.goals_conceded ?? 0 },
+              { label: 'Apps',     val: seasonStats.appearances },
+              { label: 'Goals',    val: seasonStats.goals },
+              { label: 'Yellows',  val: seasonStats.yellow_cards },
+              { label: 'Reds',     val: seasonStats.red_cards },
+            ]
+          : [
+              { label: 'Goals',    val: seasonStats.goals },
+              { label: 'Assists',  val: seasonStats.assists },
+              { label: 'Apps',     val: seasonStats.appearances },
+              { label: 'Pen.',     val: seasonStats.penalty_goals },
+              { label: 'Yellows',  val: seasonStats.yellow_cards },
+              { label: 'Reds',     val: seasonStats.red_cards },
+            ]
+        ).map(({ label, val }) => (
+          <div style="padding:20px 24px; border-right:1px solid rgba(0,0,0,0.10); text-align:center;">
+            <div class="font-display font-bold tabular" style="font-size:36px; line-height:1; color:var(--team-on);">{val}</div>
+            <div class="font-mono text-[11px] font-bold tracking-[0.12em]" style="opacity:0.6; margin-top:4px;">{label.toUpperCase()}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )}
+
+  <!-- Match log -->
+  <main class="max-w-screen-xl mx-auto px-8 py-12">
+    <h2 class="font-display font-bold text-primary" style="font-size:28px; margin-bottom:20px;">2026 Match Log</h2>
+
+    {matchLog.length === 0 ? (
+      <p class="font-mono text-muted text-sm">No match data yet.</p>
+    ) : (
+      <div style="border-top:2px solid #0F2A2D;">
+        {matchLog.map(log => {
+          const { prefix, oppName, oppSlug, scoreStr, result, oppTeam } = opponentInfo(log, team.slug);
+          const subNote = log.subbed_in ? `Sub on ${log.sub_minute ?? '?'}'`
+                        : log.subbed_out ? `Sub off ${log.sub_minute ?? '?'}'`
+                        : log.starter ? 'Started' : 'Unused sub';
+          const isGK = position === 'GK';
+          const statsGrid = isGK
+            ? [
+                { label: 'Saves',        val: log.saves },
+                { label: 'Goals conceded', val: log.goals_conceded },
+                { label: 'Yellow cards', val: log.yellow_cards },
+                { label: 'Red cards',    val: log.red_cards },
+              ]
+            : [
+                { label: 'Goals',        val: log.goals },
+                { label: 'Assists',      val: log.assists },
+                { label: 'Yellow cards', val: log.yellow_cards },
+                { label: 'Red cards',    val: log.red_cards },
+              ];
+          return (
+            <details class="match-entry" style="border-bottom:1px solid rgba(15,42,45,0.1);">
+              <summary class="match-summary" style="display:grid; grid-template-columns:90px 1fr auto 120px; gap:16px; align-items:center; padding:14px 0; cursor:pointer; list-style:none; outline:none;">
+                <!-- Date -->
+                <div class="font-mono text-[13px] font-bold text-muted">{formatDate(log.date)}</div>
+                <!-- Opponent + score -->
+                <div class="flex items-center gap-2 min-w-0">
+                  <span class="font-mono text-[11px] text-muted" style="width:20px; flex-shrink:0;">{prefix}</span>
+                  {oppTeam?.badge && (
+                    <img src={oppTeam.badge} alt="" width="20" height="20" style="width:20px;height:20px;object-fit:contain;flex-shrink:0;" aria-hidden="true" />
+                  )}
+                  <a href={`/nwsl/${oppSlug}`} class="font-display font-bold text-primary hover:text-accent transition-colors truncate" style="font-size:15px; text-decoration:none;" onclick="event.stopPropagation()">{oppName}</a>
+                  {scoreStr && (
+                    <span class="font-mono text-[13px] font-bold flex-shrink-0" style={`color:${RESULT_COLOR[result] ?? '#888'}; margin-left:4px;`}>{result} {scoreStr}</span>
+                  )}
+                </div>
+                <!-- Key events summary -->
+                <div style="display:flex; gap:5px; align-items:center; font-size:14px;">
+                  {Array.from({ length: log.goals ?? 0 }).map(() => <span title="Goal">⚽</span>)}
+                  {Array.from({ length: log.assists ?? 0 }).map(() => <span title="Assist">🅰️</span>)}
+                  {Array.from({ length: log.yellow_cards ?? 0 }).map(() => <span title="Yellow">🟨</span>)}
+                  {Array.from({ length: log.red_cards ?? 0 }).map(() => <span title="Red">🟥</span>)}
+                  {log.saves > 0 && <span class="font-mono text-[11px] text-muted">{log.saves}sv</span>}
+                </div>
+                <!-- Role + chevron -->
+                <div class="flex items-center justify-end gap-2">
+                  <span class="font-mono text-[11px] text-muted">{subNote}</span>
+                  <svg class="chevron" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                    <path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-muted"/>
+                  </svg>
+                </div>
+              </summary>
+
+              <!-- Expanded stats -->
+              <div class="match-detail" style="padding:12px 0 20px 106px; display:grid; grid-template-columns:repeat(5,1fr); gap:12px;">
+                {statsGrid.map(({ label, val }) => (
+                  <div style={`background:${team.color}; border-radius:8px; padding:10px 14px;`}>
+                    <div class="font-display font-bold" style={`font-size:22px; line-height:1; color:${team.text};`}>{val ?? 0}</div>
+                    <div class="font-mono" style={`font-size:10px; margin-top:3px; text-transform:uppercase; letter-spacing:0.08em; color:${team.text}; opacity:0.6;`}>{label}</div>
+                  </div>
+                ))}
+                {position && (
+                  <div style={`background:${team.color}; border-radius:8px; padding:10px 14px;`}>
+                    <div class="font-display font-bold" style={`font-size:22px; line-height:1; color:${team.text};`}>{position}</div>
+                    <div class="font-mono" style={`font-size:10px; margin-top:3px; text-transform:uppercase; letter-spacing:0.08em; color:${team.text}; opacity:0.6;`}>Position</div>
+                  </div>
+                )}
+              </div>
+            </details>
+          );
+        })}
+      </div>
+    )}
+  </main>
+
+  <Footer />
+  </div>
+</BaseLayout>
+
+<style>
+  .stat-band {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    border-left: 1px solid rgba(0,0,0,0.10);
+  }
+
+  /* Details/summary accordion */
+  .match-summary::-webkit-details-marker { display: none; }
+  .match-entry:hover > .match-summary { background: rgba(15,42,45,0.03); }
+  .match-entry[open] > .match-summary { background: rgba(15,42,45,0.04); }
+  .match-entry[open] .chevron { transform: rotate(180deg); }
+  .chevron { transition: transform 0.2s ease; flex-shrink: 0; color: #5A5A5A; }
+
+  @media (max-width: 640px) {
+    .stat-band { grid-template-columns: repeat(3, 1fr); }
+    .match-summary { grid-template-columns: 68px 1fr auto !important; }
+    .match-detail { padding-left: 84px !important; }
+  }
+</style>

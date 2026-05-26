@@ -1,0 +1,204 @@
+---
+import type { LeagueCatalogEntry } from '../data/leagues';
+import BroadcastBadge from './BroadcastBadge.astro';
+import type { BroadcasterKey } from './BroadcastBadge.astro';
+
+interface Props {
+  league: LeagueCatalogEntry;
+  leader?: { name: string };
+}
+
+const { league, leader } = Astro.props;
+
+const CITY: Record<string, string> = {
+  // NWSL
+  'Portland Thorns':         'Portland',
+  'San Diego Wave':          'San Diego',
+  'Boston Legacy':           'Boston',
+  'Chicago Stars':           'Chicago',
+  'Seattle Reign':           'Seattle',
+  'Orlando Pride':           'Orlando',
+  'Kansas City Current':     'KC',
+  'North Carolina Courage':  'NC',
+  'NJ/NY Gotham FC':         'NY',
+  'Gotham FC':               'NY',
+  'Houston Dash':            'Houston',
+  'Bay FC':                  'SF',
+  'Bay':                     'SF',
+  'Racing Louisville':       'Louisville',
+  'Utah Royals':             'Utah',
+  'Washington Spirit':       'DC',
+  'Denver Summit':           'Denver',
+  'Angel City FC':           'LA',
+  'Angel City':              'LA',
+  // WNBA
+  'Atlanta Dream':           'Atlanta',
+  'Chicago Sky':             'Chicago',
+  'Connecticut Sun':         'CT',
+  'Dallas Wings':            'Dallas',
+  'Golden State Valkyries':  'GS',
+  'Indiana Fever':           'Indiana',
+  'Las Vegas Aces':          'LV',
+  'Los Angeles Sparks':      'LA',
+  'Minnesota Lynx':          'Minnesota',
+  'New York Liberty':        'NY',
+  'Phoenix Mercury':         'Phoenix',
+  'Portland Fire':           'Portland',
+  'Seattle Storm':           'Seattle',
+  'Toronto Tempo':           'Toronto',
+  'Washington Mystics':      'DC',
+};
+
+function cityName(team: string): string {
+  return CITY[team] ?? team.split(' ')[0] ?? team;
+}
+
+function leaderFontClass(name: string): string {
+  const len = name.length;
+  if (len <= 13) return 'text-3xl';
+  if (len <= 16) return 'text-2xl';
+  if (len <= 21) return 'text-xl';
+  return 'text-lg';
+}
+
+const leaderDisplay = leader
+  ? (league.slug === 'wnba' ? leader.name : cityName(leader.name))
+  : '';
+
+const CREST_SHOW = 8;
+const extraCrests = league.crests.length - CREST_SHOW;
+
+const sportSvgs: Record<string, string> = {
+  soccer: `<svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <circle cx="100" cy="100" r="96" stroke="currentColor" stroke-width="4"/>
+    <polygon points="100,58 139.9,87 124.7,134 75.3,134 60.1,87" stroke="currentColor" stroke-width="3" fill="none"/>
+    <line x1="100" y1="58" x2="100" y2="4" stroke="currentColor" stroke-width="2.5"/>
+    <line x1="139.9" y1="87" x2="191.3" y2="70.3" stroke="currentColor" stroke-width="2.5"/>
+    <line x1="124.7" y1="134" x2="156.4" y2="177.7" stroke="currentColor" stroke-width="2.5"/>
+    <line x1="75.3" y1="134" x2="43.6" y2="177.7" stroke="currentColor" stroke-width="2.5"/>
+    <line x1="60.1" y1="87" x2="8.7" y2="70.3" stroke="currentColor" stroke-width="2.5"/>
+    <path d="M100,4 A96,96 0 0 1 191.3,70.3" stroke="currentColor" stroke-width="2.5" fill="none"/>
+    <path d="M191.3,70.3 A96,96 0 0 1 156.4,177.7" stroke="currentColor" stroke-width="2.5" fill="none"/>
+    <path d="M156.4,177.7 A96,96 0 0 1 43.6,177.7" stroke="currentColor" stroke-width="2.5" fill="none"/>
+    <path d="M43.6,177.7 A96,96 0 0 1 8.7,70.3" stroke="currentColor" stroke-width="2.5" fill="none"/>
+    <path d="M8.7,70.3 A96,96 0 0 1 100,4" stroke="currentColor" stroke-width="2.5" fill="none"/>
+  </svg>`,
+  basketball: `<svg viewBox="0 0 200 200" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true">
+    <circle cx="100" cy="100" r="92" />
+    <line x1="8" y1="100" x2="192" y2="100" />
+    <line x1="100" y1="8" x2="100" y2="192" />
+    <path d="M44 36 Q80 100 44 164" />
+    <path d="M156 36 Q120 100 156 164" />
+  </svg>`,
+  hockey: `<svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <ellipse cx="100" cy="80" rx="90" ry="44" stroke="currentColor" stroke-width="4"/>
+    <ellipse cx="100" cy="120" rx="90" ry="44" stroke="currentColor" stroke-width="4"/>
+    <line x1="10" y1="80" x2="10" y2="120" stroke="currentColor" stroke-width="4"/>
+    <line x1="190" y1="80" x2="190" y2="120" stroke="currentColor" stroke-width="4"/>
+  </svg>`,
+  volleyball: `<svg viewBox="0 0 200 200" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true">
+    <circle cx="100" cy="100" r="92" />
+    <path d="M8 100 Q100 68 192 100" />
+    <path d="M68 12 Q44 100 68 188" />
+    <path d="M132 12 Q156 100 132 188" />
+  </svg>`,
+};
+
+const sportSvg = sportSvgs[league.sportIcon] ?? '';
+---
+
+<a
+  href={league.href}
+  class="group flex flex-col rounded-2xl overflow-hidden text-neutral hover:opacity-95 transition-opacity relative min-h-[520px]"
+  style={`background-color: ${league.color}`}
+  aria-label={`Open ${league.longName} tracker`}
+>
+  <!-- Sport icon watermark -->
+  <div
+    class="absolute -bottom-8 -right-8 w-64 h-64 text-neutral opacity-[0.13] pointer-events-none"
+    set:html={sportSvg}
+  />
+
+  <div class="relative p-8 flex flex-col flex-1">
+    <!-- Top row: status chip + sport -->
+    <div class="flex items-center justify-between">
+      <span class="inline-flex items-center gap-1.5 bg-neutral/20 text-neutral text-[11px] font-bold uppercase tracking-[0.14em] px-2.5 py-1 rounded-full">
+        <span class="w-2 h-2 rounded-full bg-green-400" aria-hidden="true"></span>
+        Live · {league.season}
+      </span>
+      <span class="text-[11px] font-bold uppercase tracking-[0.2em] text-neutral/70">
+        {league.sport}
+      </span>
+    </div>
+
+    <!-- League type-mark + long name -->
+    <div class="mt-5">
+      <p class="font-display font-bold text-8xl leading-[0.88] tracking-[-0.04em] text-neutral">
+        {league.name}
+      </p>
+      <p class="text-lg text-neutral/70 mt-2 font-medium leading-tight">
+        {league.longName} <span class="whitespace-nowrap">· {league.countryCode}</span>
+      </p>
+    </div>
+
+    <!-- Spacer 1: pushes stats+crests to middle -->
+    <div class="flex-1"></div>
+
+    <!-- Stats row -->
+    <dl class="flex gap-8 mt-6 items-end">
+      <div>
+        <dd class="tabular font-display font-bold text-3xl text-neutral leading-none">{league.teamCount}</dd>
+        <dt class="text-[10px] font-bold uppercase tracking-[0.18em] text-neutral/60 mt-1">Teams</dt>
+      </div>
+      {leader && (
+        <div>
+          <dd class={`font-display font-bold text-neutral leading-none whitespace-nowrap ${leaderFontClass(leaderDisplay)}`}>{leaderDisplay}</dd>
+          <dt class="text-[10px] font-bold uppercase tracking-[0.18em] [word-spacing:-0.1em] text-neutral/60 mt-1">
+            League Leader
+          </dt>
+        </div>
+      )}
+      <div>
+        <dd class="tabular font-display font-bold text-3xl text-neutral leading-none">{league.season}</dd>
+        <dt class="text-[10px] font-bold uppercase tracking-[0.18em] text-neutral/60 mt-1">Season</dt>
+      </div>
+    </dl>
+
+    <!-- Crest row -->
+    <div class="flex items-center gap-1 mt-4" aria-hidden="true">
+      {league.crests.slice(0, CREST_SHOW).map((src, i) => (
+        <img src={src} alt="" height="32" class="h-10 w-auto object-contain flex-shrink-0" loading={i === 0 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : undefined} />
+      ))}
+      {extraCrests > 0 && (
+        <span class="ml-auto w-10 h-10 rounded-full bg-neutral/25 flex-shrink-0 flex items-center justify-center tabular text-[11px] font-bold text-neutral">
+          +{extraCrests}
+        </span>
+      )}
+    </div>
+
+    <!-- Spacer 2: pushes broadcasters to bottom -->
+    <div class="flex-[2]"></div>
+
+    <!-- Broadcaster row -->
+    {league.broadcasters.length > 0 && (
+      <div class="flex items-center gap-2.5 flex-wrap">
+        {league.broadcasters.map(b => (
+          <BroadcastBadge broadcaster={{ key: b.key as BroadcasterKey, label: b.label }} size="lg" />
+        ))}
+      </div>
+    )}
+  </div>
+
+  <!-- Footer -->
+  <div class="relative bg-black/20 px-8 py-3.5 flex items-center justify-between">
+    <span class="text-[11px] font-bold uppercase tracking-[0.18em] [word-spacing:-0.12em] text-neutral/80">
+      Open tracker
+    </span>
+    <span
+      class="font-display font-bold text-2xl leading-none text-neutral group-hover:translate-x-1 transition-transform duration-150"
+      aria-hidden="true"
+    >
+      →
+    </span>
+  </div>
+</a>

@@ -1,15 +1,57 @@
 import type { Player } from '../../shared/types';
-import type { Match, TeamConfig } from '../../shared/types';
+import type { NWSLTeamConfig } from '../../shared/types';
 
-export const team: TeamConfig = {
-  name: 'Portland Thorns',
+export const team: NWSLTeamConfig = {
+  name: 'Portland Thorns FC',
   slug: 'portland-thorns',
-  color: '#EE202F',
+  short: 'Portland Thorns',
+  color: '#7A0019',
+  text: '#FAF6F0',
   badge: 'https://images.nwslsoccer.com/image/private/t_q-best/v1710436101/prd/assets/teams/portland-thorns-fc.svg',
   standingsKey: 'Portland Thorns',
   officialUrl: 'https://www.thorns.com/',
   ticketsUrl: 'https://seatgeek.com/portland-thorns-fc-tickets',
+  city: 'Portland',
+  venue: 'Providence Park',
+  supporter: 'Rose City Riveters',
+  tagline: 'No other.',
+  est: 2013,
 };
+
+
+export const roster: Player[] = [
+  { number: 1, name: "Bella Bixby", position: 'GK', hometown: "Milwaukie, Oregon", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'us', height: "6'0\"", photo: '/players/nwsl/portland-thorns/bixby-b.webp' },
+  { number: 18, name: "Mackenzie Arnold", position: 'GK', hometown: "Gold Coast, Australia", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'au', height: "5'11\"", photo: '/players/nwsl/portland-thorns/arnold-m.webp' },
+  { number: 28, name: "Mackenzie Wood", position: 'GK', hometown: "Granger, Indiana", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'us', height: "5'9\"", photo: '/players/nwsl/portland-thorns/wood-m.webp' },
+  { number: 32, name: "Erin McKinney", position: 'GK', hometown: "Belvidere, Illinois", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'us', height: "5'5\"" },
+  { number: 35, name: "Morgan Messner", position: 'GK', hometown: "Drexel Hill, Pennsylvania", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'us', height: "5'10\"", photo: '/players/nwsl/portland-thorns/messner-m.webp' },
+  { number: 2, name: "Reyna Reyes", position: 'DEF', hometown: "Garland, Texas", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'mx', height: "5'7\"", photo: '/players/nwsl/portland-thorns/reyes-r.webp' },
+  { number: 4, name: "Carolyn Calzada", position: 'DEF', hometown: "Sugar Hill, Georgia", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'us', height: "5'9\"", photo: '/players/nwsl/portland-thorns/calzada-c.webp' },
+  { number: 5, name: "Isabella Obaze", position: 'DEF', hometown: "Kolding, Denmark", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'dk', height: "5'8\"", photo: '/players/nwsl/portland-thorns/obaze-i.webp' },
+  { number: 16, name: "Sam Hiatt", position: 'DEF', hometown: "Kirkland, Washington", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'us', height: "5'10\"", photo: '/players/nwsl/portland-thorns/hiatt-s.webp' },
+  { number: 24, name: "Jayden Perry", position: 'DEF', hometown: "Rancho Santa Margarita, California", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'us', height: "5'9\"", photo: '/players/nwsl/portland-thorns/perry-j.webp' },
+  { number: 25, name: "M.A. Vignola", position: 'DEF', hometown: "Cincinnati, Ohio", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'us', height: "5'6\"", photo: '/players/nwsl/portland-thorns/vignola-m.webp' },
+  { number: 34, name: "Daiane Limeira Santos Silva", position: 'DEF', hometown: "Uberlândia, Brazil", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'br', height: "5'11\"", photo: '/players/nwsl/portland-thorns/silva-d.webp' },
+  { number: 6, name: "Cassandra Bogere", position: 'MID', hometown: "Gothenburg, Sweden", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'no' },
+  { number: 13, name: "Olivia Moultrie", position: 'MID', hometown: "Santa Clarita, California", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'us', height: "5'8\"", photo: '/players/nwsl/portland-thorns/moultrie-o.webp' },
+  { number: 15, name: "Shae Harvey", position: 'MID', hometown: "Hermosa Beach, California", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'us' },
+  { number: 21, name: "Jessie Fleming", position: 'MID', hometown: "London, Canada", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'ca', height: "5'5\"", photo: '/players/nwsl/portland-thorns/fleming-j.webp' },
+  { number: 22, name: "Morgan Weaver", position: 'MID', hometown: "University Place, Washington", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'us', height: "5'10\"", photo: '/players/nwsl/portland-thorns/weaver-m.webp' },
+  { number: 23, name: "Marie Müller", position: 'MID', hometown: "Dortmund, Germany", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'de', height: "5'6\"", photo: '/players/nwsl/portland-thorns/muller-m.webp' },
+  { number: 26, name: "Mimi Alidou", position: 'MID', hometown: "Montreal, Canada", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'ca', height: "5'3\"", photo: '/players/nwsl/portland-thorns/alidou-m.webp' },
+  { number: 29, name: "Mallie McKenzie", position: 'MID', hometown: "Roswell, Georgia", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'us', height: "5'9\"", photo: '/players/nwsl/portland-thorns/mckenzie-m.webp' },
+  { number: 40, name: "Jennie Immethun", position: 'MID', hometown: "San Jose, California", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'us' },
+  { number: 41, name: "Renee Lyles", position: 'MID', hometown: "Atlanta, Georgia", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'us', height: "5'5\"" },
+  { number: 7, name: "Caiya Hanks", position: 'FWD', hometown: "Kailua-Kona, Hawaii", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'us', height: "5'4\"", photo: '/players/nwsl/portland-thorns/hanks-c.webp' },
+  { number: 9, name: "Sophia Wilson", position: 'FWD', hometown: "Windsor, Colorado", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'us', height: "5'6\"", photo: '/players/nwsl/portland-thorns/wilson-s.webp' },
+  { number: 10, name: "Deyna Castellanos", position: 'FWD', hometown: "Maracay, Venezuela", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 've', height: "5'7\"", photo: '/players/nwsl/portland-thorns/castellanos-d.webp' },
+  { number: 11, name: "Maddie Padelski", position: 'FWD', hometown: "Nolensville, Tennessee", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'us', height: "5'0\"", photo: '/players/nwsl/portland-thorns/padelski-m.webp' },
+  { number: 19, name: "Pietra Tordin", position: 'FWD', hometown: "Doral, Florida", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'us', height: "5'6\"", photo: '/players/nwsl/portland-thorns/tordin-p.webp' },
+  { number: 27, name: "Julie Dufour", position: 'FWD', hometown: "Valenciennes, France", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'fr', height: "5'4\"", photo: '/players/nwsl/portland-thorns/dufour-j.webp' },
+  { number: 66, name: "Reilyn Turner", position: 'FWD', hometown: "Lakewood, California", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'us', height: "5'9\"", photo: '/players/nwsl/portland-thorns/turner-r.webp' },
+  { number: 77, name: "Alexa Spaanstra", position: 'FWD', hometown: "Brighton, Michigan", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'us', height: "5'5\"", photo: '/players/nwsl/portland-thorns/spaanstra-a.webp' },
+  { number: 88, name: "Valerin Loboa", position: 'FWD', hometown: "Cali, Colombia", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'co', height: "5'9\"", photo: '/players/nwsl/portland-thorns/loboa-v.webp' },
+];
 
 export const matches: Match[] = [
   {
@@ -70,11 +112,11 @@ export const matches: Match[] = [
   },
   {
     date: '2026-05-03',
-    time: '1:00 PM',
     opponent: 'Chicago Stars',
     homeAway: 'away',
     venue: 'Northwestern Medicine Field at Martin Stadium, Evanston, Illinois',
     broadcast: ['ESPN2'],
+    result: { teamScore: 2, opponentScore: 0 },
   },
   {
     date: '2026-05-08',
@@ -252,38 +294,4 @@ export const matches: Match[] = [
     venue: 'Shell Energy Stadium, Houston, Texas',
     broadcast: ['espn tbd'],
   },
-];
-
-export const roster: Player[] = [
-  { number: 1, name: "Bella Bixby", position: 'GK', hometown: "Milwaukie, Oregon", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'us', height: "6'0\"", photo: '/players/nwsl/portland-thorns/bixby-b.webp' },
-  { number: 18, name: "Mackenzie Arnold", position: 'GK', hometown: "Gold Coast, Australia", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'au', height: "5'11\"", photo: '/players/nwsl/portland-thorns/arnold-m.webp' },
-  { number: 28, name: "Mackenzie Wood", position: 'GK', hometown: "Granger, Indiana", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'us', height: "5'9\"", photo: '/players/nwsl/portland-thorns/wood-m.webp' },
-  { number: 32, name: "Erin McKinney", position: 'GK', hometown: "Belvidere, Illinois", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'us', height: "5'5\"" },
-  { number: 35, name: "Morgan Messner", position: 'GK', hometown: "Drexel Hill, Pennsylvania", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'us', height: "5'10\"", photo: '/players/nwsl/portland-thorns/messner-m.webp' },
-  { number: 2, name: "Reyna Reyes", position: 'DEF', hometown: "Garland, Texas", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'mx', height: "5'7\"", photo: '/players/nwsl/portland-thorns/reyes-r.webp' },
-  { number: 4, name: "Carolyn Calzada", position: 'DEF', hometown: "Sugar Hill, Georgia", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'us', height: "5'9\"", photo: '/players/nwsl/portland-thorns/calzada-c.webp' },
-  { number: 5, name: "Isabella Obaze", position: 'DEF', hometown: "Kolding, Denmark", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'dk', height: "5'8\"", photo: '/players/nwsl/portland-thorns/obaze-i.webp' },
-  { number: 16, name: "Sam Hiatt", position: 'DEF', hometown: "Kirkland, Washington", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'us', height: "5'10\"", photo: '/players/nwsl/portland-thorns/hiatt-s.webp' },
-  { number: 24, name: "Jayden Perry", position: 'DEF', hometown: "Rancho Santa Margarita, California", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'us', height: "5'9\"", photo: '/players/nwsl/portland-thorns/perry-j.webp' },
-  { number: 25, name: "M.A. Vignola", position: 'DEF', hometown: "Cincinnati, Ohio", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'us', height: "5'6\"", photo: '/players/nwsl/portland-thorns/vignola-m.webp' },
-  { number: 34, name: "Daiane Limeira Santos Silva", position: 'DEF', hometown: "Uberlândia, Brazil", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'br', height: "5'11\"", photo: '/players/nwsl/portland-thorns/silva-d.webp' },
-  { number: 6, name: "Cassandra Bogere", position: 'MID', hometown: "Gothenburg, Sweden", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'no' },
-  { number: 13, name: "Olivia Moultrie", position: 'MID', hometown: "Santa Clarita, California", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'us', height: "5'8\"", photo: '/players/nwsl/portland-thorns/moultrie-o.webp' },
-  { number: 15, name: "Shae Harvey", position: 'MID', hometown: "Hermosa Beach, California", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'us' },
-  { number: 21, name: "Jessie Fleming", position: 'MID', hometown: "London, Canada", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'ca', height: "5'5\"", photo: '/players/nwsl/portland-thorns/fleming-j.webp' },
-  { number: 22, name: "Morgan Weaver", position: 'MID', hometown: "University Place, Washington", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'us', height: "5'10\"", photo: '/players/nwsl/portland-thorns/weaver-m.webp' },
-  { number: 23, name: "Marie Müller", position: 'MID', hometown: "Dortmund, Germany", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'de', height: "5'6\"", photo: '/players/nwsl/portland-thorns/muller-m.webp' },
-  { number: 26, name: "Mimi Alidou", position: 'MID', hometown: "Montreal, Canada", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'ca', height: "5'3\"", photo: '/players/nwsl/portland-thorns/alidou-m.webp' },
-  { number: 29, name: "Mallie McKenzie", position: 'MID', hometown: "Roswell, Georgia", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'us', height: "5'9\"", photo: '/players/nwsl/portland-thorns/mckenzie-m.webp' },
-  { number: 40, name: "Jennie Immethun", position: 'MID', hometown: "San Jose, California", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'us' },
-  { number: 41, name: "Renee Lyles", position: 'MID', hometown: "Atlanta, Georgia", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'us', height: "5'5\"" },
-  { number: 7, name: "Caiya Hanks", position: 'FWD', hometown: "Kailua-Kona, Hawaii", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'us', height: "5'4\"", photo: '/players/nwsl/portland-thorns/hanks-c.webp' },
-  { number: 9, name: "Sophia Wilson", position: 'FWD', hometown: "Windsor, Colorado", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'us', height: "5'6\"", photo: '/players/nwsl/portland-thorns/wilson-s.webp' },
-  { number: 10, name: "Deyna Castellanos", position: 'FWD', hometown: "Maracay, Venezuela", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 've', height: "5'7\"", photo: '/players/nwsl/portland-thorns/castellanos-d.webp' },
-  { number: 11, name: "Maddie Padelski", position: 'FWD', hometown: "Nolensville, Tennessee", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'us', height: "5'0\"", photo: '/players/nwsl/portland-thorns/padelski-m.webp' },
-  { number: 19, name: "Pietra Tordin", position: 'FWD', hometown: "Doral, Florida", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'us', height: "5'6\"", photo: '/players/nwsl/portland-thorns/tordin-p.webp' },
-  { number: 27, name: "Julie Dufour", position: 'FWD', hometown: "Valenciennes, France", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'fr', height: "5'4\"", photo: '/players/nwsl/portland-thorns/dufour-j.webp' },
-  { number: 66, name: "Reilyn Turner", position: 'FWD', hometown: "Lakewood, California", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'us', height: "5'9\"", photo: '/players/nwsl/portland-thorns/turner-r.webp' },
-  { number: 77, name: "Alexa Spaanstra", position: 'FWD', hometown: "Brighton, Michigan", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'us', height: "5'5\"", photo: '/players/nwsl/portland-thorns/spaanstra-a.webp' },
-  { number: 88, name: "Valerin Loboa", position: 'FWD', hometown: "Cali, Colombia", leagueSlug: 'nwsl', teamSlug: 'portland-thorns', teamName: "Portland Thorns", countryCode: 'co', height: "5'9\"", photo: '/players/nwsl/portland-thorns/loboa-v.webp' },
 ];

@@ -1,0 +1,124 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import EmailSignup from '../components/EmailSignup.astro';
+import LeagueBrandCard from '../components/LeagueBrandCard.astro';
+import LeagueComingCard from '../components/LeagueComingCard.astro';
+import VoteGridCard from '../components/VoteGridCard.astro';
+import { LEAGUES, LIVE_LEAGUES, COMING_LEAGUES } from '../data/leagues';
+import { nwslStandings } from '../data/leagues/nwsl/standings';
+import { getStandings as getWnbaStandings } from '../data/wnba/queries';
+
+const title = 'All leagues — NWSL, WNBA, and what\'s next · Standd';
+const description =
+  `NWSL, WNBA, PWHL, WSL, and more — one home for women's pro sports. ` +
+  `Schedules, scores, standings, and how to watch.`;
+
+const totalTeams = LEAGUES.reduce((n, l) => n + (l.teamCount ?? 0), 0);
+
+const wnbaStandings = await getWnbaStandings();
+
+function slugToName(slug: string): string {
+  return slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+}
+
+const leaders: Record<string, { name: string } | undefined> = {
+  nwsl: nwslStandings[0] ? { name: nwslStandings[0].team } : undefined,
+  wnba: wnbaStandings[0] ? { name: slugToName(wnbaStandings[0].team) } : undefined,
+};
+---
+
+<BaseLayout title={title} description={description} ogImage="/og-leagues.png">
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "All leagues",
+    "url": "https://standd.fan/leagues",
+    "description": description,
+    "hasPart": LEAGUES.map(l => ({
+      "@type": "SportsOrganization",
+      "name": l.longName,
+      "alternateName": l.name,
+      "sport": `Women's ${l.sport}`,
+      ...(l.status === 'live' && { "url": `https://standd.fan${l.href}` }),
+    })),
+  })} />
+  <Header />
+
+  <main class="flex-1">
+    <!-- Hero -->
+    <section class="bg-cream pt-8 pb-10 border-b-[12px] border-accent">
+      <div class="max-w-5xl mx-auto px-6">
+        <p class="text-sm font-bold text-accent uppercase tracking-[0.2em] mb-6">
+          Leagues · {new Date().getFullYear()}
+        </p>
+        <div class="grid md:grid-cols-2 gap-10 md:gap-16 items-center">
+          <!-- Heading -->
+          <h1 class="font-display font-bold leading-[0.9] tracking-[-0.04em]">
+            <span class="block text-5xl md:text-7xl text-primary font-black uppercase">Every league.</span>
+            <span class="block text-5xl md:text-7xl text-accent font-black uppercase">One home.</span>
+          </h1>
+          <!-- Description + stats -->
+          <div class="pb-1">
+            <p class="text-xl text-primary leading-relaxed mb-6 font-medium">
+              Two leagues live, five more queued. Pick a league to open its tracker — stats, schedules, scores, standings, broadcast info, rosters, every team.
+            </p>
+            <dl class="flex gap-10 tabular">
+              <div>
+                <dd class="font-display font-black text-5xl text-primary leading-none">{LIVE_LEAGUES.length}</dd>
+                <dt class="text-xs font-bold uppercase tracking-[0.16em] text-muted mt-1.5">live</dt>
+              </div>
+              <div>
+                <dd class="font-display font-black text-5xl text-primary leading-none">{COMING_LEAGUES.length}</dd>
+                <dt class="text-xs font-bold uppercase tracking-[0.16em] text-muted mt-1.5">coming</dt>
+              </div>
+              <div>
+                <dd class="font-display font-black text-5xl text-primary leading-none">{totalTeams}</dd>
+                <dt class="text-xs font-bold uppercase tracking-[0.16em] [word-spacing:-0.1em] text-muted mt-1.5">total teams</dt>
+              </div>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- All leagues — unified 2-col grid -->
+    <section class="bg-cream py-16">
+      <div class="max-w-5xl mx-auto px-6">
+        <div class="grid md:grid-cols-2 gap-4">
+          {LIVE_LEAGUES.map(l => <LeagueBrandCard league={l} leader={leaders[l.slug]} />)}
+          {COMING_LEAGUES.map(l => <LeagueComingCard league={l} />)}
+          <VoteGridCard />
+        </div>
+      </div>
+    </section>
+
+    <!-- What you'll find -->
+    <section class="bg-cream border-t border-primary/10 py-16">
+      <div class="max-w-3xl mx-auto px-6">
+        <p class="text-sm font-bold text-accent uppercase tracking-[0.2em] mb-3">What you'll find</p>
+        <h2 class="font-display font-bold text-3xl md:text-4xl text-primary leading-tight tracking-[-0.02em] mb-8 text-balance">
+          Every league gets the same treatment. The tracker, not the marketing.
+        </h2>
+        <ul class="grid md:grid-cols-2 gap-x-10 gap-y-6">
+          {[
+            ['Standings',    'Live table with playoff line, color-coded by club.'],
+            ['Schedule',     'Every match, every kickoff, every broadcaster.'],
+            ['Squad pages',  'Per-club roster with photos, positions, and bios.'],
+            ['How to watch', 'Which service carries which game — free options first.'],
+          ].map(([k, v]) => (
+            <li>
+              <h3 class="font-display font-bold text-xl text-primary mb-1">{k}</h3>
+              <p class="text-base text-primary/75 leading-relaxed">{v}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <EmailSignup />
+  </main>
+
+  <Footer />
+</BaseLayout>

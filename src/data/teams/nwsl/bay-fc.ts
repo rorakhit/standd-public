@@ -1,15 +1,54 @@
 import type { Player } from '../../shared/types';
-import type { Match, TeamConfig } from '../../shared/types';
+import type { NWSLTeamConfig } from '../../shared/types';
 
-export const team: TeamConfig = {
+export const team: NWSLTeamConfig = {
   name: 'Bay FC',
   slug: 'bay-fc',
-  color: '#FF5049',
+  short: 'Bay FC',
+  color: '#00A09A',
+  text: '#FAF6F0',
   badge: 'https://images.nwslsoccer.com/image/private/t_q-best/v1710436090/prd/assets/teams/bay-fc.svg',
   standingsKey: 'Bay',
   officialUrl: 'https://bayfc.com/',
   ticketsUrl: 'https://seatgeek.com/bay-fc-tickets',
+  city: 'San Francisco',
+  venue: 'PayPal Park',
+  supporter: 'Bay City SC',
+  tagline: 'By the Bay, of the Bay.',
+  est: 2024,
 };
+
+
+export const roster: Player[] = [
+  { number: 1, name: "Camryn Miller", position: 'GK', hometown: "Richmond, Virginia", leagueSlug: 'nwsl', teamSlug: 'bay-fc', teamName: "Bay FC", countryCode: 'us', height: "5'5\"" },
+  { number: 29, name: "Jordan Silkowitz", position: 'GK', hometown: "Fairfax, Virginia", leagueSlug: 'nwsl', teamSlug: 'bay-fc', teamName: "Bay FC", countryCode: 'us', height: "6'0\"", photo: '/players/nwsl/bay-fc/silkowitz-j.webp' },
+  { number: 32, name: "Emmie Allen", position: 'GK', hometown: "High Point, North Carolina", leagueSlug: 'nwsl', teamSlug: 'bay-fc', teamName: "Bay FC", countryCode: 'us', height: "5'10\"", photo: '/players/nwsl/bay-fc/allen-e.webp' },
+  { number: 2, name: "Heather Gilchrist", position: 'DEF', hometown: "Boulder, Colorado", leagueSlug: 'nwsl', teamSlug: 'bay-fc', teamName: "Bay FC", countryCode: 'us', height: "5'8\"", photo: '/players/nwsl/bay-fc/gilchrist-h.webp' },
+  { number: 3, name: "Caprice Dydasco", position: 'DEF', hometown: "Honolulu, Hawaii", leagueSlug: 'nwsl', teamSlug: 'bay-fc', teamName: "Bay FC", countryCode: 'us', height: "5'2\"", photo: '/players/nwsl/bay-fc/dydasco-c.webp' },
+  { number: 4, name: "Emily Menges", position: 'DEF', hometown: "Garden City, New York", leagueSlug: 'nwsl', teamSlug: 'bay-fc', teamName: "Bay FC", countryCode: 'us', height: "5'7\"", photo: '/players/nwsl/bay-fc/menges-e.webp' },
+  { number: 11, name: "Kelli Hubly", position: 'DEF', hometown: "Elk Grove, Illinois", leagueSlug: 'nwsl', teamSlug: 'bay-fc', teamName: "Bay FC", countryCode: 'us', height: "5'9\"", photo: '/players/nwsl/bay-fc/hubly-k.webp' },
+  { number: 13, name: "Abby Dahlkemper", position: 'DEF', hometown: "Menlo Park, California", leagueSlug: 'nwsl', teamSlug: 'bay-fc', teamName: "Bay FC", countryCode: 'us', height: "5'7\"", photo: '/players/nwsl/bay-fc/dahlkemper-a.webp' },
+  { number: 16, name: "Sydney Collins", position: 'DEF', hometown: "Beaverton, Oregon", leagueSlug: 'nwsl', teamSlug: 'bay-fc', teamName: "Bay FC", countryCode: 'ca', height: "5'9\"", photo: '/players/nwsl/bay-fc/collins-s.webp' },
+  { number: 20, name: "Alyssa Malonson", position: 'DEF', hometown: "Spring, Texas", leagueSlug: 'nwsl', teamSlug: 'bay-fc', teamName: "Bay FC", countryCode: 'us', height: "5'3\"", photo: '/players/nwsl/bay-fc/malonson-a.webp' },
+  { number: 21, name: "Aldana Cometti", position: 'DEF', hometown: "Buenos Aires, Argentina", leagueSlug: 'nwsl', teamSlug: 'bay-fc', teamName: "Bay FC", countryCode: 'ar', height: "5'6\"" },
+  { number: 22, name: "Brooklyn Courtnall", position: 'DEF', hometown: "Los Angeles, California", leagueSlug: 'nwsl', teamSlug: 'bay-fc', teamName: "Bay FC", countryCode: 'ca', height: "5'9\"", photo: '/players/nwsl/bay-fc/courtnall-b.webp' },
+  { number: 24, name: "Maddie Moreau", position: 'DEF', hometown: "Youngsville, Louisiana", leagueSlug: 'nwsl', teamSlug: 'bay-fc', teamName: "Bay FC", countryCode: 'us', height: "5'1\"", photo: '/players/nwsl/bay-fc/moreau-m.webp' },
+  { number: 25, name: "Anouk Denton", position: 'DEF', hometown: "St Albans, England", leagueSlug: 'nwsl', teamSlug: 'bay-fc', teamName: "Bay FC", countryCode: 'gb', photo: '/players/nwsl/bay-fc/denton-a.webp' },
+  { number: 7, name: "Taylor Huff", position: 'MID', hometown: "Mansfield, Ohio", leagueSlug: 'nwsl', teamSlug: 'bay-fc', teamName: "Bay FC", countryCode: 'us', height: "5'8\"", photo: '/players/nwsl/bay-fc/huff-t.webp' },
+  { number: 8, name: "Claire Hutton", position: 'MID', hometown: "Bethlehem, New York", leagueSlug: 'nwsl', teamSlug: 'bay-fc', teamName: "Bay FC", countryCode: 'us', height: "5'6\"", photo: '/players/nwsl/bay-fc/hutton-c.webp' },
+  { number: 14, name: "Jamie Shepherd", position: 'MID', hometown: "American Fork, Utah", leagueSlug: 'nwsl', teamSlug: 'bay-fc', teamName: "Bay FC", countryCode: 'us', height: "5'7\"", photo: '/players/nwsl/bay-fc/shepherd-j.webp' },
+  { number: 18, name: "Joelle Anderson", position: 'MID', hometown: "San Jose, California", leagueSlug: 'nwsl', teamSlug: 'bay-fc', teamName: "Bay FC", countryCode: 'us', height: "5'9\"", photo: '/players/nwsl/bay-fc/anderson-j.webp' },
+  { number: 19, name: "Dorian Bailey", position: 'MID', hometown: "Mission, Kansas", leagueSlug: 'nwsl', teamSlug: 'bay-fc', teamName: "Bay FC", countryCode: 'us', height: "5'6\"", photo: '/players/nwsl/bay-fc/bailey-d.webp' },
+  { number: 41, name: "Hannah Bebar", position: 'MID', hometown: "Naperville, Illinois", leagueSlug: 'nwsl', teamSlug: 'bay-fc', teamName: "Bay FC", countryCode: 'us', height: "5'3\"", photo: '/players/nwsl/bay-fc/bebar-h.webp' },
+  { number: 5, name: "Karlie Lema", position: 'FWD', hometown: "Morgan Hill, California", leagueSlug: 'nwsl', teamSlug: 'bay-fc', teamName: "Bay FC", countryCode: 'us', height: "5'10\"", photo: '/players/nwsl/bay-fc/lema-k.webp' },
+  { number: 6, name: "Onyeka Gamero", position: 'FWD', hometown: "Cerritos, California", leagueSlug: 'nwsl', teamSlug: 'bay-fc', teamName: "Bay FC", countryCode: 'us', height: "5'4\"", photo: '/players/nwsl/bay-fc/gamero-o.webp' },
+  { number: 9, name: "Racheal Kundananji", position: 'FWD', hometown: "Kalulushi, Zambia", leagueSlug: 'nwsl', teamSlug: 'bay-fc', teamName: "Bay FC", height: "5'7\"", photo: '/players/nwsl/bay-fc/kundananji-r.webp' },
+  { number: 10, name: "Cristiana Girelli", position: 'FWD', hometown: "Gavardo, Italy", leagueSlug: 'nwsl', teamSlug: 'bay-fc', teamName: "Bay FC", countryCode: 'it', height: "5'9\"" },
+  { number: 12, name: "Tess Boade", position: 'FWD', hometown: "Highlands Ranch, Colorado", leagueSlug: 'nwsl', teamSlug: 'bay-fc', teamName: "Bay FC", countryCode: 'us', height: "5'4\"", photo: '/players/nwsl/bay-fc/boade-t.webp' },
+  { number: 17, name: "Alex Pfeiffer", position: 'FWD', hometown: "St. Louis, Missouri", leagueSlug: 'nwsl', teamSlug: 'bay-fc', teamName: "Bay FC", countryCode: 'us', height: "5'6\"", photo: '/players/nwsl/bay-fc/pfeiffer-a.webp' },
+  { number: 23, name: "Caroline Conti", position: 'FWD', hometown: "Greenville, South Carolina", leagueSlug: 'nwsl', teamSlug: 'bay-fc', teamName: "Bay FC", countryCode: 'us', height: "5'6\"", photo: '/players/nwsl/bay-fc/conti-c.webp' },
+  { number: 27, name: "Keira Barry", position: 'FWD', hometown: "Congleton, England", leagueSlug: 'nwsl', teamSlug: 'bay-fc', teamName: "Bay FC", countryCode: 'gb', photo: '/players/nwsl/bay-fc/barry-k.webp' },
+];
 
 export const matches: Match[] = [
   {
@@ -54,11 +93,11 @@ export const matches: Match[] = [
   },
   {
     date: '2026-05-03',
-    time: '7:00 PM',
     opponent: 'San Diego Wave',
     homeAway: 'away',
     venue: 'Snapdragon Stadium, San Diego, California',
     broadcast: ['Victory+'],
+    result: { teamScore: 1, opponentScore: 0 },
   },
   {
     date: '2026-05-10',
@@ -252,35 +291,4 @@ export const matches: Match[] = [
     venue: 'PayPal Park, San Jose, California',
     broadcast: ['espn tbd'],
   },
-];
-
-export const roster: Player[] = [
-  { number: 1, name: "Camryn Miller", position: 'GK', hometown: "Richmond, Virginia", leagueSlug: 'nwsl', teamSlug: 'bay-fc', teamName: "Bay FC", countryCode: 'us', height: "5'5\"" },
-  { number: 29, name: "Jordan Silkowitz", position: 'GK', hometown: "Fairfax, Virginia", leagueSlug: 'nwsl', teamSlug: 'bay-fc', teamName: "Bay FC", countryCode: 'us', height: "6'0\"", photo: '/players/nwsl/bay-fc/silkowitz-j.webp' },
-  { number: 32, name: "Emmie Allen", position: 'GK', hometown: "High Point, North Carolina", leagueSlug: 'nwsl', teamSlug: 'bay-fc', teamName: "Bay FC", countryCode: 'us', height: "5'10\"", photo: '/players/nwsl/bay-fc/allen-e.webp' },
-  { number: 2, name: "Heather Gilchrist", position: 'DEF', hometown: "Boulder, Colorado", leagueSlug: 'nwsl', teamSlug: 'bay-fc', teamName: "Bay FC", countryCode: 'us', height: "5'8\"", photo: '/players/nwsl/bay-fc/gilchrist-h.webp' },
-  { number: 3, name: "Caprice Dydasco", position: 'DEF', hometown: "Honolulu, Hawaii", leagueSlug: 'nwsl', teamSlug: 'bay-fc', teamName: "Bay FC", countryCode: 'us', height: "5'2\"", photo: '/players/nwsl/bay-fc/dydasco-c.webp' },
-  { number: 4, name: "Emily Menges", position: 'DEF', hometown: "Garden City, New York", leagueSlug: 'nwsl', teamSlug: 'bay-fc', teamName: "Bay FC", countryCode: 'us', height: "5'7\"", photo: '/players/nwsl/bay-fc/menges-e.webp' },
-  { number: 11, name: "Kelli Hubly", position: 'DEF', hometown: "Elk Grove, Illinois", leagueSlug: 'nwsl', teamSlug: 'bay-fc', teamName: "Bay FC", countryCode: 'us', height: "5'9\"", photo: '/players/nwsl/bay-fc/hubly-k.webp' },
-  { number: 13, name: "Abby Dahlkemper", position: 'DEF', hometown: "Menlo Park, California", leagueSlug: 'nwsl', teamSlug: 'bay-fc', teamName: "Bay FC", countryCode: 'us', height: "5'7\"", photo: '/players/nwsl/bay-fc/dahlkemper-a.webp' },
-  { number: 16, name: "Sydney Collins", position: 'DEF', hometown: "Beaverton, Oregon", leagueSlug: 'nwsl', teamSlug: 'bay-fc', teamName: "Bay FC", countryCode: 'ca', height: "5'9\"", photo: '/players/nwsl/bay-fc/collins-s.webp' },
-  { number: 20, name: "Alyssa Malonson", position: 'DEF', hometown: "Spring, Texas", leagueSlug: 'nwsl', teamSlug: 'bay-fc', teamName: "Bay FC", countryCode: 'us', height: "5'3\"", photo: '/players/nwsl/bay-fc/malonson-a.webp' },
-  { number: 21, name: "Aldana Cometti", position: 'DEF', hometown: "Buenos Aires, Argentina", leagueSlug: 'nwsl', teamSlug: 'bay-fc', teamName: "Bay FC", countryCode: 'ar', height: "5'6\"" },
-  { number: 22, name: "Brooklyn Courtnall", position: 'DEF', hometown: "Los Angeles, California", leagueSlug: 'nwsl', teamSlug: 'bay-fc', teamName: "Bay FC", countryCode: 'ca', height: "5'9\"", photo: '/players/nwsl/bay-fc/courtnall-b.webp' },
-  { number: 24, name: "Maddie Moreau", position: 'DEF', hometown: "Youngsville, Louisiana", leagueSlug: 'nwsl', teamSlug: 'bay-fc', teamName: "Bay FC", countryCode: 'us', height: "5'1\"", photo: '/players/nwsl/bay-fc/moreau-m.webp' },
-  { number: 25, name: "Anouk Denton", position: 'DEF', hometown: "St Albans, England", leagueSlug: 'nwsl', teamSlug: 'bay-fc', teamName: "Bay FC", countryCode: 'gb', photo: '/players/nwsl/bay-fc/denton-a.webp' },
-  { number: 7, name: "Taylor Huff", position: 'MID', hometown: "Mansfield, Ohio", leagueSlug: 'nwsl', teamSlug: 'bay-fc', teamName: "Bay FC", countryCode: 'us', height: "5'8\"", photo: '/players/nwsl/bay-fc/huff-t.webp' },
-  { number: 8, name: "Claire Hutton", position: 'MID', hometown: "Bethlehem, New York", leagueSlug: 'nwsl', teamSlug: 'bay-fc', teamName: "Bay FC", countryCode: 'us', height: "5'6\"", photo: '/players/nwsl/bay-fc/hutton-c.webp' },
-  { number: 14, name: "Jamie Shepherd", position: 'MID', hometown: "American Fork, Utah", leagueSlug: 'nwsl', teamSlug: 'bay-fc', teamName: "Bay FC", countryCode: 'us', height: "5'7\"", photo: '/players/nwsl/bay-fc/shepherd-j.webp' },
-  { number: 18, name: "Joelle Anderson", position: 'MID', hometown: "San Jose, California", leagueSlug: 'nwsl', teamSlug: 'bay-fc', teamName: "Bay FC", countryCode: 'us', height: "5'9\"", photo: '/players/nwsl/bay-fc/anderson-j.webp' },
-  { number: 19, name: "Dorian Bailey", position: 'MID', hometown: "Mission, Kansas", leagueSlug: 'nwsl', teamSlug: 'bay-fc', teamName: "Bay FC", countryCode: 'us', height: "5'6\"", photo: '/players/nwsl/bay-fc/bailey-d.webp' },
-  { number: 41, name: "Hannah Bebar", position: 'MID', hometown: "Naperville, Illinois", leagueSlug: 'nwsl', teamSlug: 'bay-fc', teamName: "Bay FC", countryCode: 'us', height: "5'3\"", photo: '/players/nwsl/bay-fc/bebar-h.webp' },
-  { number: 5, name: "Karlie Lema", position: 'FWD', hometown: "Morgan Hill, California", leagueSlug: 'nwsl', teamSlug: 'bay-fc', teamName: "Bay FC", countryCode: 'us', height: "5'10\"", photo: '/players/nwsl/bay-fc/lema-k.webp' },
-  { number: 6, name: "Onyeka Gamero", position: 'FWD', hometown: "Cerritos, California", leagueSlug: 'nwsl', teamSlug: 'bay-fc', teamName: "Bay FC", countryCode: 'us', height: "5'4\"", photo: '/players/nwsl/bay-fc/gamero-o.webp' },
-  { number: 9, name: "Racheal Kundananji", position: 'FWD', hometown: "Kalulushi, Zambia", leagueSlug: 'nwsl', teamSlug: 'bay-fc', teamName: "Bay FC", height: "5'7\"", photo: '/players/nwsl/bay-fc/kundananji-r.webp' },
-  { number: 10, name: "Cristiana Girelli", position: 'FWD', hometown: "Gavardo, Italy", leagueSlug: 'nwsl', teamSlug: 'bay-fc', teamName: "Bay FC", countryCode: 'it', height: "5'9\"" },
-  { number: 12, name: "Tess Boade", position: 'FWD', hometown: "Highlands Ranch, Colorado", leagueSlug: 'nwsl', teamSlug: 'bay-fc', teamName: "Bay FC", countryCode: 'us', height: "5'4\"", photo: '/players/nwsl/bay-fc/boade-t.webp' },
-  { number: 17, name: "Alex Pfeiffer", position: 'FWD', hometown: "St. Louis, Missouri", leagueSlug: 'nwsl', teamSlug: 'bay-fc', teamName: "Bay FC", countryCode: 'us', height: "5'6\"", photo: '/players/nwsl/bay-fc/pfeiffer-a.webp' },
-  { number: 23, name: "Caroline Conti", position: 'FWD', hometown: "Greenville, South Carolina", leagueSlug: 'nwsl', teamSlug: 'bay-fc', teamName: "Bay FC", countryCode: 'us', height: "5'6\"", photo: '/players/nwsl/bay-fc/conti-c.webp' },
-  { number: 27, name: "Keira Barry", position: 'FWD', hometown: "Congleton, England", leagueSlug: 'nwsl', teamSlug: 'bay-fc', teamName: "Bay FC", countryCode: 'gb', photo: '/players/nwsl/bay-fc/barry-k.webp' },
 ];

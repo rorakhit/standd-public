@@ -3,9 +3,24 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Header from '../../../components/Header.astro';
 import TeamTrackerSubNav from '../../../components/TeamTrackerSubNav.astro';
 import Footer from '../../../components/Footer.astro';
-import { matches, team } from '../../../data/teams/nwsl/seattle-reign';
+import { team } from '../../../data/teams/nwsl/seattle-reign.team';
+import { getNwslTeamSchedule } from '../../../data/nwsl/queries';
 
-const allMatches = [...matches].sort((a, b) => a.date.localeCompare(b.date));
+const d1Games = await getNwslTeamSchedule(team.slug).catch(() => []);
+const allMatches = d1Games.map(g => {
+  const isHome = g.home_team === team.slug;
+  const opponentSlug = isHome ? g.away_team : g.home_team;
+  return {
+    date: g.date,
+    homeAway: (isHome ? 'home' : 'away') as 'home' | 'away',
+    opponentSlug,
+    opponent: opponentSlug,
+    broadcast: g.broadcast,
+    result: g.status === 'final' && g.home_score != null && g.away_score != null
+      ? { teamScore: isHome ? g.home_score : g.away_score, opponentScore: isHome ? g.away_score : g.home_score }
+      : undefined,
+  };
+}).sort((a, b) => a.date.localeCompare(b.date));
 const today = new Date().toISOString().slice(0, 10);
 const upcomingMatches = allMatches.filter(m => m.date >= today);
 const visibleMatches = upcomingMatches.slice(0, 5);
@@ -173,7 +188,7 @@ const services = [
             {visibleMatches.map(match => (
               <tr class="border-b border-primary/10">
                 <td class="px-4 py-3 tabular text-primary">{formatDate(match.date)}</td>
-                <td class="px-4 py-3 text-primary">{match.homeAway === 'home' ? 'vs' : 'at'}{' '}{match.opponent}</td>
+                <td class="px-4 py-3 text-primary"><a href={`/nwsl/${match.opponentSlug}`} class="hover:text-accent transition-colors">{match.homeAway === 'home' ? 'vs' : 'at'}{' '}{match.opponent}</a></td>
                 <td class="px-4 py-3 text-muted">{match.broadcast.join(', ')}</td>
               </tr>
             ))}
@@ -182,7 +197,7 @@ const services = [
             {hiddenMatches.map(match => (
               <tr class="border-b border-primary/10 last:border-0">
                 <td class="px-4 py-3 tabular text-primary">{formatDate(match.date)}</td>
-                <td class="px-4 py-3 text-primary">{match.homeAway === 'home' ? 'vs' : 'at'}{' '}{match.opponent}</td>
+                <td class="px-4 py-3 text-primary"><a href={`/nwsl/${match.opponentSlug}`} class="hover:text-accent transition-colors">{match.homeAway === 'home' ? 'vs' : 'at'}{' '}{match.opponent}</a></td>
                 <td class="px-4 py-3 text-muted">{match.broadcast.join(', ')}</td>
               </tr>
             ))}

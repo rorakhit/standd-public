@@ -9,6 +9,7 @@ export interface WNBAGame {
   status: 'scheduled' | 'final';
   venue: string | null;
   time: string | null;
+  utc_datetime: string | null;
   season_type: string | null;
 }
 

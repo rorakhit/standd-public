@@ -1,0 +1,729 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Header from '../../../components/Header.astro';
+import Footer from '../../../components/Footer.astro';
+import { getNwslStandings, getNwslTeamSchedule, getLastMatchFormation, getNwslTeamRoster, playerNameToSlug } from '../../../data/nwsl/queries';
+
+import { team as angelCity }            from '../../../data/teams/nwsl/angel-city.team';
+import { team as bayFc }                from '../../../data/teams/nwsl/bay-fc.team';
+import { team as bostonLegacy }         from '../../../data/teams/nwsl/boston-legacy.team';
+import { team as chicagoStars }         from '../../../data/teams/nwsl/chicago-stars.team';
+import { team as denverSummit }         from '../../../data/teams/nwsl/denver-summit.team';
+import { team as gothamFc }             from '../../../data/teams/nwsl/gotham-fc.team';
+import { team as houstonDash }          from '../../../data/teams/nwsl/houston-dash.team';
+import { team as kansasCityCurrent }    from '../../../data/teams/nwsl/kansas-city-current.team';
+import { team as northCarolinaCourage } from '../../../data/teams/nwsl/north-carolina-courage.team';
+import { team as orlandoPride }         from '../../../data/teams/nwsl/orlando-pride.team';
+import { team as portlandThorns }       from '../../../data/teams/nwsl/portland-thorns.team';
+import { team as racingLouisville }     from '../../../data/teams/nwsl/racing-louisville.team';
+import { team as sanDiegoWave }         from '../../../data/teams/nwsl/san-diego-wave.team';
+import { team as seattleReign }         from '../../../data/teams/nwsl/seattle-reign.team';
+import { team as utahRoyals }           from '../../../data/teams/nwsl/utah-royals.team';
+import { team as washingtonSpirit }     from '../../../data/teams/nwsl/washington-spirit.team';
+
+import { roster as angelCityRoster }            from '../../../data/teams/nwsl/angel-city';
+import { roster as bayFcRoster }                from '../../../data/teams/nwsl/bay-fc';
+import { roster as bostonLegacyRoster }         from '../../../data/teams/nwsl/boston-legacy';
+import { roster as chicagoStarsRoster }         from '../../../data/teams/nwsl/chicago-stars';
+import { roster as denverSummitRoster }         from '../../../data/teams/nwsl/denver-summit';
+import { roster as gothamFcRoster }             from '../../../data/teams/nwsl/gotham-fc';
+import { roster as houstonDashRoster }          from '../../../data/teams/nwsl/houston-dash';
+import { roster as kansasCityCurrentRoster }    from '../../../data/teams/nwsl/kansas-city-current';
+import { roster as northCarolinaCourageRoster } from '../../../data/teams/nwsl/north-carolina-courage';
+import { roster as orlandoPrideRoster }         from '../../../data/teams/nwsl/orlando-pride';
+import { roster as portlandThornsRoster }       from '../../../data/teams/nwsl/portland-thorns';
+import { roster as racingLouisvilleRoster }     from '../../../data/teams/nwsl/racing-louisville';
+import { roster as sanDiegoWaveRoster }         from '../../../data/teams/nwsl/san-diego-wave';
+import { roster as seattleReignRoster }         from '../../../data/teams/nwsl/seattle-reign';
+import { roster as utahRoyalsRoster }           from '../../../data/teams/nwsl/utah-royals';
+import { roster as washingtonSpiritRoster }     from '../../../data/teams/nwsl/washington-spirit';
+
+import type { NWSLTeamConfig, Player } from '../../../data/shared/types';
+
+export const prerender = false;
+
+const ALL_TEAMS: NWSLTeamConfig[] = [
+  angelCity, bayFc, bostonLegacy, chicagoStars, denverSummit, gothamFc,
+  houstonDash, kansasCityCurrent, northCarolinaCourage, orlandoPride,
+  portlandThorns, racingLouisville, sanDiegoWave, seattleReign, utahRoyals,
+  washingtonSpirit,
+];
+
+const { slug } = Astro.params;
+const team = ALL_TEAMS.find(t => t.slug === slug);
+if (!team) return Astro.redirect('/nwsl');
+
+const teamBySlug = new Map(ALL_TEAMS.map(t => [t.slug, t]));
+
+const ROSTERS: Record<string, Player[]> = {
+  'angel-city': angelCityRoster, 'bay-fc': bayFcRoster,
+  'boston-legacy': bostonLegacyRoster, 'chicago-stars': chicagoStarsRoster,
+  'denver-summit': denverSummitRoster, 'gotham-fc': gothamFcRoster,
+  'houston-dash': houstonDashRoster, 'kansas-city-current': kansasCityCurrentRoster,
+  'north-carolina-courage': northCarolinaCourageRoster, 'orlando-pride': orlandoPrideRoster,
+  'portland-thorns': portlandThornsRoster, 'racing-louisville': racingLouisvilleRoster,
+  'san-diego-wave': sanDiegoWaveRoster, 'seattle-reign': seattleReignRoster,
+  'utah-royals': utahRoyalsRoster, 'washington-spirit': washingtonSpiritRoster,
+};
+const roster: Player[] = ROSTERS[team.slug] ?? [];
+
+const SLUG_DISPLAY: Record<string, string> = {
+  'angel-city': 'Angel City FC', 'bay-fc': 'Bay FC',
+  'boston-legacy': 'Boston Legacy', 'chicago-stars': 'Chicago Stars',
+  'denver-summit': 'Denver Summit', 'gotham-fc': 'Gotham FC',
+  'houston-dash': 'Houston Dash', 'kansas-city-current': 'Kansas City Current',
+  'north-carolina-courage': 'NC Courage', 'orlando-pride': 'Orlando Pride',
+  'portland-thorns': 'Portland Thorns', 'racing-louisville': 'Racing Louisville',
+  'san-diego-wave': 'San Diego Wave', 'seattle-reign': 'Seattle Reign',
+  'utah-royals': 'Utah Royals', 'washington-spirit': 'Washington Spirit',
+};
+function displayName(s: string): string {
+  return SLUG_DISPLAY[s] ?? s.split('-').filter(Boolean).map(w => w[0].toUpperCase() + w.slice(1)).join(' ');
+}
+
+// ── Data ──────────────────────────────────────────────────────────────────────
+const [nwslStandings, d1Games, lastXI, d1Roster] = await Promise.all([
+  getNwslStandings().catch(() => []),
+  getNwslTeamSchedule(team.slug).catch(() => []),
+  getLastMatchFormation(team.slug).catch(() => []),
+  getNwslTeamRoster(team.slug).catch(() => []),
+]);
+
+type GameMatch = {
+  date: string; time: string | null; utcDatetime: string | null; opponent: string; opponentSlug: string;
+  homeAway: 'home' | 'away'; venue: string; broadcast: string[];
+  result?: { teamScore: number; opponentScore: number };
+};
+
+const matches: GameMatch[] = d1Games.map(g => {
+  const isHome = g.home_team === team.slug;
+  const opponentSlug = isHome ? g.away_team : g.home_team;
+  const oppTeam = teamBySlug.get(opponentSlug);
+  const teamScore  = isHome ? g.home_score  : g.away_score;
+  const opponentScore = isHome ? g.away_score : g.home_score;
+  return {
+    date: g.date,
+    time: g.time ?? null,
+    utcDatetime: g.utc_datetime ?? null,
+    opponent: oppTeam?.name ?? displayName(opponentSlug),
+    opponentSlug,
+    homeAway: isHome ? 'home' : 'away',
+    venue: g.venue ?? '',
+    broadcast: g.broadcast,
+    result: g.status === 'final' && teamScore != null && opponentScore != null
+      ? { teamScore, opponentScore } : undefined,
+  };
+});
+
+const playedMatches  = matches.filter(m => m.result);
+const upcomingMatches = matches.filter(m => !m.result);
+const lastThreeResults = playedMatches.slice(-3).reverse();
+const nextThreeFixtures = upcomingMatches.slice(0, 3);
+const lastFiveResults  = playedMatches.slice(-5).reverse();
+const nextMatch = upcomingMatches[0] ?? null;
+
+const teamRow = nwslStandings.find(r => r.team === team.slug);
+const position   = teamRow?.rank ?? null;
+const record     = teamRow ? `${teamRow.wins}-${teamRow.draws}-${teamRow.losses}` : '—';
+const gamesPlayed = teamRow?.games_played ?? 0;
+const goalDiff   = teamRow?.goal_differential ?? 0;
+const goalsFor   = teamRow?.goals_for ?? 0;
+const goalsAgainst = teamRow?.goals_against ?? 0;
+
+// Recap lookup
+let recapByDate = new Map<string, string>();
+try {
+  const recaps = await getCollection('matches');
+  recapByDate = new Map(recaps.map(r => [r.data.date.toISOString().slice(0, 10), r.id]));
+} catch { /* no recaps yet */ }
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function formatDate(iso: string): string {
+  const d = new Date(iso + 'T12:00:00Z');
+  const dow = d.toLocaleDateString('en-US', { weekday: 'short', timeZone: 'UTC' }).toUpperCase();
+  const mon = d.toLocaleDateString('en-US', { month: 'short', timeZone: 'UTC' }).toUpperCase();
+  const day = d.getUTCDate();
+  return `${dow}, ${mon} ${day}`;
+}
+
+function formatTime(time: string | null): string {
+  return time ? `${time} ET` : 'TBD';
+}
+
+type ResultKind = 'W' | 'L' | 'D';
+function resultKind(m: GameMatch): ResultKind {
+  if (!m.result) return 'D';
+  const { teamScore, opponentScore } = m.result;
+  if (teamScore > opponentScore) return 'W';
+  if (teamScore < opponentScore) return 'L';
+  return 'D';
+}
+
+// Precompute hex values used in JS template expressions (CSS vars don't resolve there)
+const teamColor = team.color;
+const teamOn = team.text;
+
+// Stat band color: ensure the team color is readable against the dark teal band bg (#0F2A2D).
+// If contrast is below 3:1, mix the team color toward white until it passes.
+function hexToRgb(hex: string): [number, number, number] {
+  const h = hex.replace('#', '');
+  return [parseInt(h.slice(0,2),16), parseInt(h.slice(2,4),16), parseInt(h.slice(4,6),16)];
+}
+function luminance([r,g,b]: [number,number,number]): number {
+  return [r,g,b].reduce((acc, c, i) => {
+    const lin = (c/255) <= 0.04045 ? (c/255)/12.92 : Math.pow(((c/255)+0.055)/1.055, 2.4);
+    return acc + lin * [0.2126,0.7152,0.0722][i];
+  }, 0);
+}
+function contrast(a: [number,number,number], b: [number,number,number]): number {
+  const [la, lb] = [luminance(a), luminance(b)];
+  return (Math.max(la,lb)+0.05) / (Math.min(la,lb)+0.05);
+}
+function rgbToHex([r,g,b]: [number,number,number]): string {
+  return '#' + [r,g,b].map(c => Math.round(c).toString(16).padStart(2,'0')).join('');
+}
+function mixToward(color: [number,number,number], target: [number,number,number], t: number): [number,number,number] {
+  return [0,1,2].map(i => color[i] + (target[i] - color[i]) * t) as [number,number,number];
+}
+
+const bandRgb = hexToRgb('#0F2A2D');
+let statColorRgb = hexToRgb(teamColor);
+// Step toward white in 5% increments until we hit 3:1 contrast
+for (let t = 0.05; t <= 1 && contrast(statColorRgb, bandRgb) < 3; t += 0.05) {
+  statColorRgb = mixToward(hexToRgb(teamColor), [255,255,255], t);
+}
+const statBandColor = rgbToHex(statColorRgb);
+
+// Accent color on team-color backgrounds (hero second line, eyebrow labels, etc.)
+// Start from #FF6B2C; if it doesn't contrast 3:1 against teamColor, step toward white.
+const teamRgb = hexToRgb(teamColor);
+let accentOnTeamRgb = hexToRgb('#FF6B2C');
+for (let t = 0.05; t <= 1 && contrast(accentOnTeamRgb, teamRgb) < 3; t += 0.05) {
+  accentOnTeamRgb = mixToward(hexToRgb('#FF6B2C'), [255, 255, 255], t);
+}
+const accentOnTeam = rgbToHex(accentOnTeamRgb);
+
+// Split team.short into first line / last word for hero h1
+const shortParts = team.short.trim().split(' ');
+const heroSecondLine = shortParts.pop() ?? '';
+const heroFirstLine = shortParts.join(' ');
+
+// Free broadcast check
+const FREE_BROADCASTS = new Set(['ION', 'ABC', 'Victory+', 'NWSL+']);
+function isFreeWatch(broadcast: string[]): boolean {
+  return broadcast.some(b => FREE_BROADCASTS.has(b));
+}
+
+function countryFlag(code?: string): string {
+  if (!code) return '';
+  const upper = code.toUpperCase();
+  if (upper.length !== 2) return '';
+  if (!/^[A-Z]{2}$/.test(upper)) return '';
+  return [...upper].map(c => String.fromCodePoint(0x1F1E6 + c.charCodeAt(0) - 65)).join('');
+}
+function playerInitials(name: string): string {
+  const parts = name.trim().split(/\s+/);
+  return (parts[0]?.[0] ?? '') + (parts[parts.length - 1]?.[0] ?? '');
+}
+
+// Squad preview: first 11 players sorted GK→DEF→MID→FWD then by number
+const posOrder: Record<string, number> = { GK: 0, DEF: 1, MID: 2, FWD: 3 };
+const squadPreview = [...roster]
+  .sort((a, b) => (posOrder[a.position] ?? 9) - (posOrder[b.position] ?? 9) || a.number - b.number)
+  .slice(0, 11);
+
+// Last XI formation viz
+const lastXISubs = lastXI.filter(p => p.subbed_in === 1);
+const lastXIFormation = lastXI[0]?.formation ?? null;
+const lastXIDate = lastXI[0]?.game_date ?? null;
+const lastXIOpp = lastXI[0]?.opp_slug ?? null;
+const lastXITeamScore = lastXI[0]?.team_score ?? null;
+const lastXIOppScore = lastXI[0]?.opp_score ?? null;
+
+// Map ESPN position_name → [rowIndex, colSortOrder]
+// rowIndex: 0=GK, 1=DEF, 2=MID, 3=FWD (higher rows are closer to attack)
+// colSortOrder: left→right within the row
+const POS_ROW: Record<string, [number, number]> = {
+  'Goalkeeper':                  [0, 0],
+  'Sweeper':                     [0, 1],
+  'Center Defender':             [1, 2],
+  'Center Left Defender':        [1, 1],
+  'Center Right Defender':       [1, 3],
+  'Left Back':                   [1, 0],
+  'Right Back':                  [1, 4],
+  'Defensive Midfielder':        [2, 2],
+  'Center Midfielder':           [2, 2],
+  'Center Left Midfielder':      [2, 1],
+  'Center Right Midfielder':     [2, 3],
+  'Left Midfielder':             [2, 0],
+  'Right Midfielder':            [2, 4],
+  'Attacking Midfielder':        [3, 2],
+  'Attacking Midfielder Left':   [3, 1],
+  'Attacking Midfielder Right':  [3, 3],
+  'Center Left Forward':         [4, 1],
+  'Center Right Forward':        [4, 3],
+  'Forward':                     [4, 2],
+  'Left Forward':                [4, 0],
+  'Right Forward':               [4, 4],
+};
+
+function buildFormationRows(starters: typeof lastXI): Array<typeof lastXI> {
+  if (starters.length === 0) return [];
+  const rowMap = new Map<number, typeof lastXI>();
+  for (const p of starters) {
+    if (!p.starter) continue;
+    const [rowIdx, _] = POS_ROW[p.position_name ?? ''] ?? [2, 2]; // default to midfield
+    if (!rowMap.has(rowIdx)) rowMap.set(rowIdx, []);
+    rowMap.get(rowIdx)!.push(p);
+  }
+  // Sort each row left→right by colSortOrder
+  for (const [rowIdx, row] of rowMap) {
+    row.sort((a, b) => (POS_ROW[a.position_name ?? '']?.[1] ?? 2) - (POS_ROW[b.position_name ?? '']?.[1] ?? 2));
+  }
+  // Return rows sorted by rowIndex ascending (GK first, attack last — we reverse when rendering)
+  return [...rowMap.entries()].sort((a, b) => a[0] - b[0]).map(([, row]) => row);
+}
+
+const lastXIStarters = lastXI.filter(p => p.starter === 1);
+const formationRows = buildFormationRows(lastXIStarters);
+
+// D1 roster lookup for photos/names
+const d1RosterMap = new Map(d1Roster.map(p => [p.id, p]));
+
+const title = `${team.name} 2026 — Fixtures, Results & Standings | Standd`;
+const description = `${team.name} NWSL 2026 season tracker — live standings, fixtures, match results, and broadcast info.`;
+---
+
+<BaseLayout title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "SportsTeam",
+    "name": team.name,
+    "url": `https://standd.fan/nwsl/${team.slug}`,
+    "sport": "Soccer",
+    "memberOf": {
+      "@type": "SportsOrganization",
+      "name": "National Women's Soccer League",
+      "alternateName": "NWSL",
+    },
+    ...(team.badge ? { "logo": team.badge } : {}),
+    "sameAs": [team.officialUrl],
+  })} />
+
+  <Header />
+
+  <div style={`--team-color:${teamColor};--team-on:${teamOn}; background:#DDD5C4;`}>
+
+  <!-- ── Breadcrumb band ──────────────────────────────────────────────────── -->
+  <div style="background: var(--team-color); color: var(--team-on);" class="px-8 py-3">
+    <div class="max-w-screen-xl mx-auto flex items-center justify-between">
+      <span class="font-mono text-[12px] font-semibold tracking-[0.08em]">
+        <a href="/nwsl" style="opacity:0.7; color:inherit; text-decoration:none;">NWSL</a>
+        <span style="opacity:0.4"> › </span>
+        <span>{team.name.toUpperCase()}</span>
+      </span>
+      <span class="font-mono text-[12px] font-semibold tracking-[0.08em]" style="opacity:0.7;">
+        EST. {team.est} · {team.city.toUpperCase()}
+      </span>
+    </div>
+  </div>
+
+  <!-- ── Hero ────────────────────────────────────────────────────────────── -->
+  <section
+    class="relative overflow-hidden"
+    style="background: var(--team-color); color: var(--team-on); padding: 56px 64px 64px;"
+  >
+    <!-- Decorative crest watermark -->
+    {team.badge && (
+      <img
+        src={team.badge}
+        alt=""
+        aria-hidden="true"
+        style="position:absolute; right:-120px; top:-40px; height:580px; opacity:0.12; pointer-events:none; user-select:none;"
+      />
+    )}
+
+    <div class="max-w-screen-xl mx-auto relative z-10" style="display:grid; grid-template-columns:1.2fr 1fr; gap:56px; align-items:flex-end;">
+      <!-- Left: crest + meta + massive h1 -->
+      <div>
+        <div class="flex items-center gap-4 mb-6">
+          {team.badge && (
+            <img src={team.badge} alt={team.name} style="width:96px; height:96px; object-fit:contain;" />
+          )}
+        </div>
+
+        <h1 class="font-display font-bold leading-[0.9] tracking-[-0.04em]" style="font-size:clamp(64px,9vw,120px);">
+          {heroFirstLine && <span style="display:block;">{heroFirstLine}</span>}
+          <span style={`display:block; color:${accentOnTeam};`}>{heroSecondLine}</span>
+        </h1>
+      </div>
+
+      <!-- Right: next match card -->
+      <div>
+        <div class="font-mono text-[12px] font-bold tracking-[0.15em] mb-3" style="opacity:0.7;">NEXT MATCH</div>
+        {nextMatch ? (
+          <div style="background:#0F2A2D; color:#FAF6F0; border-radius:16px; padding:24px;">
+            <!-- Matchup: away @ home -->
+            <div class="flex items-center justify-between">
+              <!-- Team (us) -->
+              <div class="flex flex-col items-center gap-1" style="min-width:72px;">
+                {team.badge && <img src={team.badge} alt={team.name} style="width:56px;height:56px;object-fit:contain;" />}
+                <span class="font-display font-bold text-[14px] text-center leading-tight">{team.short}</span>
+              </div>
+              <!-- vs / @ -->
+              <span class="font-display font-bold text-[32px]" style="color:#FF6B2C;">
+                {nextMatch.homeAway === 'home' ? 'vs' : '@'}
+              </span>
+              <!-- Opponent -->
+              <div class="flex flex-col items-center gap-1" style="min-width:72px;">
+                {teamBySlug.get(nextMatch.opponentSlug)?.badge && (
+                  <img src={teamBySlug.get(nextMatch.opponentSlug)!.badge} alt={nextMatch.opponent} style="width:56px;height:56px;object-fit:contain;" />
+                )}
+                <a href={`/nwsl/${nextMatch.opponentSlug}`} class="font-display font-bold text-[14px] text-center leading-tight hover:opacity-75 transition-opacity" style="color:inherit; text-decoration:none;">{displayName(nextMatch.opponentSlug)}</a>
+              </div>
+            </div>
+
+            <!-- Divider -->
+            <div style="border-top:1px solid rgba(250,246,240,0.15); margin-top:18px; padding-top:16px;">
+              <div class="flex items-center justify-between">
+                <div>
+                  <div class="font-mono text-[13px] font-bold">{formatDate(nextMatch.date)}</div>
+                  <div class="font-mono text-[12px]" style="opacity:0.65;">
+                    {nextMatch.utcDatetime
+                      ? <time data-utc={nextMatch.utcDatetime} class="kickoff-time">{nextMatch.time ? `${nextMatch.time} ET` : 'TBD'}</time>
+                      : formatTime(nextMatch.time)}
+                  </div>
+                </div>
+                {isFreeWatch(nextMatch.broadcast) && (
+                  <a
+                    href="/nwsl/how-to-watch"
+                    class="font-display font-bold text-[13px] px-4 py-2 rounded-lg"
+                    style="background:#FF6B2C; color:#FAF6F0; text-decoration:none;"
+                  >
+                    WATCH FREE
+                  </a>
+                )}
+              </div>
+              <div class="font-mono text-[12px] mt-3" style="opacity:0.7;">
+                {nextMatch.venue}{nextMatch.broadcast.length > 0 ? ` · ${nextMatch.broadcast.join(', ')}` : ''}
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div style="background:#0F2A2D; color:#FAF6F0; border-radius:16px; padding:24px;">
+            <p class="font-display font-bold text-[18px]" style="opacity:0.6;">Season complete</p>
+          </div>
+        )}
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Stat band ───────────────────────────────────────────────────────── -->
+  <div style="background:var(--team-color); color:var(--team-on); border-bottom:8px solid rgba(0,0,0,0.15);">
+    <div class="max-w-screen-xl mx-auto" style="display:grid; grid-template-columns:repeat(4,1fr);">
+
+      <!-- League Position -->
+      <div style="padding:32px 28px; border-right:1px solid rgba(0,0,0,0.10);">
+        <div class="font-mono text-[11px] font-bold tracking-[0.15em]" style="opacity:0.6;">LEAGUE POSITION</div>
+        <div class="font-display font-bold" style={`font-size:48px; line-height:1; letter-spacing:-0.03em; color:var(--team-on); margin:6px 0;`}>
+          {position != null ? `#${position}` : '—'}
+        </div>
+        <div class="text-[13px]" style="opacity:0.65;">of 16 · {teamRow?.points ?? 0} PTS</div>
+      </div>
+
+      <!-- Record -->
+      <div style="padding:32px 28px; border-right:1px solid rgba(0,0,0,0.10);">
+        <div class="font-mono text-[11px] font-bold tracking-[0.15em]" style="opacity:0.6;">RECORD</div>
+        <div class="font-display font-bold" style={`font-size:48px; line-height:1; letter-spacing:-0.03em; color:var(--team-on); margin:6px 0;`}>
+          {record}
+        </div>
+        <div class="text-[13px]" style="opacity:0.65;">{gamesPlayed} GP</div>
+      </div>
+
+      <!-- Goal Difference -->
+      <div style="padding:32px 28px; border-right:1px solid rgba(0,0,0,0.10);">
+        <div class="font-mono text-[11px] font-bold tracking-[0.15em]" style="opacity:0.6;">GOAL DIFFERENCE</div>
+        <div class="font-display font-bold" style={`font-size:48px; line-height:1; letter-spacing:-0.03em; color:var(--team-on); margin:6px 0;`}>
+          {goalDiff > 0 ? `+${goalDiff}` : goalDiff}
+        </div>
+        <div class="text-[13px]" style="opacity:0.65;">{goalsFor}–{goalsAgainst}</div>
+      </div>
+
+      <!-- Last 5 form dots -->
+      <div style="padding:32px 28px; border-right:1px solid rgba(0,0,0,0.10);">
+        <div class="font-mono text-[11px] font-bold tracking-[0.15em]" style="opacity:0.6;">LAST 5</div>
+        <div class="flex items-center gap-2 mt-3 mb-1">
+          {lastFiveResults.length > 0 ? lastFiveResults.map(m => {
+            const k = resultKind(m);
+            const bg = k === 'W' ? 'rgba(255,255,255,0.25)' : k === 'L' ? 'rgba(0,0,0,0.3)' : 'rgba(0,0,0,0.1)';
+            const fg = teamOn;
+            return (
+              <span
+                style={`display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;font-size:13px;font-weight:700;background:${bg};color:${fg};border:1px solid rgba(250,246,240,0.15);`}
+              >{k}</span>
+            );
+          }) : (
+            <span class="text-[13px]" style="opacity:0.4;">No results yet</span>
+          )}
+        </div>
+        <div class="text-[13px]" style="opacity:0.65;">Recent form</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── Last XI Formation ─────────────────────────────────────────────── -->
+  {formationRows.length > 0 && (
+    <section style="background:#DDD5C4; padding:48px 64px 40px;">
+      <div class="max-w-screen-xl mx-auto">
+
+        <!-- Header -->
+        <div class="flex items-baseline justify-between mb-6 flex-wrap gap-3">
+          <div class="flex items-baseline gap-3">
+            <h2 class="font-display font-bold text-primary" style="font-size:32px; line-height:1.1;">Last XI</h2>
+            {lastXIFormation && (
+              <span class="font-mono text-[13px] font-bold text-muted">{lastXIFormation}</span>
+            )}
+            {lastXIDate && lastXIOpp && (
+              <span class="font-mono text-[12px] text-muted">
+                {formatDate(lastXIDate)} · {teamBySlug.get(lastXIOpp)?.short ?? displayName(lastXIOpp)}
+                {lastXITeamScore != null && lastXIOppScore != null && (
+                  <span style={`margin-left:6px; font-weight:700; color:${lastXITeamScore > lastXIOppScore ? '#2D7A3A' : lastXITeamScore < lastXIOppScore ? '#C0392B' : '#888'};`}>
+                    {lastXITeamScore > lastXIOppScore ? 'W' : lastXITeamScore < lastXIOppScore ? 'L' : 'D'} {lastXITeamScore}–{lastXIOppScore}
+                  </span>
+                )}
+              </span>
+            )}
+          </div>
+          <a href={`/nwsl/${team.slug}/squad`} class="font-mono text-[12px] font-bold text-muted tracking-[0.08em] hover:text-primary transition-colors">
+            FULL SQUAD →
+          </a>
+        </div>
+
+        <!-- Pitch -->
+        <div class="pitch-container" style={`background:${teamColor}; border-radius:16px; padding:28px 16px 32px; position:relative; overflow:hidden; min-height:340px;`}>
+          <!-- Pitch markings (full pitch viewed from side — top=attack end, bottom=defensive end) -->
+          <!-- Outer boundary -->
+          <div style="position:absolute; inset:10px; border:2px solid rgba(255,255,255,0.18); border-radius:4px; pointer-events:none;"></div>
+          <!-- Halfway line (center of pitch = top edge of this half) -->
+          <div style="position:absolute; left:10px; right:10px; top:10px; height:2px; background:rgba(255,255,255,0.18); pointer-events:none;"></div>
+          <!-- Center circle arc (visible at top — only bottom half of circle shows) -->
+          <div style="position:absolute; left:50%; top:10px; transform:translateX(-50%); width:80px; height:40px; border:2px solid rgba(255,255,255,0.15); border-top:none; border-radius:0 0 40px 40px; pointer-events:none;"></div>
+          <!-- Penalty area (bottom of pitch — defensive end) -->
+          <div style="position:absolute; left:50%; bottom:10px; transform:translateX(-50%); width:50%; height:22%; border:2px solid rgba(255,255,255,0.15); border-bottom:none; pointer-events:none;"></div>
+          <!-- Goal area (6-yard box) -->
+          <div style="position:absolute; left:50%; bottom:10px; transform:translateX(-50%); width:26%; height:10%; border:2px solid rgba(255,255,255,0.12); border-bottom:none; pointer-events:none;"></div>
+          <!-- Penalty spot -->
+          <div style="position:absolute; left:50%; bottom:calc(10px + 16%); transform:translateX(-50%); width:5px; height:5px; border-radius:50%; background:rgba(255,255,255,0.25); pointer-events:none;"></div>
+
+          <!-- Formation rows (GK at bottom, attack at top) -->
+          <div style="display:flex; flex-direction:column; gap:16px;">
+            {[...formationRows].reverse().map((row) => (
+              <div style="display:flex; justify-content:center; gap:8px;" class="formation-row">
+                {row.map(p => {
+                  const d1p = d1RosterMap.get(p.espn_id);
+                  const photo = d1p?.photo_url ?? null;
+                  const inits = playerInitials(p.player_name);
+                  const lastName = p.player_name.trim().split(/\s+/).slice(1).join(' ') || p.player_name;
+                  const nameSlug = playerNameToSlug(p.player_name);
+                  const profileUrl = `/nwsl/${team.slug}/players/${nameSlug}`;
+                  const hasGoal = p.goals > 0;
+                  const hasAssist = p.assists > 0;
+                  const hasYellow = p.yellow_cards > 0;
+                  const hasRed = p.red_cards > 0;
+                  return (
+                    <a href={profileUrl} style="display:flex; flex-direction:column; align-items:center; gap:4px; text-align:center; text-decoration:none; width:64px; flex-shrink:0;" class="player-bubble">
+                      <!-- Photo bubble -->
+                      <div style={`width:52px; height:52px; border-radius:50%; background:rgba(0,0,0,0.25); overflow:hidden; position:relative; border:2px solid rgba(255,255,255,0.25); flex-shrink:0;`}>
+                        <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center;">
+                          <span class="font-display font-bold" style={`font-size:15px; color:${teamOn}; opacity:0.5; text-transform:uppercase;`}>{inits}</span>
+                        </div>
+                        {photo && (
+                          <img src={photo} alt={p.player_name} style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:top;" onerror="this.style.display='none'" />
+                        )}
+                        <!-- Event badges -->
+                        {(hasGoal || hasAssist || hasYellow || hasRed) && (
+                          <div style="position:absolute; bottom:-2px; right:-2px; display:flex; gap:1px;">
+                            {hasGoal && <span style="font-size:10px;" title="Goal">⚽</span>}
+                            {hasAssist && <span style="font-size:10px;" title="Assist">🅰️</span>}
+                            {hasYellow && <span style="font-size:10px;" title="Yellow">🟨</span>}
+                            {hasRed && <span style="font-size:10px;" title="Red">🟥</span>}
+                          </div>
+                        )}
+                      </div>
+                      <!-- Name -->
+                      <div class="font-display font-bold" style={`font-size:10px; line-height:1.2; color:${teamOn}; max-width:60px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;`}>{lastName}</div>
+                    </a>
+                  );
+                })}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- Subs bench -->
+        {lastXISubs.length > 0 && (
+          <div style="margin-top:20px;">
+            <div class="font-mono text-[11px] font-bold text-muted tracking-[0.1em] mb-3">SUBS USED</div>
+            <div style="display:flex; flex-wrap:wrap; gap:8px;">
+              {lastXISubs.map(p => {
+                const nameSlug = playerNameToSlug(p.player_name);
+                const lastName = p.player_name.trim().split(/\s+/).slice(1).join(' ') || p.player_name;
+                return (
+                  <a href={`/nwsl/${team.slug}/players/${nameSlug}`}
+                    style={`display:inline-flex; align-items:center; gap:6px; background:rgba(15,42,45,0.08); border-radius:20px; padding:5px 10px 5px 6px; text-decoration:none;`}
+                    class="hover:bg-primary/10 transition-colors">
+                    <span class="font-mono text-[11px] text-muted">↑{p.sub_minute ?? '?'}'</span>
+                    <span class="font-display font-bold text-primary" style="font-size:13px;">{lastName}</span>
+                  </a>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+      </div>
+    </section>
+  )}
+
+  <!-- ── Results + Fixtures ──────────────────────────────────────────────── -->
+  <section style="background:#DDD5C4; padding:56px 64px;">
+    <div class="max-w-screen-xl mx-auto flex flex-col gap-12">
+
+      <!-- Recent Results -->
+      <div>
+        <div class="flex items-baseline gap-3 mb-6">
+          <h2 class="font-display font-bold text-[32px] text-primary leading-tight">Recent results</h2>
+          <span class="font-mono text-[12px] font-bold text-muted tracking-[0.08em]">LAST 3</span>
+        </div>
+
+        {lastThreeResults.length === 0 ? (
+          <p class="text-muted text-[15px]">No results yet.</p>
+        ) : lastThreeResults.map(m => {
+          const k = resultKind(m);
+          const pillBg = k === 'W' ? teamColor : k === 'L' ? '#0F2A2D' : 'rgba(15,42,45,0.2)';
+          const pillFg = k === 'W' ? teamOn : k === 'L' ? '#FAF6F0' : '#0F2A2D';
+          const oppTeam = teamBySlug.get(m.opponentSlug);
+          const recapSlug = recapByDate.get(m.date);
+          return (
+            <div style="display:grid; grid-template-columns:40px 1fr auto auto; gap:16px; align-items:center; padding:16px 0; border-bottom:1px solid rgba(15,42,45,0.1);">
+              <!-- Result pill -->
+              <div style={`width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;background:${pillBg};color:${pillFg};`}>
+                {k}
+              </div>
+              <!-- Opponent info -->
+              <div>
+                <div class="font-mono text-[11px] font-bold text-muted tracking-[0.08em]">
+                  {m.homeAway.toUpperCase()} · {formatDate(m.date)}
+                </div>
+                <div class="flex items-center gap-2 mt-1">
+                  {oppTeam?.badge && <img src={oppTeam.badge} alt={m.opponent} style="width:24px;height:24px;object-fit:contain;" />}
+                  <a href={`/nwsl/${m.opponentSlug}`} class="font-display font-bold text-[18px] text-primary hover:text-accent transition-colors" style="text-decoration:none;">vs {m.opponent}</a>
+                </div>
+              </div>
+              <!-- Scoreline -->
+              <div class="font-display font-bold text-[28px] tracking-[-0.02em]" style="white-space:nowrap;">
+                <span class="text-primary">{m.result!.teamScore}</span>
+                <span class="text-muted mx-1">:</span>
+                <span class="text-muted">{m.result!.opponentScore}</span>
+              </div>
+              <!-- Recap link -->
+              {recapSlug ? (
+                <a
+                  href={`/nwsl/${team.slug}/matches/${recapSlug}`}
+                  class="font-mono text-[11px] font-bold text-primary border border-primary px-2 py-1 rounded"
+                  style="white-space:nowrap;"
+                >RECAP</a>
+              ) : (
+                <span style="width:52px;" />
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      <!-- Upcoming Fixtures -->
+      <div>
+        <div class="flex items-baseline gap-3 mb-6">
+          <h2 class="font-display font-bold text-[32px] text-primary leading-tight">Up next</h2>
+          <a href={`/nwsl/${team.slug}/schedule`} class="font-mono text-[12px] font-bold text-muted tracking-[0.08em] hover:text-primary transition-colors">
+            FULL SCHEDULE & RESULTS →
+          </a>
+        </div>
+
+        {nextThreeFixtures.length === 0 ? (
+          <p class="text-muted text-[15px]">No upcoming fixtures.</p>
+        ) : nextThreeFixtures.map((m, i) => {
+          const isFirst = i === 0;
+          const oppTeam = teamBySlug.get(m.opponentSlug);
+          const broadcastLabel = m.broadcast[0] ?? '';
+          const free = isFreeWatch(m.broadcast);
+          return (
+            <div
+              style={isFirst
+                ? `background:${teamColor};color:${teamOn};border-radius:12px;margin-bottom:6px;padding:14px 16px;`
+                : `padding:14px 0;border-bottom:1px solid rgba(15,42,45,0.1);`
+              }
+            >
+              <div style="display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;">
+                <div>
+                  <div
+                    class="font-mono text-[11px] font-bold tracking-[0.08em]"
+                    style={`opacity:0.65;${isFirst ? '' : 'color:#5A5A5A;'}`}
+                  >
+                    {m.homeAway.toUpperCase()} · {formatDate(m.date)} · {m.utcDatetime
+                      ? <time data-utc={m.utcDatetime} class="kickoff-time">{m.time ? `${m.time} ET` : 'TBD'}</time>
+                      : formatTime(m.time)}
+                  </div>
+                  <div class="flex items-center gap-2 mt-1">
+                    {oppTeam?.badge && (
+                      <img src={oppTeam.badge} alt={m.opponent} style="width:28px;height:28px;object-fit:contain;" />
+                    )}
+                    <a href={`/nwsl/${m.opponentSlug}`} class="font-display font-bold text-[20px] hover:text-accent transition-colors" style="color:inherit; text-decoration:none;">vs {m.opponent}</a>
+                  </div>
+                </div>
+                {broadcastLabel && (
+                  <div class="flex flex-col items-end gap-1">
+                    <span
+                      class="font-mono text-[11px] font-bold px-3 py-1 rounded"
+                      style={isFirst
+                        ? `background:rgba(0,0,0,0.25); color:${accentOnTeam};`
+                        : `background:${free ? '#FF6B2C' : 'rgba(15,42,45,0.1)'}; color:${free ? '#FAF6F0' : '#0F2A2D'};`
+                      }
+                    >{broadcastLabel}</span>
+                    {isFirst && (
+                      <a
+                        href="/nwsl/how-to-watch"
+                        class="font-mono text-[10px] font-bold"
+                        style="color:inherit; opacity:0.6; text-decoration:none;"
+                      >HOW TO WATCH →</a>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+
+
+  <Footer />
+  </div>
+</BaseLayout>
+
+<script>
+  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  document.querySelectorAll<HTMLTimeElement>('time[data-utc]').forEach(el => {
+    const utc = el.getAttribute('data-utc');
+    if (!utc) return;
+    try {
+      const d = new Date(utc);
+      const timeStr = d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: tz });
+      const tzAbbr = Intl.DateTimeFormat('en-US', { timeZoneName: 'short', timeZone: tz }).formatToParts(d).find(p => p.type === 'timeZoneName')?.value ?? tz;
+      el.textContent = `${timeStr} ${tzAbbr}`;
+    } catch {}
+  });
+</script>

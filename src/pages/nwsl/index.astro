@@ -2,7 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
-import { nwslStandings, standingsLastUpdated, standingsDisplayName } from '../../data/leagues/nwsl/standings';
+import { getNwslStandings, getNwslTopScorers, playerNameToSlug } from '../../data/nwsl/queries';
 import { team as bostonLegacy } from '../../data/teams/nwsl/boston-legacy';
 import { team as portlandThorns } from '../../data/teams/nwsl/portland-thorns';
 import { team as sanDiegoWave } from '../../data/teams/nwsl/san-diego-wave';
@@ -19,17 +19,107 @@ import { team as bayFc } from '../../data/teams/nwsl/bay-fc';
 import { team as kansasCityCurrent } from '../../data/teams/nwsl/kansas-city-current';
 import { team as chicagoStars } from '../../data/teams/nwsl/chicago-stars';
 import { team as racingLouisville } from '../../data/teams/nwsl/racing-louisville';
+import { getNwslUpcomingGames } from '../../data/nwsl/queries';
 
 const allTeams = [
-  bostonLegacy, portlandThorns, sanDiegoWave, washingtonSpirit,
-  gothamFc, seattleReign, houstonDash, utahRoyals, angelCity,
-  northCarolinaCourage, orlandoPride, denverSummit, bayFc,
-  kansasCityCurrent, chicagoStars, racingLouisville,
+  angelCity, bayFc, bostonLegacy, chicagoStars,
+  denverSummit, gothamFc, houstonDash, kansasCityCurrent,
+  northCarolinaCourage, orlandoPride, portlandThorns, racingLouisville,
+  sanDiegoWave, seattleReign, utahRoyals, washingtonSpirit,
 ];
 
-const teamByStandingsKey = new Map(allTeams.map(t => [t.standingsKey, t]));
+const teamBySlug = new Map(allTeams.map(t => [t.slug, t]));
 
 const PLAYOFF_LINE = 8;
+
+// Live data from D1
+const [upcomingGames, nwslStandings, topScorers] = await Promise.all([
+  getNwslUpcomingGames(7).catch(() => []),
+  getNwslStandings().catch(() => []),
+  getNwslTopScorers(1).catch(() => []),
+]);
+const topScorer = topScorers[0] ?? null;
+
+// D1 standings use team slugs — map to display names
+const SLUG_DISPLAY: Record<string, string> = {
+  'angel-city': 'Angel City FC', 'bay-fc': 'Bay FC',
+  'boston-legacy': 'Boston Legacy', 'chicago-stars': 'Chicago Stars',
+  'denver-summit': 'Denver Summit', 'gotham-fc': 'Gotham FC',
+  'houston-dash': 'Houston Dash', 'kansas-city-current': 'Kansas City Current',
+  'north-carolina-courage': 'NC Courage', 'orlando-pride': 'Orlando Pride',
+  'portland-thorns': 'Portland Thorns', 'racing-louisville': 'Racing Louisville',
+  'san-diego-wave': 'San Diego Wave', 'seattle-reign': 'Seattle Reign',
+  'utah-royals': 'Utah Royals', 'washington-spirit': 'Washington Spirit',
+};
+function standingsDisplayName(slug: string): string {
+  return SLUG_DISPLAY[slug] ?? slug.split('-').filter(Boolean).map(w => w[0].toUpperCase() + w.slice(1)).join(' ');
+}
+const standingsLastUpdated = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+
+// Broadcast label cleanup
+const BROADCAST_LABEL: Record<string, string> = {
+  'Amazon Prime Video': 'Prime Video',
+  'CBS Sports Network': 'CBS Sports',
+  'CBSSN': 'CBS Sports',
+  'NWSL League Pass': 'NWSL+',
+  'ESPN U': 'ESPNU',
+  'ESPN Unlmtd': 'ESPN',
+  'USA Net': 'USA Network',
+};
+const FREE_BROADCASTS = new Set(['ION', 'ABC', 'Victory+', 'NWSL+']);
+
+function cleanBroadcast(raw: string): string {
+  return BROADCAST_LABEL[raw] ?? raw;
+}
+
+function isFree(broadcasts: string[]): boolean {
+  return broadcasts.some(b => FREE_BROADCASTS.has(cleanBroadcast(b)));
+}
+
+function formatGameTime(game: { date: string; time: string | null }): string {
+  const d = new Date(game.date + 'T00:00:00');
+  const dateLabel = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }).toUpperCase();
+  return game.time ? `${dateLabel} · ${game.time} ET` : `${dateLabel} · TBD`;
+}
+
+// Stats for the at-a-glance strip
+const leader = nwslStandings[0];
+const totalUpcoming = upcomingGames.length;
+const freeUpcoming = upcomingGames.filter(g => isFree(g.broadcast)).length;
+
+// Top 8 crests for hero (by standings position)
+const top8Crests = nwslStandings.slice(0, 8).map(r => teamBySlug.get(r.team)).filter(Boolean);
+
+// Pre-compute fixture rows
+const fixtureRows = upcomingGames.map(game => {
+  const homeTeam = teamBySlug.get(game.home_team);
+  const awayTeam = teamBySlug.get(game.away_team);
+  const homeName = homeTeam?.name ?? game.home_team;
+  const awayName = awayTeam?.name ?? game.away_team;
+  const homeShort = homeName.split(' ').slice(-1)[0];
+  const awayShort = awayName.split(' ').slice(-1)[0];
+  const free = isFree(game.broadcast);
+  const freeBroadcast = game.broadcast.find(b => FREE_BROADCASTS.has(cleanBroadcast(b)));
+  const rawBroadcast = (free ? freeBroadcast : game.broadcast[0]) ?? game.broadcast[0] ?? '';
+  const broadcaster = cleanBroadcast(rawBroadcast) || 'TBD';
+  const kickoff = formatGameTime(game);
+  const isFinal = game.status === 'final';
+  const utcDatetime = game.utc_datetime ?? null;
+  return { game, homeTeam, awayTeam, homeName, awayName, homeShort, awayShort, broadcaster, free, kickoff, isFinal, utcDatetime };
+});
+
+// Pre-compute standings rows to keep template logic simple
+const standingsRows = nwslStandings.map((row, i) => {
+  const pos = i + 1;
+  const gd = row.goal_differential ?? 0;
+  const teamConfig = teamBySlug.get(row.team);
+  const href = teamConfig ? `/nwsl/${teamConfig.slug}` : null;
+  const inPlayoffs = pos <= PLAYOFF_LINE;
+  const isLastPlayoff = pos === PLAYOFF_LINE;
+  return { row, pos, gd, teamConfig, href, inPlayoffs, isLastPlayoff };
+});
+const playoffRows = standingsRows.filter(r => r.inPlayoffs);
+const outsideRows = standingsRows.filter(r => !r.inPlayoffs);
 
 const title = 'NWSL 2026 Standings, Schedule & Clubs — Standd';
 const description = 'Full NWSL 2026 standings, fixtures, and broadcast guides for all 16 clubs. Find out where every match airs — ION, Victory+, Amazon Prime, ESPN, and more.';
@@ -47,114 +137,261 @@ const description = 'Full NWSL 2026 standings, fixtures, and broadcast guides fo
   <Header />
 
   <main class="flex-1">
-    <section class="bg-neutral pt-12 pb-12 border-b-[12px] border-accent">
-      <div class="max-w-3xl mx-auto px-6">
-        <p class="text-sm font-bold text-accent uppercase tracking-[0.2em] mb-3">2026 Season</p>
-        <h1 class="font-display font-bold text-5xl md:text-7xl text-primary leading-[1.0] mb-6">
-          NWSL
-        </h1>
-        <p class="text-lg text-primary/80 leading-relaxed">
-          The National Women's Soccer League. 16 teams, one season. Every club gets a full tracker: results, fixtures, standings, and how to watch.
-        </p>
-        <div class="mt-6">
-          <a href="/nwsl/how-to-watch" class="inline-block text-sm font-bold text-accent hover:underline">How to watch NWSL 2026 — all services and pricing →</a>
+
+    <!-- ─── HERO ──────────────────────────────────────────────────── -->
+    <section class="bg-cream pt-16 pb-0 px-6 md:px-16 border-b-[12px] border-accent">
+      <div class="max-w-5xl mx-auto">
+        <div class="flex justify-between items-end border-b-2 border-primary pb-6">
+          <!-- Left: eyebrow + h1 -->
+          <div>
+            <p class="font-mono text-[11px] font-bold text-accent uppercase tracking-[0.2em]">
+              National Women's Soccer League
+            </p>
+            <h1 class="font-display font-bold text-[clamp(52px,8vw,88px)] leading-[0.95] tracking-[-0.04em] mt-3 text-primary">
+              2026 Season<br />
+              <span class="text-accent">Matchday</span>
+            </h1>
+          </div>
+          <!-- Right: weekend summary + top-8 crests -->
+          <div class="hidden md:block text-right">
+            {totalUpcoming > 0 && (
+              <p class="font-mono text-[12px] text-muted tracking-[0.1em] uppercase">
+                Next 7 days · {totalUpcoming} {totalUpcoming === 1 ? 'match' : 'matches'}{freeUpcoming > 0 ? ` · ${freeUpcoming} free` : ''}
+              </p>
+            )}
+            <div class="flex gap-2.5 mt-3 justify-end">
+              {top8Crests.map(t => t?.badge && (
+                <img
+                  src={t.badge}
+                  alt={t.name}
+                  width="28" height="28"
+                  class="w-7 h-7 object-contain flex-shrink-0"
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <!-- ─── AT-A-GLANCE STAT STRIP ────────────────────────────── -->
+        <div class="grid grid-cols-2 md:grid-cols-4 border-b border-primary/10">
+          <!-- Leaders -->
+          <div class="p-6 md:p-7 border-r border-primary/10">
+            <p class="font-mono text-[11px] font-bold text-accent uppercase tracking-[0.15em]">Leaders</p>
+            <p class="font-display font-bold text-[clamp(22px,3vw,36px)] leading-none tracking-[-0.03em] text-primary mt-2">
+              <a href={`/nwsl/${leader?.team}`} class="hover:text-accent transition-colors" style="text-decoration:none; color:inherit;">{standingsDisplayName(leader?.team ?? '')}</a>
+            </p>
+            <p class="text-[13px] text-muted mt-1.5">
+              {leader?.points} pts · {leader?.wins}W {leader?.draws}D {leader?.losses}L
+            </p>
+          </div>
+          <!-- Standings position -->
+          <div class="p-6 md:p-7 border-r border-primary/10">
+            <p class="font-mono text-[11px] font-bold text-accent uppercase tracking-[0.15em]">Top scorer</p>
+            <p class="font-display font-bold text-[clamp(22px,3vw,36px)] leading-none tracking-[-0.03em] text-primary mt-2">
+              {topScorer
+                ? <a href={`/nwsl/${topScorer.team_slug}/players/${playerNameToSlug(topScorer.player_name)}`} class="hover:text-accent transition-colors" style="text-decoration:none; color:inherit;">{topScorer.player_name}</a>
+                : '—'}
+            </p>
+            <p class="text-[13px] text-muted mt-1.5">
+              {topScorer ? `${topScorer.goals}G · ${topScorer.assists}A · ${standingsDisplayName(topScorer.team_slug)}` : 'no data yet'}
+            </p>
+          </div>
+          <!-- This week -->
+          <div class="p-6 md:p-7 border-r border-primary/10">
+            <p class="font-mono text-[11px] font-bold text-accent uppercase tracking-[0.15em]">Upcoming</p>
+            <p class="font-mono font-bold text-[clamp(22px,3vw,36px)] leading-none tracking-[-0.03em] text-primary mt-2 tabular">
+              {totalUpcoming > 0 ? totalUpcoming : '—'}
+            </p>
+            <p class="text-[13px] text-muted mt-1.5">
+              {totalUpcoming > 0 ? 'matches next 7 days' : 'no upcoming matches'}
+            </p>
+          </div>
+          <!-- Free to watch — highlighted -->
+          <div class="p-6 md:p-7 bg-accent">
+            <p class="font-mono text-[11px] font-bold text-primary uppercase tracking-[0.15em]">Free to watch</p>
+            <p class="font-mono font-bold text-[clamp(22px,3vw,36px)] leading-none tracking-[-0.03em] text-primary mt-2 tabular">
+              {freeUpcoming > 0 ? `${freeUpcoming} of ${totalUpcoming}` : '—'}
+            </p>
+            <p class="text-[13px] text-primary mt-1.5">ION · Victory+ · NWSL+</p>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- Team trackers grid -->
-    <section class="bg-primary py-16">
-      <div class="max-w-5xl mx-auto px-6">
-        <h2 class="font-display font-bold text-3xl text-accent mb-8 uppercase tracking-wider">Team trackers</h2>
-        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          {allTeams.map(team => (
-            <a
-              href={`/nwsl/${team.slug}`}
-              class="flex items-center justify-between bg-neutral/10 hover:bg-neutral/20 transition-colors rounded-xl p-4 group"
-            >
-              <div class="flex items-center gap-3">
-                {team.badge
-                  ? <img src={team.badge} alt={team.name} width="28" height="28" class="flex-shrink-0 object-contain" />
-                  : <div class="w-2.5 h-2.5 rounded-full flex-shrink-0" style={`background-color: ${team.color}`} />
-                }
-                <span class="font-display font-bold text-neutral leading-tight">{team.name}</span>
+    <!-- ─── UPCOMING FIXTURES ─────────────────────────────────────── -->
+    <section class="bg-cream px-6 md:px-16 py-14">
+      <div class="max-w-5xl mx-auto">
+        <div class="flex items-baseline justify-between mb-4">
+          <h2 class="font-display font-bold text-[clamp(26px,3vw,36px)] tracking-[-0.02em] text-primary">
+            Upcoming fixtures
+          </h2>
+          <a
+            href="/nwsl/how-to-watch"
+            class="font-mono text-[13px] font-bold text-primary tracking-[0.05em] hover:text-accent transition-colors"
+          >
+            HOW TO WATCH →
+          </a>
+        </div>
+
+        {fixtureRows.length > 0 ? (
+          <div class="border-t-2 border-primary">
+            {fixtureRows.map(({ game, homeTeam, awayTeam, homeName, awayName, homeShort, awayShort, broadcaster, free, kickoff, isFinal, utcDatetime }) => (
+              <div class="fixture-row grid items-center gap-4 py-5 border-b border-primary/10"
+                   style="grid-template-columns: 185px 1fr auto 1fr 110px">
+                <div class="font-mono text-[14px] font-bold tracking-[0.04em] text-primary whitespace-nowrap">
+                  {isFinal ? <span class="text-muted">FINAL</span> : utcDatetime
+                    ? <time data-utc={utcDatetime} class="kickoff-time">{kickoff}</time>
+                    : kickoff}
+                </div>
+                <div class="flex items-center gap-3 min-w-0">
+                  {homeTeam?.badge
+                    ? <img src={homeTeam.badge} alt="" width="32" height="32" class="w-8 h-8 object-contain flex-shrink-0" aria-hidden="true" />
+                    : <span class="w-8 h-8 rounded-full flex-shrink-0" style={`background:${homeTeam?.color ?? '#ccc'}`} aria-hidden="true"></span>
+                  }
+                  <a href={`/nwsl/${game.home_team}`} class="font-display font-bold text-[18px] leading-tight text-primary hover:text-accent transition-colors" style="text-decoration:none;">
+                    {homeName}{isFinal && game.home_score != null ? ` ${game.home_score}` : ''}
+                  </a>
+                </div>
+                <span class="font-display font-bold text-[18px] text-primary/30 text-center" aria-hidden="true">vs</span>
+                <div class="flex items-center gap-3 min-w-0">
+                  {awayTeam?.badge
+                    ? <img src={awayTeam.badge} alt="" width="32" height="32" class="w-8 h-8 object-contain flex-shrink-0" aria-hidden="true" />
+                    : <span class="w-8 h-8 rounded-full flex-shrink-0" style={`background:${awayTeam?.color ?? '#ccc'}`} aria-hidden="true"></span>
+                  }
+                  <a href={`/nwsl/${game.away_team}`} class="font-display font-bold text-[18px] leading-tight text-primary hover:text-accent transition-colors" style="text-decoration:none;">
+                    {awayName}{isFinal && game.away_score != null ? ` ${game.away_score}` : ''}
+                  </a>
+                </div>
+                <div class="flex items-center gap-2 font-mono text-[12px]">
+                  <span
+                    class={free ? 'px-2 py-1 rounded font-bold bg-accent text-primary' : 'px-2 py-1 rounded font-bold bg-primary text-neutral'}
+                    aria-label={free ? `Free to watch on ${broadcaster}` : `Paid — ${broadcaster}`}
+                  >{free ? 'FREE' : 'PAID'}</span>
+                  <span class="text-muted">{broadcaster}</span>
+                </div>
               </div>
-              <span class="text-neutral/40 group-hover:text-neutral/70 group-hover:translate-x-0.5 transition-all text-lg">→</span>
-            </a>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <p class="text-muted text-sm font-mono border-t-2 border-primary pt-6">
+            No upcoming matches in the next 7 days — check back soon.
+          </p>
+        )}
       </div>
     </section>
 
-    <!-- Standings -->
-    <section class="bg-neutral py-16">
-      <div class="max-w-5xl mx-auto px-6">
-        <h2 class="font-display font-bold text-3xl text-primary mb-2">Standings</h2>
-        <p class="text-muted text-sm mb-6">Top 8 teams qualify for playoffs. Updated {standingsLastUpdated}.</p>
-        <div class="overflow-x-auto bg-neutral border-2 border-primary rounded-2xl">
-          <table class="w-full text-sm">
+    <!-- ─── STANDINGS ─────────────────────────────────────────────── -->
+    <section class="bg-cream border-t border-primary/10 px-6 md:px-16 pt-6 pb-16">
+      <div class="max-w-5xl mx-auto">
+        <div class="flex items-baseline justify-between mb-4">
+          <h2 class="font-display font-bold text-[clamp(26px,3vw,36px)] tracking-[-0.02em] text-primary">
+            Standings
+          </h2>
+          <span class="font-mono text-[12px] text-muted tracking-[0.05em] uppercase">
+            Updated {standingsLastUpdated}
+          </span>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm bg-cream" aria-label="NWSL 2026 Standings">
+            <caption class="sr-only">NWSL 2026 standings — top 8 qualify for playoffs</caption>
             <thead>
-              <tr class="bg-primary text-neutral text-left">
-                <th class="px-2 py-3 font-bold tabular w-10">#</th>
-                <th class="px-4 py-3 font-bold">Team</th>
-                <th class="px-2 py-3 font-bold tabular text-right w-8">P</th>
-                <th class="px-2 py-3 font-bold tabular text-right w-8">W</th>
-                <th class="px-2 py-3 font-bold tabular text-right w-8">D</th>
-                <th class="px-2 py-3 font-bold tabular text-right w-8">L</th>
-                <th class="px-2 py-3 font-bold tabular text-right w-8">GD</th>
-                <th class="px-3 py-3 font-bold tabular text-right w-12">PTS</th>
+              <tr class="border-b-2 border-primary text-left">
+                <th scope="col" class="pb-3 pr-4 font-mono text-[11px] font-bold text-muted tracking-[0.1em] w-10">#</th>
+                <th scope="col" class="pb-3 font-mono text-[11px] font-bold text-muted tracking-[0.1em]">Club</th>
+                <th scope="col" class="pb-3 font-mono text-[11px] font-bold text-muted tracking-[0.1em] text-right w-10">P</th>
+                <th scope="col" class="pb-3 font-mono text-[11px] font-bold text-muted tracking-[0.1em] text-right w-10">W</th>
+                <th scope="col" class="pb-3 font-mono text-[11px] font-bold text-muted tracking-[0.1em] text-right w-10">D</th>
+                <th scope="col" class="pb-3 font-mono text-[11px] font-bold text-muted tracking-[0.1em] text-right w-10">L</th>
+                <th scope="col" class="pb-3 font-mono text-[11px] font-bold text-muted tracking-[0.1em] text-right w-14">GD</th>
+                <th scope="col" class="pb-3 font-mono text-[11px] font-bold text-muted tracking-[0.1em] text-right w-14 pr-2">PTS</th>
               </tr>
             </thead>
             <tbody>
-              {nwslStandings.map((row, i) => {
-                const pos = i + 1;
-                const inPlayoffs = pos !== Math.max(pos, PLAYOFF_LINE + 1);
-                const atCutoff = pos === PLAYOFF_LINE;
-                const gd = row.goalsFor - row.goalsAgainst;
-                const teamConfig = teamByStandingsKey.get(row.team);
-                const href = teamConfig ? `/nwsl/${teamConfig.slug}` : null;
-                const teamColor = teamConfig?.color;
-                const rowStyle = teamColor ? `background-color: color-mix(in srgb, ${teamColor} 12%, transparent)` : undefined;
-                const rankStyle = inPlayoffs && teamColor ? `background-color: ${teamColor}` : undefined;
-                const rankClass = `inline-flex items-center justify-center w-7 h-7 rounded-full font-bold text-xs ${inPlayoffs ? 'text-primary' : 'bg-muted/15 text-muted'}`;
-                return [
-                  <tr class={`border-b border-primary/10 ${inPlayoffs ? 'bg-primary/[0.03]' : ''}`} style={rowStyle}>
-                    <td class="px-2 py-3 tabular">
-                      <span class={rankClass} style={rankStyle}>
-                        {pos}
-                      </span>
-                    </td>
-                    <td class="px-4 py-3 text-primary font-medium">
-                      <div class="flex items-center gap-2">
-                        {teamConfig?.badge && <img src={teamConfig.badge} alt={teamConfig.name} width="20" height="20" class="flex-shrink-0 object-contain" />}
-                        {href
-                          ? <a href={href} class="hover:underline">{standingsDisplayName(row.team)}</a>
-                          : standingsDisplayName(row.team)
-                        }
-                      </div>
-                    </td>
-                    <td class="px-2 py-3 tabular text-right">{row.played}</td>
-                    <td class="px-2 py-3 tabular text-right">{row.wins}</td>
-                    <td class="px-2 py-3 tabular text-right">{row.draws}</td>
-                    <td class="px-2 py-3 tabular text-right">{row.losses}</td>
-                    <td class="px-2 py-3 tabular text-right text-muted">{gd > 0 ? '+' : ''}{gd}</td>
-                    <td class="px-4 py-3 tabular text-right font-bold text-primary">{row.points}</td>
-                  </tr>,
-                  atCutoff && (
-                    <tr aria-hidden="true">
-                      <td colspan="8" class="bg-accent text-primary text-xs font-bold uppercase tracking-[0.2em] px-4 py-2 text-center">
-                        ↑ Playoff line · ↓ Outside the playoffs
-                      </td>
-                    </tr>
-                  ),
-                ];
-              })}
+              {playoffRows.map(({ row, pos, gd, teamConfig, href }) => (
+                <tr class="border-b border-primary/[0.07] hover:bg-primary/[0.03] transition-colors">
+                  <td class="py-3 pr-4 tabular">
+                    <span class="font-mono font-bold text-[13px] text-accent">{pos}</span>
+                  </td>
+                  <td class="py-3 pr-4">
+                    <div class="flex items-center gap-2.5">
+                      {teamConfig?.badge && (
+                        <img src={teamConfig.badge} alt="" width="20" height="20" class="w-5 h-5 object-contain flex-shrink-0" aria-hidden="true" />
+                      )}
+                      {href
+                        ? <a href={href} class="font-medium text-primary hover:underline">{standingsDisplayName(row.team)}</a>
+                        : <span class="font-medium text-primary">{standingsDisplayName(row.team)}</span>
+                      }
+                    </div>
+                  </td>
+                  <td class="py-3 tabular text-right text-primary">{row.games_played}</td>
+                  <td class="py-3 tabular text-right text-primary">{row.wins}</td>
+                  <td class="py-3 tabular text-right text-primary">{row.draws}</td>
+                  <td class="py-3 tabular text-right text-primary">{row.losses}</td>
+                  <td class="py-3 tabular text-right text-muted">{gd > 0 ? `+${gd}` : gd}</td>
+                  <td class="py-3 tabular text-right font-bold text-primary pr-2">{row.points}</td>
+                </tr>
+              ))}
+              <tr aria-hidden="true">
+                <td colspan="8" class="bg-accent/15 border-y border-accent/30 text-accent text-[10px] font-mono font-bold uppercase tracking-[0.2em] px-4 py-1.5 text-center">
+                  ↑ Top {PLAYOFF_LINE} qualify for playoffs
+                </td>
+              </tr>
+              {outsideRows.map(({ row, pos, gd, teamConfig, href }) => (
+                <tr class="border-b border-primary/[0.07] hover:bg-primary/[0.03] transition-colors opacity-75">
+                  <td class="py-3 pr-4 tabular">
+                    <span class="font-mono font-bold text-[13px] text-muted">{pos}</span>
+                  </td>
+                  <td class="py-3 pr-4">
+                    <div class="flex items-center gap-2.5">
+                      {teamConfig?.badge && (
+                        <img src={teamConfig.badge} alt="" width="20" height="20" class="w-5 h-5 object-contain flex-shrink-0" aria-hidden="true" />
+                      )}
+                      {href
+                        ? <a href={href} class="font-medium text-primary hover:underline">{standingsDisplayName(row.team)}</a>
+                        : <span class="font-medium text-primary">{standingsDisplayName(row.team)}</span>
+                      }
+                    </div>
+                  </td>
+                  <td class="py-3 tabular text-right text-primary">{row.games_played}</td>
+                  <td class="py-3 tabular text-right text-primary">{row.wins}</td>
+                  <td class="py-3 tabular text-right text-primary">{row.draws}</td>
+                  <td class="py-3 tabular text-right text-primary">{row.losses}</td>
+                  <td class="py-3 tabular text-right text-muted">{gd > 0 ? `+${gd}` : gd}</td>
+                  <td class="py-3 tabular text-right font-bold text-primary pr-2">{row.points}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
       </div>
     </section>
+
   </main>
 
   <Footer />
 </BaseLayout>
+
+<style>
+  @media (max-width: 767px) {
+    .fixture-row {
+      grid-template-columns: 1fr !important;
+      gap: 8px !important;
+    }
+  }
+</style>
+
+<script>
+  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  document.querySelectorAll<HTMLTimeElement>('time[data-utc]').forEach(el => {
+    const utc = el.getAttribute('data-utc');
+    if (!utc) return;
+    try {
+      const d = new Date(utc);
+      const dateLabel = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: tz }).toUpperCase();
+      const timeStr = d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: tz });
+      const tzAbbr = d.toLocaleDateString('en-US', { timeZoneName: 'short', timeZone: tz }).split(', ')[1] ?? tz;
+      el.textContent = `${dateLabel} · ${timeStr} ${tzAbbr}`;
+    } catch {}
+  });
+</script>

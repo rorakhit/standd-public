@@ -1,15 +1,53 @@
 import type { Player } from '../../shared/types';
-import type { Match, TeamConfig } from '../../shared/types';
+import type { NWSLTeamConfig } from '../../shared/types';
 
-export const team: TeamConfig = {
-  name: 'Seattle Reign',
+export const team: NWSLTeamConfig = {
+  name: 'Seattle Reign FC',
   slug: 'seattle-reign',
-  color: '#D0A66B',
+  short: 'Seattle Reign',
+  color: '#522D80',
+  text: '#FAF6F0',
   badge: 'https://images.nwslsoccer.com/image/private/t_q-best/v1710436107/prd/assets/teams/seattle-reign.svg',
   standingsKey: 'Seattle Reign',
   officialUrl: 'https://www.reignfc.com/',
   ticketsUrl: 'https://seatgeek.com/seattle-reign-fc-tickets',
+  city: 'Seattle',
+  venue: 'Lumen Field',
+  supporter: 'Royal Guard',
+  tagline: 'Long live the Reign.',
+  est: 2013,
 };
+
+
+export const roster: Player[] = [
+  { number: 1, name: "Claudia Dickey", position: 'GK', hometown: "Charlotte, North Carolina", leagueSlug: 'nwsl', teamSlug: 'seattle-reign', teamName: "Seattle Reign", countryCode: 'us', height: "5'10\"", photo: '/players/nwsl/seattle-reign/dickey-c.webp' },
+  { number: 18, name: "Evan O'Steen", position: 'GK', hometown: "USA", leagueSlug: 'nwsl', teamSlug: 'seattle-reign', teamName: "Seattle Reign", countryCode: 'us', height: "5'10\"" },
+  { number: 35, name: "Neeku Purcell", position: 'GK', hometown: "Seattle, Washington", leagueSlug: 'nwsl', teamSlug: 'seattle-reign', teamName: "Seattle Reign", countryCode: 'us', height: "5'9\"", photo: '/players/nwsl/seattle-reign/purcell-n.webp' },
+  { number: 38, name: "Cassie Miller", position: 'GK', hometown: "Cave Creek, Arizona", leagueSlug: 'nwsl', teamSlug: 'seattle-reign', teamName: "Seattle Reign", countryCode: 'us', height: "5'11\"", photo: '/players/nwsl/seattle-reign/miller-c.webp' },
+  { number: 11, name: "Sofia Huerta", position: 'DEF', hometown: "Boise, Idaho", leagueSlug: 'nwsl', teamSlug: 'seattle-reign', teamName: "Seattle Reign", countryCode: 'us', height: "5'7\"", photo: '/players/nwsl/seattle-reign/huerta-s.webp' },
+  { number: 14, name: "Emily Mason", position: 'DEF', hometown: "Flemington, New Jersey", leagueSlug: 'nwsl', teamSlug: 'seattle-reign', teamName: "Seattle Reign", countryCode: 'us', height: "5'9\"", photo: '/players/nwsl/seattle-reign/mason-e.webp' },
+  { number: 21, name: "Phoebe McClernon", position: 'DEF', hometown: "West Chester, Pennsylvania", leagueSlug: 'nwsl', teamSlug: 'seattle-reign', teamName: "Seattle Reign", countryCode: 'us', height: "5'7\"", photo: '/players/nwsl/seattle-reign/mcclernon-p.webp' },
+  { number: 22, name: "Ryanne Brown", position: 'DEF', hometown: "Indianapolis, Indiana", leagueSlug: 'nwsl', teamSlug: 'seattle-reign', teamName: "Seattle Reign", countryCode: 'us', height: "5'8\"", photo: '/players/nwsl/seattle-reign/brown-r.webp' },
+  { number: 23, name: "Jordyn Bugg", position: 'DEF', hometown: "El Cajon, California", leagueSlug: 'nwsl', teamSlug: 'seattle-reign', teamName: "Seattle Reign", countryCode: 'us', height: "5'7\"", photo: '/players/nwsl/seattle-reign/bugg-j.webp' },
+  { number: 24, name: "Madison Curry", position: 'DEF', hometown: "Coto de Caza, California", leagueSlug: 'nwsl', teamSlug: 'seattle-reign', teamName: "Seattle Reign", countryCode: 'us', height: "5'5\"", photo: '/players/nwsl/seattle-reign/curry-m.webp' },
+  { number: 25, name: "Shae Holmes", position: 'DEF', hometown: "Highlands Ranch, Colorado", leagueSlug: 'nwsl', teamSlug: 'seattle-reign', teamName: "Seattle Reign", countryCode: 'us', height: "5'8\"", photo: '/players/nwsl/seattle-reign/holmes-s.webp' },
+  { number: 98, name: "Keeley Dockter", position: 'DEF', hometown: "Seattle, Washington", leagueSlug: 'nwsl', teamSlug: 'seattle-reign', teamName: "Seattle Reign", countryCode: 'us', height: "5'6\"" },
+  { number: 2, name: "Maddie Mercado", position: 'MID', hometown: "San Diego, California", leagueSlug: 'nwsl', teamSlug: 'seattle-reign', teamName: "Seattle Reign", countryCode: 'us', height: "5'8\"", photo: '/players/nwsl/seattle-reign/mercado-m.webp' },
+  { number: 8, name: "Angharad James-Turner", position: 'MID', hometown: "Haverfordwest, Wales", leagueSlug: 'nwsl', teamSlug: 'seattle-reign', teamName: "Seattle Reign", height: "5'7\"", photo: '/players/nwsl/seattle-reign/jamesturner-a.webp' },
+  { number: 10, name: "Jess Fishlock", position: 'MID', hometown: "Cardiff, Wales", leagueSlug: 'nwsl', teamSlug: 'seattle-reign', teamName: "Seattle Reign", height: "5'3\"", photo: '/players/nwsl/seattle-reign/fishlock-j.webp' },
+  { number: 16, name: "Ainsley McCammon", position: 'MID', hometown: "Bedford, Texas", leagueSlug: 'nwsl', teamSlug: 'seattle-reign', teamName: "Seattle Reign", countryCode: 'us', height: "5'9\"", photo: '/players/nwsl/seattle-reign/mccammon-a.webp' },
+  { number: 17, name: "Sally Menti", position: 'MID', hometown: "Seattle, Washington", leagueSlug: 'nwsl', teamSlug: 'seattle-reign', teamName: "Seattle Reign", countryCode: 'us', height: "5'9\"", photo: '/players/nwsl/seattle-reign/menti-s.webp' },
+  { number: 20, name: "Samantha Meza", position: 'MID', hometown: "Dallas, Texas", leagueSlug: 'nwsl', teamSlug: 'seattle-reign', teamName: "Seattle Reign", countryCode: 'us', height: "5'2\"", photo: '/players/nwsl/seattle-reign/meza-s.webp' },
+  { number: 33, name: "Ruby Hladek", position: 'MID', hometown: "Ladera Ranch, California", leagueSlug: 'nwsl', teamSlug: 'seattle-reign', teamName: "Seattle Reign", countryCode: 'us' },
+  { number: 36, name: "Sofía Cedeño", position: 'MID', hometown: "Irving, Texas", leagueSlug: 'nwsl', teamSlug: 'seattle-reign', teamName: "Seattle Reign", countryCode: 'us', photo: '/players/nwsl/seattle-reign/cedeno-s.webp' },
+  { number: 5, name: "Maddie Dahlien", position: 'FWD', hometown: "Edina, Minnesota", leagueSlug: 'nwsl', teamSlug: 'seattle-reign', teamName: "Seattle Reign", countryCode: 'us', height: "5'9\"", photo: '/players/nwsl/seattle-reign/dahlien-m.webp' },
+  { number: 6, name: "Lynn Biyendolo", position: 'FWD', hometown: "Fresno, California", leagueSlug: 'nwsl', teamSlug: 'seattle-reign', teamName: "Seattle Reign", countryCode: 'us', height: "5'8\"", photo: '/players/nwsl/seattle-reign/biyendolo-l.webp' },
+  { number: 7, name: "Emeri Adames", position: 'FWD', hometown: "Dallas, Texas", leagueSlug: 'nwsl', teamSlug: 'seattle-reign', teamName: "Seattle Reign", countryCode: 'us', height: "5'3\"", photo: '/players/nwsl/seattle-reign/adames-e.webp' },
+  { number: 12, name: "Holly Ward", position: 'FWD', hometown: "Vancouver, Canada", leagueSlug: 'nwsl', teamSlug: 'seattle-reign', teamName: "Seattle Reign", countryCode: 'ca', height: "5'7\"" },
+  { number: 13, name: "Brittany Ratcliffe", position: 'FWD', hometown: "Williamstown, New Jersey", leagueSlug: 'nwsl', teamSlug: 'seattle-reign', teamName: "Seattle Reign", countryCode: 'us', height: "5'4\"", photo: '/players/nwsl/seattle-reign/ratcliffe-b.webp' },
+  { number: 19, name: "Mia Fishel", position: 'FWD', hometown: "San Diego, California", leagueSlug: 'nwsl', teamSlug: 'seattle-reign', teamName: "Seattle Reign", countryCode: 'us', height: "5'7\"", photo: '/players/nwsl/seattle-reign/fishel-m.webp' },
+  { number: 30, name: "Nerilia Mondesir", position: 'FWD', hometown: "Quartier-Morin, Haiti", leagueSlug: 'nwsl', teamSlug: 'seattle-reign', teamName: "Seattle Reign", countryCode: 'ht', height: "5'2\"", photo: '/players/nwsl/seattle-reign/mondesir-n.webp' },
+];
 
 export const matches: Match[] = [
   {
@@ -252,34 +290,4 @@ export const matches: Match[] = [
     venue: 'Lumen Field, Seattle, Washington',
     broadcast: ['espn tbd'],
   },
-];
-
-export const roster: Player[] = [
-  { number: 1, name: "Claudia Dickey", position: 'GK', hometown: "Charlotte, North Carolina", leagueSlug: 'nwsl', teamSlug: 'seattle-reign', teamName: "Seattle Reign", countryCode: 'us', height: "5'10\"", photo: '/players/nwsl/seattle-reign/dickey-c.webp' },
-  { number: 18, name: "Evan O'Steen", position: 'GK', hometown: "USA", leagueSlug: 'nwsl', teamSlug: 'seattle-reign', teamName: "Seattle Reign", countryCode: 'us', height: "5'10\"" },
-  { number: 35, name: "Neeku Purcell", position: 'GK', hometown: "Seattle, Washington", leagueSlug: 'nwsl', teamSlug: 'seattle-reign', teamName: "Seattle Reign", countryCode: 'us', height: "5'9\"", photo: '/players/nwsl/seattle-reign/purcell-n.webp' },
-  { number: 38, name: "Cassie Miller", position: 'GK', hometown: "Cave Creek, Arizona", leagueSlug: 'nwsl', teamSlug: 'seattle-reign', teamName: "Seattle Reign", countryCode: 'us', height: "5'11\"", photo: '/players/nwsl/seattle-reign/miller-c.webp' },
-  { number: 11, name: "Sofia Huerta", position: 'DEF', hometown: "Boise, Idaho", leagueSlug: 'nwsl', teamSlug: 'seattle-reign', teamName: "Seattle Reign", countryCode: 'us', height: "5'7\"", photo: '/players/nwsl/seattle-reign/huerta-s.webp' },
-  { number: 14, name: "Emily Mason", position: 'DEF', hometown: "Flemington, New Jersey", leagueSlug: 'nwsl', teamSlug: 'seattle-reign', teamName: "Seattle Reign", countryCode: 'us', height: "5'9\"", photo: '/players/nwsl/seattle-reign/mason-e.webp' },
-  { number: 21, name: "Phoebe McClernon", position: 'DEF', hometown: "West Chester, Pennsylvania", leagueSlug: 'nwsl', teamSlug: 'seattle-reign', teamName: "Seattle Reign", countryCode: 'us', height: "5'7\"", photo: '/players/nwsl/seattle-reign/mcclernon-p.webp' },
-  { number: 22, name: "Ryanne Brown", position: 'DEF', hometown: "Indianapolis, Indiana", leagueSlug: 'nwsl', teamSlug: 'seattle-reign', teamName: "Seattle Reign", countryCode: 'us', height: "5'8\"", photo: '/players/nwsl/seattle-reign/brown-r.webp' },
-  { number: 23, name: "Jordyn Bugg", position: 'DEF', hometown: "El Cajon, California", leagueSlug: 'nwsl', teamSlug: 'seattle-reign', teamName: "Seattle Reign", countryCode: 'us', height: "5'7\"", photo: '/players/nwsl/seattle-reign/bugg-j.webp' },
-  { number: 24, name: "Madison Curry", position: 'DEF', hometown: "Coto de Caza, California", leagueSlug: 'nwsl', teamSlug: 'seattle-reign', teamName: "Seattle Reign", countryCode: 'us', height: "5'5\"", photo: '/players/nwsl/seattle-reign/curry-m.webp' },
-  { number: 25, name: "Shae Holmes", position: 'DEF', hometown: "Highlands Ranch, Colorado", leagueSlug: 'nwsl', teamSlug: 'seattle-reign', teamName: "Seattle Reign", countryCode: 'us', height: "5'8\"", photo: '/players/nwsl/seattle-reign/holmes-s.webp' },
-  { number: 98, name: "Keeley Dockter", position: 'DEF', hometown: "Seattle, Washington", leagueSlug: 'nwsl', teamSlug: 'seattle-reign', teamName: "Seattle Reign", countryCode: 'us', height: "5'6\"" },
-  { number: 2, name: "Maddie Mercado", position: 'MID', hometown: "San Diego, California", leagueSlug: 'nwsl', teamSlug: 'seattle-reign', teamName: "Seattle Reign", countryCode: 'us', height: "5'8\"", photo: '/players/nwsl/seattle-reign/mercado-m.webp' },
-  { number: 8, name: "Angharad James-Turner", position: 'MID', hometown: "Haverfordwest, Wales", leagueSlug: 'nwsl', teamSlug: 'seattle-reign', teamName: "Seattle Reign", height: "5'7\"", photo: '/players/nwsl/seattle-reign/jamesturner-a.webp' },
-  { number: 10, name: "Jess Fishlock", position: 'MID', hometown: "Cardiff, Wales", leagueSlug: 'nwsl', teamSlug: 'seattle-reign', teamName: "Seattle Reign", height: "5'3\"", photo: '/players/nwsl/seattle-reign/fishlock-j.webp' },
-  { number: 16, name: "Ainsley McCammon", position: 'MID', hometown: "Bedford, Texas", leagueSlug: 'nwsl', teamSlug: 'seattle-reign', teamName: "Seattle Reign", countryCode: 'us', height: "5'9\"", photo: '/players/nwsl/seattle-reign/mccammon-a.webp' },
-  { number: 17, name: "Sally Menti", position: 'MID', hometown: "Seattle, Washington", leagueSlug: 'nwsl', teamSlug: 'seattle-reign', teamName: "Seattle Reign", countryCode: 'us', height: "5'9\"", photo: '/players/nwsl/seattle-reign/menti-s.webp' },
-  { number: 20, name: "Samantha Meza", position: 'MID', hometown: "Dallas, Texas", leagueSlug: 'nwsl', teamSlug: 'seattle-reign', teamName: "Seattle Reign", countryCode: 'us', height: "5'2\"", photo: '/players/nwsl/seattle-reign/meza-s.webp' },
-  { number: 33, name: "Ruby Hladek", position: 'MID', hometown: "Ladera Ranch, California", leagueSlug: 'nwsl', teamSlug: 'seattle-reign', teamName: "Seattle Reign", countryCode: 'us' },
-  { number: 36, name: "Sofía Cedeño", position: 'MID', hometown: "Irving, Texas", leagueSlug: 'nwsl', teamSlug: 'seattle-reign', teamName: "Seattle Reign", countryCode: 'us', photo: '/players/nwsl/seattle-reign/cedeno-s.webp' },
-  { number: 5, name: "Maddie Dahlien", position: 'FWD', hometown: "Edina, Minnesota", leagueSlug: 'nwsl', teamSlug: 'seattle-reign', teamName: "Seattle Reign", countryCode: 'us', height: "5'9\"", photo: '/players/nwsl/seattle-reign/dahlien-m.webp' },
-  { number: 6, name: "Lynn Biyendolo", position: 'FWD', hometown: "Fresno, California", leagueSlug: 'nwsl', teamSlug: 'seattle-reign', teamName: "Seattle Reign", countryCode: 'us', height: "5'8\"", photo: '/players/nwsl/seattle-reign/biyendolo-l.webp' },
-  { number: 7, name: "Emeri Adames", position: 'FWD', hometown: "Dallas, Texas", leagueSlug: 'nwsl', teamSlug: 'seattle-reign', teamName: "Seattle Reign", countryCode: 'us', height: "5'3\"", photo: '/players/nwsl/seattle-reign/adames-e.webp' },
-  { number: 12, name: "Holly Ward", position: 'FWD', hometown: "Vancouver, Canada", leagueSlug: 'nwsl', teamSlug: 'seattle-reign', teamName: "Seattle Reign", countryCode: 'ca', height: "5'7\"" },
-  { number: 13, name: "Brittany Ratcliffe", position: 'FWD', hometown: "Williamstown, New Jersey", leagueSlug: 'nwsl', teamSlug: 'seattle-reign', teamName: "Seattle Reign", countryCode: 'us', height: "5'4\"", photo: '/players/nwsl/seattle-reign/ratcliffe-b.webp' },
-  { number: 19, name: "Mia Fishel", position: 'FWD', hometown: "San Diego, California", leagueSlug: 'nwsl', teamSlug: 'seattle-reign', teamName: "Seattle Reign", countryCode: 'us', height: "5'7\"", photo: '/players/nwsl/seattle-reign/fishel-m.webp' },
-  { number: 30, name: "Nerilia Mondesir", position: 'FWD', hometown: "Quartier-Morin, Haiti", leagueSlug: 'nwsl', teamSlug: 'seattle-reign', teamName: "Seattle Reign", countryCode: 'ht', height: "5'2\"", photo: '/players/nwsl/seattle-reign/mondesir-n.webp' },
 ];

@@ -26,6 +26,7 @@ pnpm-debug.log*
 .claude/
 memory/
 CLAUDE.md
+.mcp.json
 
 # Speckit
 .specify/
@@ -40,6 +41,7 @@ specs/
 
 # Playwright MCP screenshots/snapshots
 .playwright-mcp/
+/*.png
 
 # BMAD
 _bmad/

@@ -1,15 +1,52 @@
 import type { Player } from '../../shared/types';
-import type { Match, TeamConfig } from '../../shared/types';
+import type { NWSLTeamConfig } from '../../shared/types';
 
-export const team: TeamConfig = {
-  name: 'Denver Summit',
+export const team: NWSLTeamConfig = {
+  name: 'Denver Summit FC',
   slug: 'denver-summit',
-  color: '#E4B83E',
+  short: 'Denver Summit',
+  color: '#003F2D',
+  text: '#FAF6F0',
   badge: 'https://images.nwslsoccer.com/image/private/t_q-best/v1757004382/prd/assets/teams/denver-summit-fc.png',
   standingsKey: 'Denver Summit',
   officialUrl: 'https://www.denversummitfc.com/',
   ticketsUrl: 'https://seatgeek.com/denver-summit-fc-tickets',
+  city: 'Denver',
+  venue: 'TBD',
+  supporter: 'Mile High Mob',
+  tagline: 'Climb together.',
+  est: 2026,
 };
+
+
+export const roster: Player[] = [
+  { number: 1, name: "Abby Smith", position: 'GK', hometown: "Portland, Oregon", leagueSlug: 'nwsl', teamSlug: 'denver-summit', teamName: "Denver Summit", countryCode: 'us', height: "5'9\"", photo: '/players/nwsl/denver-summit/smith-a.webp' },
+  { number: 17, name: "Jordan Nytes", position: 'GK', hometown: "Aurora, Colorado", leagueSlug: 'nwsl', teamSlug: 'denver-summit', teamName: "Denver Summit", countryCode: 'us', height: "5'7\"", photo: '/players/nwsl/denver-summit/nytes-j.webp' },
+  { number: 21, name: "Pauline Peyraud-Magnin", position: 'GK', hometown: "Lyon, France", leagueSlug: 'nwsl', teamSlug: 'denver-summit', teamName: "Denver Summit", countryCode: 'fr', height: "5'9\"" },
+  { number: 2, name: "Megan Reid", position: 'DEF', hometown: "Orinda, California", leagueSlug: 'nwsl', teamSlug: 'denver-summit', teamName: "Denver Summit", countryCode: 'ca', height: "5'8\"", photo: '/players/nwsl/denver-summit/reid-m.webp' },
+  { number: 3, name: "Kaleigh Kurtz", position: 'DEF', hometown: "Greer, South Carolina", leagueSlug: 'nwsl', teamSlug: 'denver-summit', teamName: "Denver Summit", countryCode: 'us', height: "5'8\"", photo: '/players/nwsl/denver-summit/kurtz-k.webp' },
+  { number: 4, name: "Natalie Means", position: 'DEF', hometown: "Lafayette, California", leagueSlug: 'nwsl', teamSlug: 'denver-summit', teamName: "Denver Summit", countryCode: 'us', photo: '/players/nwsl/denver-summit/means-n.webp' },
+  { number: 7, name: "Ayo Oke", position: 'DEF', hometown: "Lawrenceville, Georgia", leagueSlug: 'nwsl', teamSlug: 'denver-summit', teamName: "Denver Summit", countryCode: 'us', height: "5'3\"", photo: '/players/nwsl/denver-summit/oke-a.webp' },
+  { number: 16, name: "Carson Pickett", position: 'DEF', hometown: "Spartanburg, South Carolina", leagueSlug: 'nwsl', teamSlug: 'denver-summit', teamName: "Denver Summit", countryCode: 'us', height: "5'8\"", photo: '/players/nwsl/denver-summit/pickett-c.webp' },
+  { number: 23, name: "Eva Gaetino", position: 'DEF', hometown: "Dexter, Michigan", leagueSlug: 'nwsl', teamSlug: 'denver-summit', teamName: "Denver Summit", countryCode: 'us', photo: '/players/nwsl/denver-summit/gaetino-e.webp' },
+  { number: 30, name: "Camryn Biegalski", position: 'DEF', hometown: "Lombard, Illinois", leagueSlug: 'nwsl', teamSlug: 'denver-summit', teamName: "Denver Summit", countryCode: 'us', height: "5'9\"", photo: '/players/nwsl/denver-summit/biegalski-c.webp' },
+  { number: 5, name: "Devin Lynch", position: 'MID', hometown: "Naperville, Illinois", leagueSlug: 'nwsl', teamSlug: 'denver-summit', teamName: "Denver Summit", countryCode: 'us', height: "5'8\"", photo: '/players/nwsl/denver-summit/lynch-d.webp' },
+  { number: 8, name: "Emma Regan", position: 'MID', hometown: "North Vancouver, Canada", leagueSlug: 'nwsl', teamSlug: 'denver-summit', teamName: "Denver Summit", countryCode: 'ca', height: "5'7\"", photo: '/players/nwsl/denver-summit/regan-e.webp' },
+  { number: 14, name: "Yuna McCormack", position: 'MID', hometown: "Mill Valley, California", leagueSlug: 'nwsl', teamSlug: 'denver-summit', teamName: "Denver Summit", countryCode: 'us', photo: '/players/nwsl/denver-summit/mccormack-y.webp' },
+  { number: 15, name: "Jordan Baggett", position: 'MID', hometown: "Highlands Ranch, Colorado", leagueSlug: 'nwsl', teamSlug: 'denver-summit', teamName: "Denver Summit", countryCode: 'us', height: "5'6\"", photo: '/players/nwsl/denver-summit/baggett-j.webp' },
+  { number: 19, name: "Lourdes Bosch", position: 'MID', hometown: "Las Vegas, Nevada", leagueSlug: 'nwsl', teamSlug: 'denver-summit', teamName: "Denver Summit", countryCode: 'mx', photo: '/players/nwsl/denver-summit/bosch-l.webp' },
+  { number: 24, name: "Delanie Sheehan", position: 'MID', hometown: "Walnut Creek, California", leagueSlug: 'nwsl', teamSlug: 'denver-summit', teamName: "Denver Summit", countryCode: 'us', height: "5'6\"", photo: '/players/nwsl/denver-summit/sheehan-d.webp' },
+  { number: 34, name: "Meg Boade", position: 'MID', hometown: "Lone Tree, Colorado", leagueSlug: 'nwsl', teamSlug: 'denver-summit', teamName: "Denver Summit", countryCode: 'us', height: "5'8\"", photo: '/players/nwsl/denver-summit/boade-m.webp' },
+  { number: 6, name: "Janine Sonis", position: 'FWD', hometown: "Highlands Ranch, Colorado", leagueSlug: 'nwsl', teamSlug: 'denver-summit', teamName: "Denver Summit", countryCode: 'ca', height: "5'8\"", photo: '/players/nwsl/denver-summit/sonis-j.webp' },
+  { number: 9, name: "Yazmeen Ryan", position: 'FWD', hometown: "Norman, Oklahoma", leagueSlug: 'nwsl', teamSlug: 'denver-summit', teamName: "Denver Summit", countryCode: 'us', height: "5'6\"", photo: '/players/nwsl/denver-summit/ryan-y.webp' },
+  { number: 11, name: "Ally Brazier", position: 'FWD', hometown: "Colorado Springs, Colorado", leagueSlug: 'nwsl', teamSlug: 'denver-summit', teamName: "Denver Summit", countryCode: 'us', height: "5'8\"", photo: '/players/nwsl/denver-summit/brazier-a.webp' },
+  { number: 12, name: "Jasmine Aikey", position: 'FWD', hometown: "Palo Alto, California", leagueSlug: 'nwsl', teamSlug: 'denver-summit', teamName: "Denver Summit", countryCode: 'us', photo: '/players/nwsl/denver-summit/aikey-j.webp' },
+  { number: 18, name: "Yuzuki Yamamoto", position: 'FWD', hometown: "Gifu, Japan", leagueSlug: 'nwsl', teamSlug: 'denver-summit', teamName: "Denver Summit", countryCode: 'jp', height: "5'5\"" },
+  { number: 25, name: "Melissa Kössler", position: 'FWD', hometown: "Potsdam, Germany", leagueSlug: 'nwsl', teamSlug: 'denver-summit', teamName: "Denver Summit", countryCode: 'de', height: "5'10\"" },
+  { number: 26, name: "Natasha Flint", position: 'FWD', hometown: "Salford, England", leagueSlug: 'nwsl', teamSlug: 'denver-summit', teamName: "Denver Summit", countryCode: 'gb', height: "5'9\"", photo: '/players/nwsl/denver-summit/flint-n.webp' },
+  { number: 33, name: "Olivia Thomas", position: 'FWD', hometown: "Grosse Pointe, Michigan", leagueSlug: 'nwsl', teamSlug: 'denver-summit', teamName: "Denver Summit", countryCode: 'us', height: "5'10\"", photo: '/players/nwsl/denver-summit/thomas-o.webp' },
+  { number: 79, name: "Nahikari García", position: 'FWD', hometown: "Urnieta, Spain", leagueSlug: 'nwsl', teamSlug: 'denver-summit', teamName: "Denver Summit", countryCode: 'es', height: "5'3\"", photo: '/players/nwsl/denver-summit/garcia-n.webp' },
+];
 
 export const matches: Match[] = [
   {
@@ -62,11 +99,11 @@ export const matches: Match[] = [
   },
   {
     date: '2026-05-03',
-    time: '3:00 PM',
     opponent: 'Boston Legacy',
     homeAway: 'away',
     venue: 'Gillette Stadium, Foxborough, Massachusetts',
     broadcast: ['CBS Sports'],
+    result: { teamScore: 2, opponentScore: 3 },
   },
   {
     date: '2026-05-09',
@@ -252,33 +289,4 @@ export const matches: Match[] = [
     venue: 'First Horizon Stadium at WakeMed Soccer Park, Cary, North Carolina',
     broadcast: ['espn tbd'],
   },
-];
-
-export const roster: Player[] = [
-  { number: 1, name: "Abby Smith", position: 'GK', hometown: "Portland, Oregon", leagueSlug: 'nwsl', teamSlug: 'denver-summit', teamName: "Denver Summit", countryCode: 'us', height: "5'9\"", photo: '/players/nwsl/denver-summit/smith-a.webp' },
-  { number: 17, name: "Jordan Nytes", position: 'GK', hometown: "Aurora, Colorado", leagueSlug: 'nwsl', teamSlug: 'denver-summit', teamName: "Denver Summit", countryCode: 'us', height: "5'7\"", photo: '/players/nwsl/denver-summit/nytes-j.webp' },
-  { number: 21, name: "Pauline Peyraud-Magnin", position: 'GK', hometown: "Lyon, France", leagueSlug: 'nwsl', teamSlug: 'denver-summit', teamName: "Denver Summit", countryCode: 'fr', height: "5'9\"" },
-  { number: 2, name: "Megan Reid", position: 'DEF', hometown: "Orinda, California", leagueSlug: 'nwsl', teamSlug: 'denver-summit', teamName: "Denver Summit", countryCode: 'ca', height: "5'8\"", photo: '/players/nwsl/denver-summit/reid-m.webp' },
-  { number: 3, name: "Kaleigh Kurtz", position: 'DEF', hometown: "Greer, South Carolina", leagueSlug: 'nwsl', teamSlug: 'denver-summit', teamName: "Denver Summit", countryCode: 'us', height: "5'8\"", photo: '/players/nwsl/denver-summit/kurtz-k.webp' },
-  { number: 4, name: "Natalie Means", position: 'DEF', hometown: "Lafayette, California", leagueSlug: 'nwsl', teamSlug: 'denver-summit', teamName: "Denver Summit", countryCode: 'us', photo: '/players/nwsl/denver-summit/means-n.webp' },
-  { number: 7, name: "Ayo Oke", position: 'DEF', hometown: "Lawrenceville, Georgia", leagueSlug: 'nwsl', teamSlug: 'denver-summit', teamName: "Denver Summit", countryCode: 'us', height: "5'3\"", photo: '/players/nwsl/denver-summit/oke-a.webp' },
-  { number: 16, name: "Carson Pickett", position: 'DEF', hometown: "Spartanburg, South Carolina", leagueSlug: 'nwsl', teamSlug: 'denver-summit', teamName: "Denver Summit", countryCode: 'us', height: "5'8\"", photo: '/players/nwsl/denver-summit/pickett-c.webp' },
-  { number: 23, name: "Eva Gaetino", position: 'DEF', hometown: "Dexter, Michigan", leagueSlug: 'nwsl', teamSlug: 'denver-summit', teamName: "Denver Summit", countryCode: 'us', photo: '/players/nwsl/denver-summit/gaetino-e.webp' },
-  { number: 30, name: "Camryn Biegalski", position: 'DEF', hometown: "Lombard, Illinois", leagueSlug: 'nwsl', teamSlug: 'denver-summit', teamName: "Denver Summit", countryCode: 'us', height: "5'9\"", photo: '/players/nwsl/denver-summit/biegalski-c.webp' },
-  { number: 5, name: "Devin Lynch", position: 'MID', hometown: "Naperville, Illinois", leagueSlug: 'nwsl', teamSlug: 'denver-summit', teamName: "Denver Summit", countryCode: 'us', height: "5'8\"", photo: '/players/nwsl/denver-summit/lynch-d.webp' },
-  { number: 8, name: "Emma Regan", position: 'MID', hometown: "North Vancouver, Canada", leagueSlug: 'nwsl', teamSlug: 'denver-summit', teamName: "Denver Summit", countryCode: 'ca', height: "5'7\"", photo: '/players/nwsl/denver-summit/regan-e.webp' },
-  { number: 14, name: "Yuna McCormack", position: 'MID', hometown: "Mill Valley, California", leagueSlug: 'nwsl', teamSlug: 'denver-summit', teamName: "Denver Summit", countryCode: 'us', photo: '/players/nwsl/denver-summit/mccormack-y.webp' },
-  { number: 15, name: "Jordan Baggett", position: 'MID', hometown: "Highlands Ranch, Colorado", leagueSlug: 'nwsl', teamSlug: 'denver-summit', teamName: "Denver Summit", countryCode: 'us', height: "5'6\"", photo: '/players/nwsl/denver-summit/baggett-j.webp' },
-  { number: 19, name: "Lourdes Bosch", position: 'MID', hometown: "Las Vegas, Nevada", leagueSlug: 'nwsl', teamSlug: 'denver-summit', teamName: "Denver Summit", countryCode: 'mx', photo: '/players/nwsl/denver-summit/bosch-l.webp' },
-  { number: 24, name: "Delanie Sheehan", position: 'MID', hometown: "Walnut Creek, California", leagueSlug: 'nwsl', teamSlug: 'denver-summit', teamName: "Denver Summit", countryCode: 'us', height: "5'6\"", photo: '/players/nwsl/denver-summit/sheehan-d.webp' },
-  { number: 34, name: "Meg Boade", position: 'MID', hometown: "Lone Tree, Colorado", leagueSlug: 'nwsl', teamSlug: 'denver-summit', teamName: "Denver Summit", countryCode: 'us', height: "5'8\"", photo: '/players/nwsl/denver-summit/boade-m.webp' },
-  { number: 6, name: "Janine Sonis", position: 'FWD', hometown: "Highlands Ranch, Colorado", leagueSlug: 'nwsl', teamSlug: 'denver-summit', teamName: "Denver Summit", countryCode: 'ca', height: "5'8\"", photo: '/players/nwsl/denver-summit/sonis-j.webp' },
-  { number: 9, name: "Yazmeen Ryan", position: 'FWD', hometown: "Norman, Oklahoma", leagueSlug: 'nwsl', teamSlug: 'denver-summit', teamName: "Denver Summit", countryCode: 'us', height: "5'6\"", photo: '/players/nwsl/denver-summit/ryan-y.webp' },
-  { number: 11, name: "Ally Brazier", position: 'FWD', hometown: "Colorado Springs, Colorado", leagueSlug: 'nwsl', teamSlug: 'denver-summit', teamName: "Denver Summit", countryCode: 'us', height: "5'8\"", photo: '/players/nwsl/denver-summit/brazier-a.webp' },
-  { number: 12, name: "Jasmine Aikey", position: 'FWD', hometown: "Palo Alto, California", leagueSlug: 'nwsl', teamSlug: 'denver-summit', teamName: "Denver Summit", countryCode: 'us', photo: '/players/nwsl/denver-summit/aikey-j.webp' },
-  { number: 18, name: "Yuzuki Yamamoto", position: 'FWD', hometown: "Gifu, Japan", leagueSlug: 'nwsl', teamSlug: 'denver-summit', teamName: "Denver Summit", countryCode: 'jp', height: "5'5\"" },
-  { number: 25, name: "Melissa Kössler", position: 'FWD', hometown: "Potsdam, Germany", leagueSlug: 'nwsl', teamSlug: 'denver-summit', teamName: "Denver Summit", countryCode: 'de', height: "5'10\"" },
-  { number: 26, name: "Natasha Flint", position: 'FWD', hometown: "Salford, England", leagueSlug: 'nwsl', teamSlug: 'denver-summit', teamName: "Denver Summit", countryCode: 'gb', height: "5'9\"", photo: '/players/nwsl/denver-summit/flint-n.webp' },
-  { number: 33, name: "Olivia Thomas", position: 'FWD', hometown: "Grosse Pointe, Michigan", leagueSlug: 'nwsl', teamSlug: 'denver-summit', teamName: "Denver Summit", countryCode: 'us', height: "5'10\"", photo: '/players/nwsl/denver-summit/thomas-o.webp' },
-  { number: 79, name: "Nahikari García", position: 'FWD', hometown: "Urnieta, Spain", leagueSlug: 'nwsl', teamSlug: 'denver-summit', teamName: "Denver Summit", countryCode: 'es', height: "5'3\"", photo: '/players/nwsl/denver-summit/garcia-n.webp' },
 ];

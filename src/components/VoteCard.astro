@@ -1,0 +1,142 @@
+---
+interface Props {
+  question?: string;
+  prompt?: string;
+}
+
+const {
+  question = 'Which league should we cover next?',
+  prompt = 'Type an abbreviation, full name, or anything you want — we group similar answers.',
+} = Astro.props;
+---
+
+<section class="bg-primary py-20 md:py-24 relative overflow-hidden">
+  <div class="max-w-5xl mx-auto px-6">
+    <div class="grid md:grid-cols-[1.1fr_1fr] gap-12 md:gap-16 items-center">
+
+      <!-- Copy -->
+      <div>
+        <p class="text-xs font-bold text-accent uppercase tracking-[0.2em] [word-spacing:-0.1em] mb-4">
+          Community · Cast your vote
+        </p>
+        <h2 class="font-display font-black text-5xl md:text-7xl text-neutral leading-[0.95] tracking-[-0.03em] mb-6 text-balance">
+          {question}
+        </h2>
+        <p class="text-lg text-neutral/75 leading-snug max-w-md">
+          {prompt}
+        </p>
+      </div>
+
+      <!-- Slip -->
+      <div class="md:rotate-[-1.5deg]">
+        <div class="bg-neutral rounded-2xl p-5 shadow-[0_24px_64px_rgba(15,42,45,0.22)]">
+
+          <!-- Form state -->
+          <div id="vote-form-wrap">
+            <div class="flex items-center justify-between pb-3 mb-4 border-b border-dashed border-primary/20">
+              <span class="font-display font-bold text-sm text-primary uppercase tracking-[0.18em] [word-spacing:-0.1em]">
+                Your pick
+              </span>
+            </div>
+            <form id="vote-form" class="flex flex-col gap-3" autocomplete="off">
+              <input
+                id="vote-input"
+                type="text"
+                name="entry"
+                placeholder="Type your answer…"
+                required
+                maxlength="200"
+                class="w-full bg-primary/5 text-primary placeholder:text-muted rounded-xl px-4 py-3 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-accent/40"
+              />
+              <button
+                type="submit"
+                class="w-full bg-primary text-neutral font-display font-bold text-sm px-4 py-3.5 rounded-xl hover:opacity-90 active:scale-[0.98] transition-all"
+              >
+                Submit vote →
+              </button>
+            </form>
+          </div>
+
+          <!-- Results state — hidden until submission -->
+          <div id="vote-results-wrap" class="hidden">
+            <div class="flex items-center justify-between pb-3 mb-4 border-b border-dashed border-primary/20">
+              <span class="font-display font-bold text-sm text-primary uppercase tracking-[0.18em]">
+                Results
+              </span>
+              <span id="vote-total" class="tabular text-xs text-muted"></span>
+            </div>
+            <ol id="vote-list" class="flex flex-col gap-1.5"></ol>
+            <button
+              id="vote-again"
+              class="mt-4 w-full text-xs font-bold text-muted uppercase tracking-[0.14em] [word-spacing:-0.1em] hover:text-primary transition-colors"
+            >
+              Vote again
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const form       = document.getElementById('vote-form')      as HTMLFormElement;
+  const formWrap   = document.getElementById('vote-form-wrap') as HTMLDivElement;
+  const input      = document.getElementById('vote-input')     as HTMLInputElement;
+  const resultsWrap= document.getElementById('vote-results-wrap') as HTMLDivElement;
+  const totalEl    = document.getElementById('vote-total')     as HTMLSpanElement;
+  const listEl     = document.getElementById('vote-list')      as HTMLOListElement;
+  const againBtn   = document.getElementById('vote-again')     as HTMLButtonElement;
+
+  function renderResults(votes: { entry: string; count: number }[]) {
+    const total = votes.reduce((s, v) => s + v.count, 0);
+    totalEl.textContent = `${total} vote${total === 1 ? '' : 's'}`;
+    const max = votes[0]?.count ?? 1;
+    listEl.innerHTML = votes.slice(0, 10).map(v => {
+      const pct = Math.round((v.count / max) * 100);
+      return `<li class="relative overflow-hidden rounded-lg">
+        <div class="absolute inset-y-0 left-0 bg-primary/8 rounded-lg transition-all" style="width:${pct}%"></div>
+        <div class="relative flex items-center justify-between px-3 py-2">
+          <span class="text-sm font-medium text-primary">${v.entry}</span>
+          <span class="tabular text-xs text-muted ml-4">${v.count}</span>
+        </div>
+      </li>`;
+    }).join('');
+    formWrap.classList.add('hidden');
+    resultsWrap.classList.remove('hidden');
+  }
+
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    const entry = input.value.trim();
+    if (!entry) return;
+
+    const btn = form.querySelector('button') as HTMLButtonElement;
+    btn.disabled = true;
+    btn.textContent = 'Counting…';
+
+    try {
+      const res  = await fetch('/api/vote', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ entry }),
+      });
+      const { votes } = await res.json() as { votes: { entry: string; count: number }[] };
+      renderResults(votes);
+    } catch {
+      btn.disabled = false;
+      btn.textContent = 'Submit vote →';
+    }
+  });
+
+  againBtn.addEventListener('click', () => {
+    input.value = '';
+    const btn = form.querySelector('button') as HTMLButtonElement;
+    btn.disabled = false;
+    btn.textContent = 'Submit vote →';
+    resultsWrap.classList.add('hidden');
+    formWrap.classList.remove('hidden');
+    input.focus();
+  });
+</script>

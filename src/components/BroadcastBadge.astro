@@ -1,0 +1,51 @@
+---
+export type BroadcasterKey = 'cbs' | 'ion' | 'prime' | 'abc' | 'espn' | 'espn2' | 'espn-app' | 'espn-deportes' | 'disney' | 'nwslp' | 'victory' | 'amazon' | 'usa' | 'nbatv' | 'peacock' | 'nbcsports' | 'paramount' | 'wnbalp';
+
+export type BadgeSize = 'sm' | 'md' | 'lg' | 'xl';
+
+interface Props {
+  broadcaster: { key: BroadcasterKey; label: string };
+  size?: BadgeSize;
+}
+
+const { broadcaster, size = 'md' } = Astro.props;
+
+const BG: Record<BroadcasterKey, string> = {
+  cbs:              '#003791',
+  ion:              '#009E60',
+  prime:            '#00A8E1',
+  abc:              '#0A2342',
+  espn:             '#CC0000',
+  espn2:            '#CC0000',
+  'espn-app':       '#CC0000',
+  'espn-deportes':  '#CC0000',
+  disney:           '#0063E5',
+  nwslp:            '#7C3AED',
+  victory:          '#111111',
+  amazon:           '#00A8E1',
+  usa:              '#1C4DA1',
+  nbatv:            '#C9082A',
+  peacock:          '#111111',
+  nbcsports:        '#111111',
+  paramount:        '#0064FF',
+  wnbalp:           '#E85D00',
+};
+
+const DARK_TONE = new Set<BroadcasterKey>(['abc', 'victory', 'peacock', 'nbcsports']);
+
+const SIZE: Record<BadgeSize, { h: string; font: string; px: string; tracking: string }> = {
+  sm: { h: '22px', font: '10px', px: '9px',  tracking: '0.06em' },
+  md: { h: '26px', font: '11px', px: '11px', tracking: '0.06em' },
+  lg: { h: '34px', font: '13px', px: '14px', tracking: '0.08em' },
+  xl: { h: '44px', font: '14px', px: '18px', tracking: '0.10em' },
+};
+
+const bg = BG[broadcaster.key] ?? '#333';
+const s  = SIZE[size];
+const isDark = DARK_TONE.has(broadcaster.key);
+const isLeaguePass = broadcaster.key === 'wnbalp';
+---
+
+<span
+  style={`display:inline-flex;align-items:center;height:${s.h};padding:0 ${s.px};border-radius:calc(${s.h} / 2);background:${bg};color:#fff;font-family:'Geist Mono',ui-monospace,monospace;font-size:${s.font};font-weight:600;letter-spacing:${s.tracking};line-height:1;white-space:nowrap;width:max-content;${isLeaguePass ? 'box-shadow:inset 0 0 0 1.5px #0F2A2D;' : isDark ? 'box-shadow:inset 0 0 0 1px rgba(255,255,255,0.08);' : ''}`}
+>{broadcaster.label}</span>

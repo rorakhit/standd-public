@@ -1,15 +1,51 @@
 import type { Player } from '../../shared/types';
-import type { Match, TeamConfig } from '../../shared/types';
+import type { NWSLTeamConfig } from '../../shared/types';
 
-export const team: TeamConfig = {
-  name: 'Angel City',
+export const team: NWSLTeamConfig = {
+  name: 'Angel City FC',
   slug: 'angel-city',
-  color: '#F1B1A5',
+  short: 'Angel City',
+  color: '#F4D6CC',
+  text: '#0B1014',
   badge: 'https://images.nwslsoccer.com/image/private/t_q-best/v1710436088/prd/assets/teams/angel-city-fc.svg',
   standingsKey: 'Angel City',
   officialUrl: 'https://angelcity.com/',
   ticketsUrl: 'https://seatgeek.com/angel-city-fc-tickets',
+  city: 'Los Angeles',
+  venue: 'BMO Stadium',
+  supporter: '107 IST',
+  tagline: 'A team for the city of angels.',
+  est: 2022,
 };
+
+
+export const roster: Player[] = [
+  { number: 13, name: "Hannah Seabert", position: 'GK', hometown: "Riverside, California", leagueSlug: 'nwsl', teamSlug: 'angel-city', teamName: "Angel City", countryCode: 'us', height: "5'10\"", photo: '/players/nwsl/angel-city/seabert-h.webp' },
+  { number: 19, name: "Angelina Anderson", position: 'GK', hometown: "Danville, California", leagueSlug: 'nwsl', teamSlug: 'angel-city', teamName: "Angel City", countryCode: 'us', height: "5'11\"", photo: '/players/nwsl/angel-city/anderson-a.webp' },
+  { number: 30, name: "Faith Nguyen", position: 'GK', hometown: "Costa Mesa, California", leagueSlug: 'nwsl', teamSlug: 'angel-city', teamName: "Angel City", countryCode: 'us', height: "5'7\"", photo: '/players/nwsl/angel-city/nguyen-f.webp' },
+  { number: 3, name: "Savy King", position: 'DEF', hometown: "West Hills, California", leagueSlug: 'nwsl', teamSlug: 'angel-city', teamName: "Angel City", countryCode: 'us', height: "5'6\"", photo: '/players/nwsl/angel-city/king-s.webp' },
+  { number: 4, name: "Karsyn Cherry", position: 'DEF', hometown: "Lafayette, Indiana", leagueSlug: 'nwsl', teamSlug: 'angel-city', teamName: "Angel City", countryCode: 'us', height: "5'7\"", photo: '/players/nwsl/angel-city/cherry-k.webp' },
+  { number: 6, name: "Emily Sams", position: 'DEF', hometown: "Boise, Idaho", leagueSlug: 'nwsl', teamSlug: 'angel-city', teamName: "Angel City", countryCode: 'us', height: "5'7\"", photo: '/players/nwsl/angel-city/sams-e.webp' },
+  { number: 11, name: "Sarah Gorden", position: 'DEF', hometown: "Elk Grove, Illinois", leagueSlug: 'nwsl', teamSlug: 'angel-city', teamName: "Angel City", countryCode: 'us', height: "5'6\"", photo: '/players/nwsl/angel-city/gorden-s.webp' },
+  { number: 20, name: "Gisele Thompson", position: 'DEF', hometown: "Studio City, California", leagueSlug: 'nwsl', teamSlug: 'angel-city', teamName: "Angel City", countryCode: 'us', height: "5'4\"", photo: '/players/nwsl/angel-city/thompson-g.webp' },
+  { number: 25, name: "Sophia Mattice", position: 'DEF', hometown: "Folsom, California", leagueSlug: 'nwsl', teamSlug: 'angel-city', teamName: "Angel City", countryCode: 'us', height: "5'8\"", photo: '/players/nwsl/angel-city/mattice-s.webp' },
+  { number: 7, name: "Hina Sugita", position: 'MID', hometown: "Fukuoka, Japan", leagueSlug: 'nwsl', teamSlug: 'angel-city', teamName: "Angel City", countryCode: 'jp', height: "5'4\"", photo: '/players/nwsl/angel-city/sugita-h.webp' },
+  { number: 8, name: "Ariadina Alves Borges", position: 'MID', hometown: "São Luís, Brazil", leagueSlug: 'nwsl', teamSlug: 'angel-city', teamName: "Angel City", countryCode: 'br', height: "5'6\"", photo: '/players/nwsl/angel-city/borges-a.webp' },
+  { number: 12, name: "Maiara Carolina Niehues", position: 'MID', hometown: "Itapiranga, Brazil", leagueSlug: 'nwsl', teamSlug: 'angel-city', teamName: "Angel City", countryCode: 'br', height: "5'9\"", photo: '/players/nwsl/angel-city/niehues-m.webp' },
+  { number: 14, name: "Nealy Martin", position: 'MID', hometown: "Birmingham, Alabama", leagueSlug: 'nwsl', teamSlug: 'angel-city', teamName: "Angel City", countryCode: 'us', height: "5'7\"", photo: '/players/nwsl/angel-city/martin-n.webp' },
+  { number: 15, name: "Evelyn Shores", position: 'MID', hometown: "Atlanta, Georgia", leagueSlug: 'nwsl', teamSlug: 'angel-city', teamName: "Angel City", countryCode: 'us', height: "5'9\"", photo: '/players/nwsl/angel-city/shores-e.webp' },
+  { number: 16, name: "Carina Lageyre", position: 'MID', hometown: "Cooper City, Florida", leagueSlug: 'nwsl', teamSlug: 'angel-city', teamName: "Angel City", countryCode: 'us', height: "5'7\"", photo: '/players/nwsl/angel-city/lageyre-c.webp' },
+  { number: 17, name: "Kennedy Fuller", position: 'MID', hometown: "Southlake, Texas", leagueSlug: 'nwsl', teamSlug: 'angel-city', teamName: "Angel City", countryCode: 'us', height: "5'5\"", photo: '/players/nwsl/angel-city/fuller-k.webp' },
+  { number: 99, name: "Taylor Suarez", position: 'MID', hometown: "Charlotte, North Carolina", leagueSlug: 'nwsl', teamSlug: 'angel-city', teamName: "Angel City", countryCode: 'us', height: "5'5\"", photo: '/players/nwsl/angel-city/suarez-t.webp' },
+  { number: 2, name: "Sydney Leroux", position: 'FWD', hometown: "Surrey, British Columbia", leagueSlug: 'nwsl', teamSlug: 'angel-city', teamName: "Angel City", countryCode: 'us', height: "5'7\"", photo: '/players/nwsl/angel-city/leroux-s.webp' },
+  { number: 9, name: "Casey Phair", position: 'FWD', hometown: "Warren Township, New Jersey", leagueSlug: 'nwsl', teamSlug: 'angel-city', teamName: "Angel City", countryCode: 'kr', height: "5'9\"", photo: '/players/nwsl/angel-city/phair-c.webp' },
+  { number: 10, name: "Claire Emslie", position: 'FWD', hometown: "Penicuik, Scotland", leagueSlug: 'nwsl', teamSlug: 'angel-city', teamName: "Angel City", countryCode: 'gb', height: "5'7\"", photo: '/players/nwsl/angel-city/emslie-c.webp' },
+  { number: 18, name: "Jun Endo", position: 'FWD', hometown: "Shirakawa, Japan", leagueSlug: 'nwsl', teamSlug: 'angel-city', teamName: "Angel City", countryCode: 'jp', height: "5'5\"", photo: '/players/nwsl/angel-city/endo-j.webp' },
+  { number: 24, name: "Prisca Chilufya", position: 'FWD', hometown: "Kitwe, Zambia", leagueSlug: 'nwsl', teamSlug: 'angel-city', teamName: "Angel City", height: "5'7\"", photo: '/players/nwsl/angel-city/chilufya-p.webp' },
+  { number: 32, name: "Sveindís Jónsdóttir", position: 'FWD', hometown: "Keflavík, Iceland", leagueSlug: 'nwsl', teamSlug: 'angel-city', teamName: "Angel City", countryCode: 'is', height: "5'10\"", photo: '/players/nwsl/angel-city/jonsdottir-s.webp' },
+  { number: 33, name: "Riley Tiernan", position: 'FWD', hometown: "Voorhees, New Jersey", leagueSlug: 'nwsl', teamSlug: 'angel-city', teamName: "Angel City", countryCode: 'us', height: "5'8\"", photo: '/players/nwsl/angel-city/tiernan-r.webp' },
+  { number: 37, name: "Rajanah Reed", position: 'FWD', hometown: "Glendale, Arizona", leagueSlug: 'nwsl', teamSlug: 'angel-city', teamName: "Angel City", countryCode: 'us', height: "5'5\"" },
+];
 
 export const matches: Match[] = [
   {
@@ -244,32 +280,4 @@ export const matches: Match[] = [
     venue: 'BMO Stadium, Los Angeles, California',
     broadcast: ['ION'],
   },
-];
-
-export const roster: Player[] = [
-  { number: 13, name: "Hannah Seabert", position: 'GK', hometown: "Riverside, California", leagueSlug: 'nwsl', teamSlug: 'angel-city', teamName: "Angel City", countryCode: 'us', height: "5'10\"", photo: '/players/nwsl/angel-city/seabert-h.webp' },
-  { number: 19, name: "Angelina Anderson", position: 'GK', hometown: "Danville, California", leagueSlug: 'nwsl', teamSlug: 'angel-city', teamName: "Angel City", countryCode: 'us', height: "5'11\"", photo: '/players/nwsl/angel-city/anderson-a.webp' },
-  { number: 30, name: "Faith Nguyen", position: 'GK', hometown: "Costa Mesa, California", leagueSlug: 'nwsl', teamSlug: 'angel-city', teamName: "Angel City", countryCode: 'us', height: "5'7\"", photo: '/players/nwsl/angel-city/nguyen-f.webp' },
-  { number: 3, name: "Savy King", position: 'DEF', hometown: "West Hills, California", leagueSlug: 'nwsl', teamSlug: 'angel-city', teamName: "Angel City", countryCode: 'us', height: "5'6\"", photo: '/players/nwsl/angel-city/king-s.webp' },
-  { number: 4, name: "Karsyn Cherry", position: 'DEF', hometown: "Lafayette, Indiana", leagueSlug: 'nwsl', teamSlug: 'angel-city', teamName: "Angel City", countryCode: 'us', height: "5'7\"", photo: '/players/nwsl/angel-city/cherry-k.webp' },
-  { number: 6, name: "Emily Sams", position: 'DEF', hometown: "Boise, Idaho", leagueSlug: 'nwsl', teamSlug: 'angel-city', teamName: "Angel City", countryCode: 'us', height: "5'7\"", photo: '/players/nwsl/angel-city/sams-e.webp' },
-  { number: 11, name: "Sarah Gorden", position: 'DEF', hometown: "Elk Grove, Illinois", leagueSlug: 'nwsl', teamSlug: 'angel-city', teamName: "Angel City", countryCode: 'us', height: "5'6\"", photo: '/players/nwsl/angel-city/gorden-s.webp' },
-  { number: 20, name: "Gisele Thompson", position: 'DEF', hometown: "Studio City, California", leagueSlug: 'nwsl', teamSlug: 'angel-city', teamName: "Angel City", countryCode: 'us', height: "5'4\"", photo: '/players/nwsl/angel-city/thompson-g.webp' },
-  { number: 25, name: "Sophia Mattice", position: 'DEF', hometown: "Folsom, California", leagueSlug: 'nwsl', teamSlug: 'angel-city', teamName: "Angel City", countryCode: 'us', height: "5'8\"", photo: '/players/nwsl/angel-city/mattice-s.webp' },
-  { number: 7, name: "Hina Sugita", position: 'MID', hometown: "Fukuoka, Japan", leagueSlug: 'nwsl', teamSlug: 'angel-city', teamName: "Angel City", countryCode: 'jp', height: "5'4\"", photo: '/players/nwsl/angel-city/sugita-h.webp' },
-  { number: 8, name: "Ariadina Alves Borges", position: 'MID', hometown: "São Luís, Brazil", leagueSlug: 'nwsl', teamSlug: 'angel-city', teamName: "Angel City", countryCode: 'br', height: "5'6\"", photo: '/players/nwsl/angel-city/borges-a.webp' },
-  { number: 12, name: "Maiara Carolina Niehues", position: 'MID', hometown: "Itapiranga, Brazil", leagueSlug: 'nwsl', teamSlug: 'angel-city', teamName: "Angel City", countryCode: 'br', height: "5'9\"", photo: '/players/nwsl/angel-city/niehues-m.webp' },
-  { number: 14, name: "Nealy Martin", position: 'MID', hometown: "Birmingham, Alabama", leagueSlug: 'nwsl', teamSlug: 'angel-city', teamName: "Angel City", countryCode: 'us', height: "5'7\"", photo: '/players/nwsl/angel-city/martin-n.webp' },
-  { number: 15, name: "Evelyn Shores", position: 'MID', hometown: "Atlanta, Georgia", leagueSlug: 'nwsl', teamSlug: 'angel-city', teamName: "Angel City", countryCode: 'us', height: "5'9\"", photo: '/players/nwsl/angel-city/shores-e.webp' },
-  { number: 16, name: "Carina Lageyre", position: 'MID', hometown: "Cooper City, Florida", leagueSlug: 'nwsl', teamSlug: 'angel-city', teamName: "Angel City", countryCode: 'us', height: "5'7\"", photo: '/players/nwsl/angel-city/lageyre-c.webp' },
-  { number: 17, name: "Kennedy Fuller", position: 'MID', hometown: "Southlake, Texas", leagueSlug: 'nwsl', teamSlug: 'angel-city', teamName: "Angel City", countryCode: 'us', height: "5'5\"", photo: '/players/nwsl/angel-city/fuller-k.webp' },
-  { number: 99, name: "Taylor Suarez", position: 'MID', hometown: "Charlotte, North Carolina", leagueSlug: 'nwsl', teamSlug: 'angel-city', teamName: "Angel City", countryCode: 'us', height: "5'5\"", photo: '/players/nwsl/angel-city/suarez-t.webp' },
-  { number: 2, name: "Sydney Leroux", position: 'FWD', hometown: "Surrey, British Columbia", leagueSlug: 'nwsl', teamSlug: 'angel-city', teamName: "Angel City", countryCode: 'us', height: "5'7\"", photo: '/players/nwsl/angel-city/leroux-s.webp' },
-  { number: 9, name: "Casey Phair", position: 'FWD', hometown: "Warren Township, New Jersey", leagueSlug: 'nwsl', teamSlug: 'angel-city', teamName: "Angel City", countryCode: 'kr', height: "5'9\"", photo: '/players/nwsl/angel-city/phair-c.webp' },
-  { number: 10, name: "Claire Emslie", position: 'FWD', hometown: "Penicuik, Scotland", leagueSlug: 'nwsl', teamSlug: 'angel-city', teamName: "Angel City", countryCode: 'gb', height: "5'7\"", photo: '/players/nwsl/angel-city/emslie-c.webp' },
-  { number: 18, name: "Jun Endo", position: 'FWD', hometown: "Shirakawa, Japan", leagueSlug: 'nwsl', teamSlug: 'angel-city', teamName: "Angel City", countryCode: 'jp', height: "5'5\"", photo: '/players/nwsl/angel-city/endo-j.webp' },
-  { number: 24, name: "Prisca Chilufya", position: 'FWD', hometown: "Kitwe, Zambia", leagueSlug: 'nwsl', teamSlug: 'angel-city', teamName: "Angel City", height: "5'7\"", photo: '/players/nwsl/angel-city/chilufya-p.webp' },
-  { number: 32, name: "Sveindís Jónsdóttir", position: 'FWD', hometown: "Keflavík, Iceland", leagueSlug: 'nwsl', teamSlug: 'angel-city', teamName: "Angel City", countryCode: 'is', height: "5'10\"", photo: '/players/nwsl/angel-city/jonsdottir-s.webp' },
-  { number: 33, name: "Riley Tiernan", position: 'FWD', hometown: "Voorhees, New Jersey", leagueSlug: 'nwsl', teamSlug: 'angel-city', teamName: "Angel City", countryCode: 'us', height: "5'8\"", photo: '/players/nwsl/angel-city/tiernan-r.webp' },
-  { number: 37, name: "Rajanah Reed", position: 'FWD', hometown: "Glendale, Arizona", leagueSlug: 'nwsl', teamSlug: 'angel-city', teamName: "Angel City", countryCode: 'us', height: "5'5\"" },
 ];

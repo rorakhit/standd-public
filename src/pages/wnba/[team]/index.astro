@@ -19,10 +19,10 @@ import { team as seattleStorm } from '../../../data/teams/wnba/seattle-storm';
 import { team as washingtonMystics } from '../../../data/teams/wnba/washington-mystics';
 import { team as portlandFire } from '../../../data/teams/wnba/portland-fire';
 import { team as torontoTempo } from '../../../data/teams/wnba/toronto-tempo';
-import type { TeamConfig } from '../../../data/shared/types';
+import type { WNBATeamConfig } from '../../../data/shared/types';
 import { getTeamSchedule, getTeamStats, getStandings } from '../../../data/wnba/queries';
 
-const allTeams: TeamConfig[] = [
+const allTeams: WNBATeamConfig[] = [
   atlantaDream, chicagoSky, connecticutSun, dallasWings,
   goldenStateValkyries, indianaFever, lasVegasAces, losAngelesSparks,
   minnesotaLynx, newYorkLiberty, phoenixMercury, portlandFire,
@@ -56,6 +56,7 @@ const matches = d1Games.map(g => {
     date: g.date,
     time: g.time ?? undefined,
     opponent: opponentName,
+    opponentSlug,
     homeAway: isHome ? ('home' as const) : ('away' as const),
     venue: g.venue ?? undefined,
     broadcast: g.broadcast,
@@ -152,7 +153,7 @@ const description = `${team.name} WNBA 2026 season tracker — schedule, results
 
   <main class="tracker-body flex-1">
     <!-- Hero header -->
-    <section class="bg-neutral pt-12 pb-12 border-b-[12px]" style="border-color: var(--team-color)">
+    <section class="bg-cream pt-12 pb-12 border-b-[12px]" style="border-color: var(--team-color)">
       <div class="max-w-3xl mx-auto px-6">
         <p class="text-sm font-bold uppercase tracking-[0.2em] mb-3" style="color: var(--team-color)">WNBA · 2026 Season</p>
         <div class="flex items-center gap-5 mb-6">
@@ -185,7 +186,7 @@ const description = `${team.name} WNBA 2026 season tracker — schedule, results
             <div class="flex items-start justify-between gap-4 flex-wrap">
               <div>
                 <p class="font-display font-bold text-2xl text-primary leading-tight">
-                  {nextMatch.homeAway === 'home' ? 'vs ' : 'at '}{nextMatch.opponent}
+                  {nextMatch.homeAway === 'home' ? 'vs ' : 'at '}<a href={`/wnba/${nextMatch.opponentSlug}`} class="hover:text-accent transition-colors" style="text-decoration:none;">{nextMatch.opponent}</a>
                 </p>
                 <p class="mt-1 text-primary/70 text-sm">{formatDate(nextMatch.date)}{nextMatch.time ? ` · ${nextMatch.time} ET` : ''}</p>
                 <p class="text-muted text-sm">{nextMatch.venue}</p>
@@ -244,7 +245,7 @@ const description = `${team.name} WNBA 2026 season tracker — schedule, results
 
     <!-- Next + Last results -->
     {(nextThreeFixtures.length > 0 || lastThreeResults.length > 0) && (
-      <section class="bg-neutral py-16">
+      <section class="bg-cream py-16">
         <div class="max-w-5xl mx-auto px-6">
           <div class="grid md:grid-cols-2 gap-10">
             {nextThreeFixtures.length > 0 && (
@@ -267,7 +268,7 @@ const description = `${team.name} WNBA 2026 season tracker — schedule, results
                             </span>
                           </div>
                           <p class="font-display font-bold text-xl leading-tight">
-                            {isHome ? 'vs ' : 'at '}{match.opponent}
+                            {isHome ? 'vs ' : 'at '}<a href={`/wnba/${match.opponentSlug}`} class="hover:text-accent transition-colors" style="text-decoration:none;">{match.opponent}</a>
                           </p>
                           <div class="mt-auto flex flex-wrap items-center gap-1.5">
                             {match.broadcast.length > 0
@@ -303,7 +304,7 @@ const description = `${team.name} WNBA 2026 season tracker — schedule, results
                           </div>
                         </div>
                         <p class="font-display font-bold text-xl text-primary leading-tight">
-                          {match.homeAway === 'home' ? 'vs ' : 'at '}{match.opponent}
+                          {match.homeAway === 'home' ? 'vs ' : 'at '}<a href={`/wnba/${match.opponentSlug}`} class="hover:text-accent transition-colors" style="text-decoration:none;">{match.opponent}</a>
                         </p>
                         <span class="text-sm text-muted mt-auto">{match.venue}</span>
                       </li>
@@ -319,7 +320,7 @@ const description = `${team.name} WNBA 2026 season tracker — schedule, results
 
     <!-- Full schedule -->
     {upcomingMatches.length > 0 && (
-      <section class="bg-neutral py-16">
+      <section class="bg-cream py-16">
         <div class="max-w-5xl mx-auto px-6">
           <div class="flex items-center gap-3 mb-2">
             <h2 class="font-display font-bold text-3xl text-primary">Full remaining schedule</h2>
@@ -352,7 +353,7 @@ const description = `${team.name} WNBA 2026 season tracker — schedule, results
                       </span>
                     </div>
                     <p class="font-display font-bold text-xl leading-tight">
-                      {isHome ? 'vs ' : 'at '}{match.opponent}
+                      {isHome ? 'vs ' : 'at '}<a href={`/wnba/${match.opponentSlug}`} class="hover:text-accent transition-colors" style="text-decoration:none;">{match.opponent}</a>
                     </p>
                     <div class="mt-auto flex flex-col gap-0.5">
                       <span class={`text-sm ${isHome ? 'text-neutral/70' : 'text-muted'}`}>{match.venue}</span>
@@ -414,7 +415,7 @@ const description = `${team.name} WNBA 2026 season tracker — schedule, results
 
     <!-- Conference standings -->
     {conferenceRows.length > 0 && (
-      <section class="bg-neutral py-16">
+      <section class="bg-cream py-16">
         <div class="max-w-5xl mx-auto px-6">
           <div class="flex items-center justify-between mb-6">
             <h2 class="font-display font-bold text-3xl text-primary">
@@ -481,7 +482,7 @@ const description = `${team.name} WNBA 2026 season tracker — schedule, results
     )}
 
     <!-- Closer -->
-    <section class="bg-neutral py-12">
+    <section class="bg-cream py-12">
       <div class="max-w-5xl mx-auto px-6">
         <p class="text-sm text-muted leading-relaxed max-w-2xl">
           Data sourced from <a href="https://wnba.com" target="_blank" rel="noopener noreferrer" class="font-bold hover:underline" style="color: var(--team-color)">wnba.com</a> and <a href={team.officialUrl} target="_blank" rel="noopener noreferrer" class="font-bold hover:underline" style="color: var(--team-color)">{(() => { try { return new URL(team.officialUrl).hostname.replace('www.', ''); } catch { return team.officialUrl; } })()}</a>. If you spot something wrong, email <a href="mailto:ro@standd.fan" class="font-bold hover:underline" style="color: var(--team-color)">ro@standd.fan</a>.

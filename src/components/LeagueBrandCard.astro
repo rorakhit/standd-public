@@ -109,13 +109,13 @@ const sportSvg = sportSvgs[league.sportIcon] ?? '';
 
 <a
   href={league.href}
-  class="group flex flex-col rounded-2xl overflow-hidden text-neutral hover:opacity-95 transition-opacity relative min-h-[520px]"
+  class="group flex flex-col rounded-2xl overflow-hidden text-neutral hover:opacity-95 transition-opacity relative min-h-[440px] md:min-h-[520px]"
   style={`background-color: ${league.color}`}
   aria-label={`Open ${league.longName} tracker`}
 >
   <!-- Sport icon watermark -->
   <div
-    class="absolute -bottom-8 -right-8 w-64 h-64 text-neutral opacity-[0.13] pointer-events-none"
+    class="absolute -bottom-6 -right-6 w-36 h-36 sm:w-48 sm:h-48 md:w-64 md:h-64 text-neutral opacity-[0.13] pointer-events-none"
     set:html={sportSvg}
   />
 
@@ -133,7 +133,7 @@ const sportSvg = sportSvgs[league.sportIcon] ?? '';
 
     <!-- League type-mark + long name -->
     <div class="mt-5">
-      <p class="font-display font-bold text-8xl leading-[0.88] tracking-[-0.04em] text-neutral">
+      <p class="font-display font-bold text-6xl sm:text-8xl leading-[0.88] tracking-[-0.04em] text-neutral">
         {league.name}
       </p>
       <p class="text-lg text-neutral/70 mt-2 font-medium leading-tight">

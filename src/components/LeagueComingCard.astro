@@ -53,13 +53,13 @@ const sportSvg = sportSvgs[league.sportIcon] ?? '';
 ---
 
 <article
-  class="rounded-2xl overflow-hidden text-neutral flex flex-col relative min-h-[520px]"
+  class="rounded-2xl overflow-hidden text-neutral flex flex-col relative min-h-[440px] md:min-h-[520px]"
   style={`background-color: ${league.color}`}
   aria-label={`${league.longName} — coming ${league.etaLabel}`}
 >
   <!-- Sport icon watermark -->
   <div
-    class="absolute -bottom-8 -right-8 w-64 h-64 text-neutral opacity-[0.13] pointer-events-none"
+    class="absolute -bottom-6 -right-6 w-36 h-36 sm:w-48 sm:h-48 md:w-64 md:h-64 text-neutral opacity-[0.13] pointer-events-none"
     set:html={sportSvg}
   />
 
@@ -76,7 +76,7 @@ const sportSvg = sportSvgs[league.sportIcon] ?? '';
 
     <!-- League type-mark + long name -->
     <div>
-      <p class="font-display font-bold text-8xl leading-[0.88] tracking-[-0.04em] text-neutral">
+      <p class="font-display font-bold text-6xl sm:text-8xl leading-[0.88] tracking-[-0.04em] text-neutral">
         {league.name}
       </p>
       <p class="text-lg text-neutral/70 mt-3 font-medium leading-tight">
@@ -99,12 +99,12 @@ const sportSvg = sportSvgs[league.sportIcon] ?? '';
     </dl>
 
     <!-- Placeholder crest circles -->
-    <div class="flex items-center gap-1" aria-hidden="true">
+    <div class="flex items-center gap-1 flex-wrap" aria-hidden="true">
       {Array.from({ length: Math.min(totalCircles, CIRCLE_SHOW) }).map(() => (
-        <div class="w-8 h-8 rounded-full bg-neutral/20 flex-shrink-0 border border-neutral/25"></div>
+        <div class="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-neutral/20 flex-shrink-0 border border-neutral/25"></div>
       ))}
       {extraCircles > 0 && (
-        <span class="ml-auto w-8 h-8 rounded-full bg-neutral/25 flex-shrink-0 flex items-center justify-center tabular text-[11px] font-bold text-neutral">
+        <span class="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-neutral/25 flex-shrink-0 flex items-center justify-center tabular text-[10px] sm:text-[11px] font-bold text-neutral">
           +{extraCircles}
         </span>
       )}

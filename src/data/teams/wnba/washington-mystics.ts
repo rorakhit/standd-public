@@ -8,9 +8,4 @@ export const team: WNBATeamConfig = {
   standingsKey: 'Washington Mystics',
   officialUrl: 'https://mystics.wnba.com/',
   ticketsUrl: 'https://mystics.wnba.com/tickets/',
-  short: 'WAS',
-  city: 'Washington',
-  shortName: 'Mystics',
-  colorAlt: '#002B5C',
-  conference: 'East',
 };

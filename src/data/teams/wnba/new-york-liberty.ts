@@ -8,9 +8,4 @@ export const team: WNBATeamConfig = {
   standingsKey: 'New York Liberty',
   officialUrl: 'https://liberty.wnba.com/',
   ticketsUrl: 'https://liberty.wnba.com/tickets/',
-  short: 'NYL',
-  city: 'New York',
-  shortName: 'Liberty',
-  colorAlt: '#000000',
-  conference: 'East',
 };

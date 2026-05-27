@@ -24,20 +24,6 @@ export interface NWSLTeamConfig extends BaseTeamConfig {
 /** WNBA-specific team config. */
 export interface WNBATeamConfig extends BaseTeamConfig {
   standingsKey: string;
-
-  // ── Fields for the redesigned /wnba page ──────────────────────────────────
-  /** 3-letter monogram code for the crest. e.g. "NYL", "IND", "LVA". */
-  short: string;
-  /** Team city/locale shown above the team name in tracker cards. */
-  city: string;
-  /** Team's short name (mascot only). e.g. "Liberty", "Aces". */
-  shortName: string;
-  /** Secondary brand color — bottom rail on crest + right rail on player jersey block. */
-  colorAlt: string;
-  /** Which conference the team plays in. */
-  conference: 'East' | 'West';
-  /** True for 2026 expansion franchises (Toronto Tempo, Portland Fire, Golden State Valkyries). */
-  expansion?: boolean;
 }
 
 /** Union of all league-specific configs — use at call sites that accept any team. */

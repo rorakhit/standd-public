@@ -8,9 +8,4 @@ export const team: WNBATeamConfig = {
   standingsKey: 'Los Angeles Sparks',
   officialUrl: 'https://sparks.wnba.com/',
   ticketsUrl: 'https://sparks.wnba.com/tickets/',
-  short: 'LAS',
-  city: 'Los Angeles',
-  shortName: 'Sparks',
-  colorAlt: '#FCB924',
-  conference: 'West',
 };

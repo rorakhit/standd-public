@@ -1,82 +1,40 @@
 ---
-// wnba-redesign/astro/pages/wnba/index.astro
-//
-// Drop-in replacement for src/pages/wnba/index.astro.
-// Renders the redesigned WNBA league page using the "Primetime" identity.
-//
-// Prerequisites (done once, not per page):
-//   • Add WNBA tokens to src/styles/global.css (see styles/wnba-tokens.css)
-//   • Extend tailwind.config.mjs with the new color + fontFamily entries
-//   • Extend WNBATeamConfig in src/data/shared/types.ts (see types-patch.ts)
-//   • Add short / city / shortName / colorAlt / conference / expansion fields
-//     to each src/data/teams/wnba/*.ts file (15 files, sample shown below)
-//   • Copy src/data/wnba/featured-players.ts + broadcasters.ts from this folder
-
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
-
-import { getStandings, getUpcomingGames } from '../../data/wnba/queries';
-import { getPlayerStats } from '../../data/wnba/queries';
-
-import { team as atlantaDream }         from '../../data/teams/wnba/atlanta-dream';
-import { team as chicagoSky }           from '../../data/teams/wnba/chicago-sky';
-import { team as connecticutSun }       from '../../data/teams/wnba/connecticut-sun';
-import { team as dallasWings }          from '../../data/teams/wnba/dallas-wings';
+import { getStandings } from '../../data/wnba/queries';
+import { team as atlantaDream } from '../../data/teams/wnba/atlanta-dream';
+import { team as chicagoSky } from '../../data/teams/wnba/chicago-sky';
+import { team as connecticutSun } from '../../data/teams/wnba/connecticut-sun';
+import { team as dallasWings } from '../../data/teams/wnba/dallas-wings';
 import { team as goldenStateValkyries } from '../../data/teams/wnba/golden-state-valkyries';
-import { team as indianaFever }         from '../../data/teams/wnba/indiana-fever';
-import { team as lasVegasAces }         from '../../data/teams/wnba/las-vegas-aces';
-import { team as losAngelesSparks }     from '../../data/teams/wnba/los-angeles-sparks';
-import { team as minnesotaLynx }        from '../../data/teams/wnba/minnesota-lynx';
-import { team as newYorkLiberty }       from '../../data/teams/wnba/new-york-liberty';
-import { team as phoenixMercury }       from '../../data/teams/wnba/phoenix-mercury';
-import { team as portlandFire }         from '../../data/teams/wnba/portland-fire';
-import { team as seattleStorm }         from '../../data/teams/wnba/seattle-storm';
-import { team as torontoTempo }         from '../../data/teams/wnba/toronto-tempo';
-import { team as washingtonMystics }    from '../../data/teams/wnba/washington-mystics';
+import { team as indianaFever } from '../../data/teams/wnba/indiana-fever';
+import { team as lasVegasAces } from '../../data/teams/wnba/las-vegas-aces';
+import { team as losAngelesSparks } from '../../data/teams/wnba/los-angeles-sparks';
+import { team as minnesotaLynx } from '../../data/teams/wnba/minnesota-lynx';
+import { team as newYorkLiberty } from '../../data/teams/wnba/new-york-liberty';
+import { team as phoenixMercury } from '../../data/teams/wnba/phoenix-mercury';
+import { team as seattleStorm } from '../../data/teams/wnba/seattle-storm';
+import { team as washingtonMystics } from '../../data/teams/wnba/washington-mystics';
+import { team as portlandFire } from '../../data/teams/wnba/portland-fire';
+import { team as torontoTempo } from '../../data/teams/wnba/toronto-tempo';
 
-import { featuredPlayers } from '../../data/wnba/featured-players';
-
-import WnbaHero          from '../../components/wnba/WnbaHero.astro';
-import WnbaSlateRibbon   from '../../components/wnba/WnbaSlateRibbon.astro';
-import WnbaStandings     from '../../components/wnba/WnbaStandings.astro';
-import WnbaPlayerCard    from '../../components/wnba/WnbaPlayerCard.astro';
-import WnbaTeamCard      from '../../components/wnba/WnbaTeamCard.astro';
-import WnbaHowToWatchBand from '../../components/wnba/WnbaHowToWatchBand.astro';
-
-// ── Team configs ────────────────────────────────────────────────────────────
 const allTeams = [
   atlantaDream, chicagoSky, connecticutSun, dallasWings,
   goldenStateValkyries, indianaFever, lasVegasAces, losAngelesSparks,
   minnesotaLynx, newYorkLiberty, phoenixMercury, portlandFire,
   seattleStorm, torontoTempo, washingtonMystics,
 ];
-const teamBySlug = Object.fromEntries(allTeams.map((t) => [t.slug, t]));
 
-// ── Data fetch ──────────────────────────────────────────────────────────────
+const featuredPlayers = [
+  { name: 'Caitlin Clark', team: indianaFever, description: '2024 Rookie of the Year · record-breaking assist seasons' },
+  { name: "A'ja Wilson", team: lasVegasAces, description: '4× MVP · 3× champion' },
+  { name: 'Breanna Stewart', team: newYorkLiberty, description: '3× champion · 2× WNBA MVP' },
+  { name: 'Sabrina Ionescu', team: newYorkLiberty, description: '3-point record holder · 2024 champion' },
+];
+
 const standings = await getStandings();
-const upcoming  = await getUpcomingGames(7);   // 7-day horizon
-const stats     = await getPlayerStats(featuredPlayers.map((p) => p.espnId));
 
-const standingBySlug = Object.fromEntries(standings.map((s) => [s.team, s]));
-const statsByEspnId  = Object.fromEntries(stats.map((s) => [s.espn_id, s]));
-
-// ── Hero meta ───────────────────────────────────────────────────────────────
-const now = new Date();
-const lastUpdated = now.toLocaleString('en-US', {
-  timeZone: 'America/New_York',
-  weekday: 'short', month: 'short', day: 'numeric',
-  hour: 'numeric', minute: '2-digit',
-}).replace(',', ' ·') + ' ET';
-
-const thisWeekGames = upcoming.length;
-
-// "Through games of June 4" — latest standings update or now
-const asOfDate = now.toLocaleDateString('en-US', {
-  timeZone: 'America/New_York', month: 'long', day: 'numeric',
-});
-
-// ── SEO ─────────────────────────────────────────────────────────────────────
 const title = 'WNBA 2026 Standings, Schedule & Teams — Standd';
 const description = 'Full WNBA 2026 standings, schedules, and broadcast guides for all 15 teams. Find out where every game airs — ION, Prime Video, ESPN, and more — in one place.';
 ---
@@ -90,77 +48,227 @@ const description = 'Full WNBA 2026 standings, schedules, and broadcast guides f
     "url": "https://standd.fan/wnba",
     "sport": "Basketball"
   })} />
-
   <Header />
 
-  <main class="flex-1 bg-ink text-bone">
-    <WnbaHero
-      lastUpdated={lastUpdated}
-      thisWeekGames={thisWeekGames}
-      seasonPhase="Week 6"
-    />
-
-    <WnbaSlateRibbon upcoming={upcoming} teamBySlug={teamBySlug} />
-
-    <WnbaStandings standings={standings} teamBySlug={teamBySlug} asOfDate={asOfDate} />
-
-    {/* Players to watch */}
-    <section id="players" class="bg-ink border-t border-white/[0.06]">
-      <div class="max-w-wrap mx-auto px-6 py-16 md:py-20">
-        <div class="flex flex-wrap items-end justify-between gap-4 mb-10">
-          <div>
-            <p class="text-[11px] font-bold uppercase tracking-[0.22em] text-lane mb-3">
-              Showing {Math.min(4, featuredPlayers.length)} of {featuredPlayers.length} · early-season leaders
-            </p>
-            <h2 class="wnba-court-display text-bone text-5xl md:text-7xl">Players to watch.</h2>
-          </div>
-          <a href="/wnba/players" class="text-sm font-court font-black uppercase tracking-wider text-bone border-b-2 border-bone/20 hover:border-lane pb-0.5 transition-colors whitespace-nowrap">
-            See all {featuredPlayers.length} players →
-          </a>
-        </div>
-
-        <div class="grid md:grid-cols-2 gap-3">
-          {featuredPlayers.slice(0, 4).map((p) => {
-            const team = teamBySlug[p.teamSlug];
-            if (!team) return null;
-            return (
-              <WnbaPlayerCard
-                player={p}
-                team={team}
-                stats={statsByEspnId[p.espnId] ?? null}
-              />
-            );
-          })}
+  <main class="flex-1">
+    <section class="bg-cream pt-12 pb-12 border-b-[12px]" style="border-color: #E85D00;">
+      <div class="max-w-3xl mx-auto px-6">
+        <p class="text-sm font-bold uppercase tracking-[0.2em] mb-3" style="color: #E85D00;">2026 Season</p>
+        <h1 class="font-display font-bold text-5xl md:text-7xl text-primary leading-[1.0] mb-6">
+          WNBA
+        </h1>
+        <p class="text-lg text-primary/80 leading-relaxed">
+          The Women's National Basketball Association. 15 teams, one season. Every team gets a full tracker: schedule, broadcast info, and player pages.
+        </p>
+        <div class="mt-6">
+          <a href="/wnba/how-to-watch" class="inline-block text-sm font-bold hover:underline" style="color: #E85D00;">How to watch WNBA 2026 — all services and pricing →</a>
         </div>
       </div>
     </section>
 
-    {/* Team trackers — bone interlude */}
-    <section id="teams" class="bg-bone text-ink relative">
-      <div class="h-1 bg-lane"></div>
-      <div class="max-w-wrap mx-auto px-6 py-16 md:py-20">
-        <div class="flex flex-wrap items-end justify-between gap-4 mb-10">
-          <div>
-            <p class="text-[11px] font-bold uppercase tracking-[0.22em] text-lane mb-3">Fifteen franchises · one page each</p>
-            <h2 class="wnba-court-display text-ink text-5xl md:text-7xl">Team trackers.</h2>
-            <p class="mt-4 text-sm text-ink/65 max-w-xl leading-relaxed">
-              Schedule, broadcast info, roster, recaps. Each tracker keeps its own team color so your team's page feels like home.
-            </p>
-          </div>
-          <p class="font-mono text-xs text-ink/50 max-w-[280px] tabular-nums">
-            Three new shields debut in 2026 — <span class="text-lane font-semibold">Toronto Tempo</span>, <span class="text-lane font-semibold">Portland Fire</span>, and <span class="text-lane font-semibold">Golden State Valkyries</span>.
-          </p>
-        </div>
-
-        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          {allTeams.map((t) => (
-            <WnbaTeamCard team={t} standing={standingBySlug[t.slug] ?? null} />
+    <!-- Featured players strip -->
+    <section class="py-12" style="background-color: #E85D00;">
+      <div class="max-w-5xl mx-auto px-6">
+        <h2 class="font-display font-bold text-2xl text-neutral mb-6 uppercase tracking-wider">Players to watch</h2>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          {featuredPlayers.map(p => (
+            <a
+              href={`/wnba/${p.team.slug}`}
+              class="block bg-neutral/15 hover:bg-neutral/25 transition-colors rounded-xl p-4 group"
+            >
+              <div class="flex flex-col gap-1">
+                <span class="font-display font-bold text-neutral text-lg leading-tight group-hover:underline">{p.name}</span>
+                <span class="text-neutral/70 text-sm font-medium">{p.team.name}</span>
+                <span class="text-neutral/60 text-xs mt-1">{p.description}</span>
+              </div>
+            </a>
           ))}
         </div>
       </div>
     </section>
 
-    <WnbaHowToWatchBand />
+    <!-- Team trackers grid -->
+    <section class="bg-primary py-16">
+      <div class="max-w-5xl mx-auto px-6">
+        <h2 class="font-display font-bold text-3xl mb-8 uppercase tracking-wider" style="color: #E85D00;">Team trackers</h2>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          {allTeams.map(team => (
+            <a
+              href={`/wnba/${team.slug}`}
+              class="flex items-center justify-between bg-neutral/20 hover:bg-neutral/30 transition-colors rounded-xl p-4 group"
+            >
+              <div class="flex items-center gap-2">
+                {team.badge
+                  ? <img src={team.badge} alt={team.name} width="48" height="48" class="flex-shrink-0 object-contain" />
+                  : <div class="w-2.5 h-2.5 rounded-full flex-shrink-0" style={`background-color: ${team.color}`} />
+                }
+                <span class="font-display font-bold text-neutral leading-tight">{team.name}</span>
+              </div>
+              <span class="text-neutral/40 group-hover:text-neutral/70 group-hover:translate-x-0.5 transition-all text-lg">→</span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Standings -->
+    <section class="bg-cream py-16">
+      <div class="max-w-5xl mx-auto px-6">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="font-display font-bold text-3xl text-primary">Standings</h2>
+          {standings.length > 0 && (
+            <div class="flex items-center gap-1 bg-primary/5 rounded-lg p-1 text-xs font-bold">
+              <button id="btn-conference" aria-pressed="true" class="px-3 py-1.5 rounded-md transition-colors bg-primary text-neutral">By Conference</button>
+              <button id="btn-overall" aria-pressed="false" class="px-3 py-1.5 rounded-md transition-colors text-muted hover:text-primary">Overall</button>
+            </div>
+          )}
+        </div>
+
+        {standings.length === 0 ? (
+          <p class="text-muted text-sm">Standings coming soon. Check back after the season tips off.</p>
+        ) : (
+          <>
+            {/* Conference view (default) */}
+            <div id="view-conference">
+              {(() => {
+                const conferences = ['Eastern Conference', 'Western Conference'];
+                return (
+                  <div class="grid md:grid-cols-2 gap-8">
+                    {conferences.map(conf => {
+                      const rows = standings
+                        .filter(r => r.conference === conf)
+                        .sort((a, b) => (a.playoff_seed ?? 99) - (b.playoff_seed ?? 99));
+                      const label = conf.replace(' Conference', '');
+                      return (
+                        <div>
+                          <h3 class="font-display font-bold text-sm uppercase tracking-wider text-muted mb-3">{label}</h3>
+                          <table class="w-full text-sm">
+                            <thead>
+                              <tr class="text-left text-xs uppercase tracking-wider text-muted border-b border-primary/10">
+                                <th class="pb-2 pr-2 font-bold w-6 text-center">#</th>
+                                <th class="pb-2 pr-4 font-bold">Team</th>
+                                <th class="pb-2 px-2 font-bold text-right">W</th>
+                                <th class="pb-2 px-2 font-bold text-right">L</th>
+                                <th class="pb-2 px-2 font-bold text-right">GB</th>
+                                <th class="pb-2 pl-2 font-bold text-right hidden sm:table-cell">Streak</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {rows.map((row) => {
+                                const teamConfig = allTeams.find(t => t.slug === row.team);
+                                return (
+                                  <tr
+                                    class="border-b border-primary/5 transition-colors hover:bg-primary/[0.03]"
+                                    style={teamConfig ? `border-left: 3px solid ${teamConfig.color}` : ''}
+                                  >
+                                    <td class="py-2 pr-2 pl-1 text-center text-xs font-bold text-primary/40">{row.playoff_seed}</td>
+                                    <td class="py-2 pr-4">
+                                      <a href={`/wnba/${row.team}`} class="flex items-center gap-2 hover:underline font-medium text-primary">
+                                        {teamConfig?.badge
+                                          ? <img src={teamConfig.badge} alt={teamConfig.name} width="22" height="22" class="flex-shrink-0 object-contain" />
+                                          : teamConfig && <span class="w-2.5 h-2.5 rounded-full flex-shrink-0 inline-block" style={`background-color: ${teamConfig.color}`} />
+                                        }
+                                        <span>{teamConfig?.name ?? row.team}</span>
+                                      </a>
+                                    </td>
+                                    <td class="py-2 px-2 text-right tabular-nums font-bold text-primary">{row.wins}</td>
+                                    <td class="py-2 px-2 text-right tabular-nums text-primary/70">{row.losses}</td>
+                                    <td class="py-2 px-2 text-right tabular-nums text-muted">{row.games_behind === 0 ? '-' : (row.games_behind ?? '-')}</td>
+                                    <td class="py-2 pl-2 text-right tabular-nums text-muted hidden sm:table-cell">{row.streak ?? '-'}</td>
+                                  </tr>
+                                );
+                              })}
+                            </tbody>
+                          </table>
+                        </div>
+                      );
+                    })}
+                  </div>
+                );
+              })()}
+            </div>
+
+            {/* Overall view */}
+            <div id="overall-standings" class="hidden overflow-x-auto">
+              <table class="w-full text-sm">
+                <thead>
+                  <tr class="text-left text-xs uppercase tracking-wider text-muted border-b border-primary/10">
+                    <th class="pb-2 pr-4 font-bold">Team</th>
+                    <th class="pb-2 px-3 font-bold text-right">W</th>
+                    <th class="pb-2 px-3 font-bold text-right">L</th>
+                    <th class="pb-2 px-3 font-bold text-right">PCT</th>
+                    <th class="pb-2 px-3 font-bold text-right">GB</th>
+                    <th class="pb-2 px-3 font-bold text-right hidden md:table-cell">Last 10</th>
+                    <th class="pb-2 pl-3 font-bold text-right hidden md:table-cell">Streak</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[...standings].sort((a, b) => b.win_pct - a.win_pct || b.wins - a.wins).map((row, i) => {
+                    const teamConfig = allTeams.find(t => t.slug === row.team);
+                    const onBubble = i === 7;
+                    return (
+                      <tr class={`transition-colors hover:bg-primary/[0.03] border-b border-primary/5`} style={`${teamConfig ? `border-left: 3px solid ${teamConfig.color};` : ''}${onBubble ? ' border-bottom: 2px solid rgba(0,0,0,0.3);' : ''}`}>
+                        <td class="py-2 pr-4 pl-1">
+                          <a href={`/wnba/${row.team}`} class="flex items-center gap-2.5 hover:underline font-medium text-primary">
+                            {teamConfig?.badge
+                              ? <img src={teamConfig.badge} alt={teamConfig.name} width="28" height="28" class="flex-shrink-0 object-contain" />
+                              : teamConfig && <span class="w-3 h-3 rounded-full flex-shrink-0 inline-block" style={`background-color: ${teamConfig.color}`} />
+                            }
+                            {teamConfig?.name ?? row.team}
+                          </a>
+                        </td>
+                        <td class="py-2 px-3 text-right tabular-nums font-bold text-primary">{row.wins}</td>
+                        <td class="py-2 px-3 text-right tabular-nums text-primary/70">{row.losses}</td>
+                        <td class="py-2 px-3 text-right tabular-nums text-primary/70">{row.win_pct.toFixed(3).replace(/^0/, '')}</td>
+                        <td class="py-2 px-3 text-right tabular-nums text-muted">{row.games_behind === 0 ? '-' : (row.games_behind ?? '-')}</td>
+                        <td class="py-2 px-3 text-right tabular-nums text-muted hidden md:table-cell">{row.last_10 ?? '-'}</td>
+                        <td class="py-2 pl-3 text-right tabular-nums text-muted hidden md:table-cell">{row.streak ?? '-'}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+              <p class="mt-2 text-xs text-muted">Top 8 teams qualify for playoffs</p>
+            </div>
+          </>
+        )}
+      </div>
+    </section>
+
+    <script>
+      const btnConference = document.getElementById('btn-conference');
+      const btnOverall = document.getElementById('btn-overall');
+      const viewConference = document.getElementById('view-conference');
+      const viewOverall = document.getElementById('overall-standings');
+
+      if (btnConference && btnOverall && viewConference && viewOverall) {
+        function showConference() {
+          viewConference.classList.remove('hidden');
+          viewOverall.classList.add('hidden');
+          btnConference.className = 'px-3 py-1.5 rounded-md transition-colors bg-primary text-neutral';
+          btnOverall.className = 'px-3 py-1.5 rounded-md transition-colors text-muted hover:text-primary';
+          btnConference.setAttribute('aria-pressed', 'true');
+          btnOverall.setAttribute('aria-pressed', 'false');
+        }
+        function showOverall() {
+          viewOverall.classList.remove('hidden');
+          viewConference.classList.add('hidden');
+          btnOverall.className = 'px-3 py-1.5 rounded-md transition-colors bg-primary text-neutral';
+          btnConference.className = 'px-3 py-1.5 rounded-md transition-colors text-muted hover:text-primary';
+          btnOverall.setAttribute('aria-pressed', 'true');
+          btnConference.setAttribute('aria-pressed', 'false');
+        }
+
+        btnConference.addEventListener('click', showConference);
+        btnOverall.addEventListener('click', showOverall);
+
+        // Deep-link: switch to overall view when navigating to #overall-standings
+        if (window.location.hash === '#overall-standings') {
+          showOverall();
+          document.getElementById('overall-standings')?.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    </script>
   </main>
 
   <Footer />

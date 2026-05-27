@@ -8,10 +8,4 @@ export const team: WNBATeamConfig = {
   standingsKey: 'Portland Fire',
   officialUrl: 'https://fire.wnba.com/',
   ticketsUrl: 'https://fire.wnba.com/tickets/',
-  short: 'POR',
-  city: 'Portland',
-  shortName: 'Fire',
-  colorAlt: '#000000',
-  conference: 'West',
-  expansion: true,
 };

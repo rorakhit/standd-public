@@ -8,9 +8,4 @@ export const team: WNBATeamConfig = {
   standingsKey: 'Minnesota Lynx',
   officialUrl: 'https://lynx.wnba.com/',
   ticketsUrl: 'https://lynx.wnba.com/tickets/',
-  short: 'MIN',
-  city: 'Minnesota',
-  shortName: 'Lynx',
-  colorAlt: '#78BE21',
-  conference: 'West',
 };

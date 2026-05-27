@@ -8,9 +8,4 @@ export const team: WNBATeamConfig = {
   standingsKey: 'Indiana Fever',
   officialUrl: 'https://fever.wnba.com/',
   ticketsUrl: 'https://fever.wnba.com/tickets/',
-  short: 'IND',
-  city: 'Indiana',
-  shortName: 'Fever',
-  colorAlt: '#FDBB30',
-  conference: 'East',
 };

@@ -1,0 +1,77 @@
+---
+// wnba-redesign/astro/components/wnba/WnbaPlayerCard.astro
+//
+// Broadcast lower-third card. Left block is a big jersey number on the
+// team's primary color with the alt color as a 4px right rail. Right block
+// has name + team + leader chips. Bottom is a 4-column stat strip on ink.
+
+import type { WNBATeamConfig } from '../../data/shared/types';
+import type { WNBAPlayerStats } from '../../data/shared/types';
+import type { FeaturedPlayer } from '../../data/wnba/featured-players';
+import WnbaCrest from './WnbaCrest.astro';
+
+interface Props {
+  player: FeaturedPlayer;
+  team: WNBATeamConfig;
+  stats: WNBAPlayerStats | null;
+}
+const { player, team, stats } = Astro.props;
+
+const positionLabel =
+  player.position === 'G' ? 'Guard' :
+  player.position === 'F' ? 'Forward' : 'Center';
+
+const ppg = stats?.avg_points?.toFixed(1) ?? '—';
+const rpg = stats?.avg_rebounds?.toFixed(1) ?? '—';
+const apg = stats?.avg_assists?.toFixed(1) ?? '—';
+const fgPct = stats?.field_goal_pct != null ? (stats.field_goal_pct * 100).toFixed(1) : '—';
+
+const statRow: Array<[string, string]> = [
+  ['PPG', ppg], ['RPG', rpg], ['APG', apg], ['FG%', fgPct],
+];
+---
+<a href={`/wnba/${team.slug}`} class="block group bg-ink-2 hover:bg-ink-3 border border-white/[0.06] rounded-sm overflow-hidden transition-colors">
+
+  {/* Top row: jersey number on team color + name block */}
+  <div class="grid grid-cols-[auto_1fr] items-stretch">
+    <div class="flex items-center justify-center px-4 md:px-5 py-5 min-w-[88px] relative" style={`background:${team.color};`}>
+      <span class="font-court font-black text-bone text-[72px] leading-none" style="text-shadow:0 2px 0 rgba(0,0,0,0.18);">
+        {String(player.number).padStart(2, '0')}
+      </span>
+      <div class="absolute right-0 top-0 bottom-0 w-1" style={`background:${team.colorAlt};`}></div>
+    </div>
+
+    <div class="px-5 py-4 flex flex-col justify-center min-w-0">
+      <div class="flex items-baseline gap-2">
+        <span class="font-court font-black text-bone text-2xl md:text-3xl leading-none whitespace-nowrap">{player.name}</span>
+        {player.rookie && (
+          <span class="text-[9px] font-court font-black uppercase tracking-[0.14em] px-1.5 py-0.5 rounded-sm bg-lane text-bone flex-shrink-0">Rookie</span>
+        )}
+      </div>
+      <div class="flex items-center gap-1.5 mt-2">
+        <WnbaCrest team={team} size={14} />
+        <span class="text-xs text-bone/55">{team.name} · {positionLabel}</span>
+      </div>
+      {player.leaderIn.length > 0 && (
+        <div class="flex flex-wrap gap-1 mt-2">
+          {player.leaderIn.map((l) => (
+            <span class="text-[9px] font-court font-black uppercase tracking-[0.14em] px-2 py-1 rounded-sm bg-neon text-ink">★ {l}</span>
+          ))}
+        </div>
+      )}
+    </div>
+  </div>
+
+  {/* Blurb */}
+  <p class="px-5 py-4 text-[13px] leading-snug text-bone/75 border-t border-white/[0.06]">{player.blurb}</p>
+
+  {/* Stat strip */}
+  <div class="grid grid-cols-4 border-t border-white/[0.06] bg-ink">
+    {statRow.map(([label, value]) => (
+      <div class="px-2 py-3 text-center border-r border-white/[0.06] last:border-r-0">
+        <div class="font-court font-black text-bone text-xl leading-none tabular-nums">{value}</div>
+        <div class="text-[9px] font-court font-black uppercase tracking-[0.18em] text-bone/40 mt-1.5">{label}</div>
+      </div>
+    ))}
+  </div>
+</a>

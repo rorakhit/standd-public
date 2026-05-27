@@ -8,4 +8,9 @@ export const team: WNBATeamConfig = {
   standingsKey: 'Chicago Sky',
   officialUrl: 'https://sky.wnba.com/',
   ticketsUrl: 'https://sky.wnba.com/tickets/',
+  short: 'CHI',
+  city: 'Chicago',
+  shortName: 'Sky',
+  colorAlt: '#FCD12A',
+  conference: 'East',
 };

@@ -8,4 +8,9 @@ export const team: WNBATeamConfig = {
   standingsKey: 'Seattle Storm',
   officialUrl: 'https://storm.wnba.com/',
   ticketsUrl: 'https://storm.wnba.com/tickets/',
+  short: 'SEA',
+  city: 'Seattle',
+  shortName: 'Storm',
+  colorAlt: '#FAC1B6',
+  conference: 'West',
 };

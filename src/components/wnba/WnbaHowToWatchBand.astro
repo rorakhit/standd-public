@@ -1,0 +1,37 @@
+---
+// wnba-redesign/astro/components/wnba/WnbaHowToWatchBand.astro
+//
+// Lava-red full-bleed CTA at the bottom of /wnba. Left column has the big
+// pitch; right column has a 2×4 grid of broadcaster chips colored to each
+// network's real brand color.
+
+import { wnbaBroadcasters } from '../../data/wnba/broadcasters';
+---
+<section class="bg-lane text-bone">
+  <div class="max-w-wrap mx-auto px-6 py-14 md:py-20">
+    <div class="grid md:grid-cols-[1fr_auto] md:items-end gap-10">
+      <div>
+        <p class="text-[11px] font-bold uppercase tracking-[0.22em] text-ink/80 mb-3">2026 broadcast map</p>
+        <h2 class="wnba-court-display text-bone text-5xl md:text-7xl leading-[0.86] max-w-xl">
+          Eight networks. One schedule that actually makes sense.
+        </h2>
+        <p class="mt-5 max-w-xl text-bone/85 leading-relaxed">
+          Every game in 2026 lives on one of these. We list the broadcaster, the streamer, the cord-cutter alternative, and the cheapest way to watch your team — all in one place.
+        </p>
+        <a href="/wnba/how-to-watch" class="inline-flex items-center gap-2 mt-7 bg-ink text-bone font-court font-black text-base uppercase tracking-wider px-6 py-3 rounded-sm hover:bg-ink-2 transition-colors">
+          Open the how-to-watch guide
+          <span aria-hidden="true" class="font-body text-base leading-none">→</span>
+        </a>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2 md:w-[300px]">
+        {wnbaBroadcasters.map((b) => (
+          <span
+            class="inline-flex items-center justify-center px-2.5 py-2.5 rounded-sm font-court font-black text-[13px] uppercase tracking-[0.14em] text-center"
+            style={`background:${b.bg}; color:${b.fg};`}
+          >{b.label}</span>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>

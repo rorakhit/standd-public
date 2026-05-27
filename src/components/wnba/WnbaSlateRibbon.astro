@@ -1,0 +1,74 @@
+---
+// wnba-redesign/astro/components/wnba/WnbaSlateRibbon.astro
+//
+// Upcoming-games strip immediately under the hero. Shows the next 3 scheduled
+// games as scoreboard cards with team monogram crests. Section is hidden if
+// there are no upcoming games (e.g. mid-offseason).
+//
+// Locked variant: shows UPCOMING (not last-night finals). The prototype's
+// "latest" and "mixed" modes were rejected — this is the only variant.
+
+import type { WNBAGame } from '../../data/wnba/types';
+import type { WNBATeamConfig } from '../../data/shared/types';
+import WnbaCrest from './WnbaCrest.astro';
+
+interface Props {
+  upcoming: WNBAGame[];                              // from getUpcomingGames(2)
+  teamBySlug: Record<string, WNBATeamConfig>;        // resolver
+}
+const { upcoming, teamBySlug } = Astro.props;
+const games = upcoming.slice(0, 3);
+
+// Parse "Tonight · 7:00 PM ET" → ["Tonight", "7:00 PM ET"]
+function splitTimeLabel(time: string | null): { label: string; meta: string } {
+  if (!time) return { label: 'Upcoming', meta: '' };
+  const parts = time.split(' · ');
+  return { label: parts[0] ?? 'Upcoming', meta: parts.slice(1).join(' · ') };
+}
+---
+{games.length > 0 && (
+  <section id="slate" class="bg-ink-2 border-t border-white/[0.06]">
+    <div class="max-w-wrap mx-auto px-6 py-10">
+      <div class="flex items-baseline justify-between mb-6 flex-wrap gap-2">
+        <div>
+          <p class="text-[10px] font-bold uppercase tracking-[0.22em] text-lane mb-1.5">The slate</p>
+          <h2 class="wnba-court-display text-bone text-3xl md:text-4xl">Last night, and what's tonight.</h2>
+        </div>
+        <a href="/wnba/schedule" class="text-xs text-bone/50 hover:text-neon font-mono transition-colors">View full schedule →</a>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        {games.map((g) => {
+          const home = teamBySlug[g.home_team];
+          const away = teamBySlug[g.away_team];
+          if (!home || !away) return null;
+          const { label, meta } = splitTimeLabel(g.time);
+          const broadcasterStr = g.broadcast.join(' · ');
+          return (
+            <a href={`/wnba/${home.slug}`} class="block bg-ink hover:bg-ink-3 border border-white/[0.06] rounded-sm p-4 group transition-colors">
+              <div class="flex items-center justify-between text-[10px] font-bold uppercase tracking-[0.18em] mb-3">
+                <span class="text-lane">{label}</span>
+                <span class="font-mono text-bone/40 normal-case tracking-normal whitespace-nowrap tabular-nums">
+                  {meta}{broadcasterStr ? ` · ${broadcasterStr}` : ''}
+                </span>
+              </div>
+              <div class="space-y-2">
+                <div class="flex items-center gap-2.5">
+                  <WnbaCrest team={away} size={22} />
+                  <span class="font-medium text-bone text-sm truncate">{away.name}</span>
+                </div>
+                <div class="flex items-center gap-2.5">
+                  <span class="text-[10px] font-mono text-bone/40 w-[22px] text-center tabular-nums">@</span>
+                  <span class="flex items-center gap-2.5 min-w-0">
+                    <WnbaCrest team={home} size={22} />
+                    <span class="font-medium text-bone text-sm truncate">{home.name}</span>
+                  </span>
+                </div>
+              </div>
+            </a>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+)}

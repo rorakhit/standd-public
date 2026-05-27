@@ -8,4 +8,9 @@ export const team: WNBATeamConfig = {
   standingsKey: 'Las Vegas Aces',
   officialUrl: 'https://aces.wnba.com/',
   ticketsUrl: 'https://aces.wnba.com/tickets/',
+  short: 'LVA',
+  city: 'Las Vegas',
+  shortName: 'Aces',
+  colorAlt: '#000000',
+  conference: 'West',
 };

@@ -1,0 +1,201 @@
+---
+// wnba-redesign/astro/components/wnba/WnbaStandings.astro
+//
+// "The standings." — the page centerpiece. Renders two side-by-side
+// conference tables (default) with a Conference/Overall toggle.
+//
+// Locked variant: rails=false — the `data-rail="off"` attribute is set on
+// every row, suppressing the team-color box-shadow. The CSS rule still
+// exists in case you want to flip it later.
+
+import type { WNBAStanding } from '../../data/wnba/types';
+import type { WNBATeamConfig } from '../../data/shared/types';
+import WnbaCrest from './WnbaCrest.astro';
+
+interface Props {
+  standings: WNBAStanding[];                          // from getStandings()
+  teamBySlug: Record<string, WNBATeamConfig>;
+  /** ISO date string of latest data; rendered in the eyebrow. */
+  asOfDate: string;
+}
+const { standings, teamBySlug, asOfDate } = Astro.props;
+
+// Helpers
+const pct = (s: WNBAStanding) => (s.wins / Math.max(1, s.wins + s.losses)).toFixed(3).replace(/^0/, '');
+const gbStr = (gb: number | null) => (gb == null || gb === 0) ? '—' : gb.toFixed(1);
+const streakColorDark = (s: string | null) => !s ? '' : s.startsWith('W') ? 'text-neon' : 'text-lane-2';
+
+// Group + sort
+const sortByPct = (a: WNBAStanding, b: WNBAStanding) =>
+  (b.wins / Math.max(1, b.wins + b.losses)) - (a.wins / Math.max(1, a.wins + a.losses)) || b.wins - a.wins;
+
+const east = standings.filter((s) => teamBySlug[s.team]?.conference === 'East').sort(sortByPct);
+const west = standings.filter((s) => teamBySlug[s.team]?.conference === 'West').sort(sortByPct);
+const overall = [...standings].sort(sortByPct);
+
+// Pre-compute row display data to keep template map callbacks as expression bodies
+type RowData = { row: WNBAStanding; team: WNBATeamConfig; seed: number; playoff: boolean };
+const makeRows = (rows: WNBAStanding[]): RowData[] =>
+  rows.flatMap((row, i) => {
+    const team = teamBySlug[row.team];
+    return team ? [{ row, team, seed: i + 1, playoff: i < 8 }] : [];
+  });
+
+const eastRows = makeRows(east);
+const westRows = makeRows(west);
+const overallRows = makeRows(overall);
+---
+<section id="standings" class="wnba-jumbotron wnba-standings border-t border-white/[0.06]">
+  <div class="max-w-wrap mx-auto px-6 py-16 md:py-20">
+
+    <div class="flex flex-wrap items-end justify-between gap-4 mb-10">
+      <div>
+        <p class="text-[11px] font-bold uppercase tracking-[0.22em] text-lane mb-3">
+          Through games of {asOfDate} · 2026 regular season
+        </p>
+        <h2 class="wnba-court-display text-bone text-5xl md:text-7xl">The standings.</h2>
+        <p class="mt-4 text-sm text-bone/55 max-w-xl leading-relaxed">
+          Top eight in each conference advance. Click any team to open its tracker — schedule, broadcast info, roster.
+        </p>
+      </div>
+      <div class="flex items-center gap-1 bg-white/[0.06] rounded-md p-1 text-xs font-bold border border-white/[0.04]">
+        <button id="btn-conference" aria-pressed="true" class="px-3 py-1.5 rounded-sm transition-colors bg-lane text-bone whitespace-nowrap font-court font-black text-sm uppercase tracking-wider">Conference</button>
+        <button id="btn-overall" aria-pressed="false" class="px-3 py-1.5 rounded-sm transition-colors text-bone/55 hover:text-bone whitespace-nowrap font-court font-black text-sm uppercase tracking-wider">Overall</button>
+      </div>
+    </div>
+
+    {/* Conference view (default visible) */}
+    <div id="view-conference" class="grid md:grid-cols-2 gap-x-10 gap-y-12">
+      {[{ label: 'Eastern', rows: eastRows, count: 7 }, { label: 'Western', rows: westRows, count: 8 }].map(({ label, rows, count }) => (
+        <div>
+          <div class="flex items-baseline justify-between mb-3 border-b-2 border-lane pb-3">
+            <h3 class="wnba-court-display text-bone text-2xl">{label}</h3>
+            <span class="font-mono text-[11px] text-bone/40 tabular-nums">{count} teams</span>
+          </div>
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="text-left text-[10px] uppercase tracking-[0.18em] text-bone/45 border-b border-white/[0.08]">
+                <th class="py-2.5 pr-1 font-bold w-7 text-center">#</th>
+                <th class="py-2.5 pr-3 font-bold">Team</th>
+                <th class="py-2.5 px-1 font-bold text-right w-9 font-mono">W</th>
+                <th class="py-2.5 px-1 font-bold text-right w-9 font-mono">L</th>
+                <th class="py-2.5 px-1 font-bold text-right w-12 font-mono">PCT</th>
+                <th class="py-2.5 px-1 font-bold text-right w-10 font-mono">GB</th>
+                <th class="py-2.5 pl-1 font-bold text-right w-12 font-mono">STRK</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map(({ row, team, seed, playoff }) => (
+                <tr
+                  class:list={['team-row border-b border-white/[0.06] transition-colors cursor-pointer', seed === 8 && 'cutoff']}
+                  data-rail="off"
+                  style={`--team-color:${team.color};`}
+                  data-href={`/wnba/${team.slug}`}
+                >
+                  <td class="py-3 pr-1 pl-3 text-center">
+                    <span
+                      class:list={[
+                        'inline-flex items-center justify-center w-6 h-6 rounded-sm font-court font-black text-sm',
+                        playoff ? 'bg-lane text-bone' : 'bg-white/[0.04] text-bone/40',
+                      ]}
+                    >{seed}</span>
+                  </td>
+                  <td class="py-3 pr-3">
+                    <span class="flex items-center gap-2.5">
+                      <WnbaCrest team={team} size={22} />
+                      <span class="font-medium text-bone">{team.name}</span>
+                      {team.expansion && (
+                        <span class="text-[9px] font-court font-black tracking-[0.14em] uppercase bg-neon/15 text-neon px-1.5 py-0.5 rounded-sm">New</span>
+                      )}
+                    </span>
+                  </td>
+                  <td class="py-3 px-1 text-right font-mono font-semibold text-bone tabular-nums">{row.wins}</td>
+                  <td class="py-3 px-1 text-right font-mono text-bone/65 tabular-nums">{row.losses}</td>
+                  <td class="py-3 px-1 text-right font-mono text-bone/80 tabular-nums">{pct(row)}</td>
+                  <td class="py-3 px-1 text-right font-mono text-bone/45 tabular-nums">{gbStr(row.games_behind)}</td>
+                  <td class={`py-3 pl-1 pr-3 text-right font-mono font-semibold tabular-nums ${streakColorDark(row.streak)}`}>{row.streak ?? '—'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ))}
+    </div>
+
+    {/* Overall view */}
+    <div id="view-overall" class="hidden">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="text-left text-[10px] uppercase tracking-[0.18em] text-bone/45 border-b border-white/[0.08]">
+            <th class="py-2.5 pr-1 font-bold w-7 text-center">#</th>
+            <th class="py-2.5 pr-3 font-bold">Team</th>
+            <th class="py-2.5 px-2 font-bold text-right w-12 font-mono">W</th>
+            <th class="py-2.5 px-2 font-bold text-right w-12 font-mono">L</th>
+            <th class="py-2.5 px-2 font-bold text-right w-14 font-mono">PCT</th>
+            <th class="py-2.5 px-2 font-bold text-right w-16 font-mono hidden md:table-cell">Last 10</th>
+            <th class="py-2.5 px-2 font-bold text-right w-14 font-mono">STRK</th>
+            <th class="py-2.5 pl-2 font-bold text-right w-16 font-mono hidden md:table-cell">Net</th>
+          </tr>
+        </thead>
+        <tbody>
+          {overallRows.map(({ row, team, seed }) => (
+            <tr
+              class="team-row border-b border-white/[0.06] transition-colors cursor-pointer"
+              data-rail="off"
+              style={`--team-color:${team.color};`}
+              data-href={`/wnba/${team.slug}`}
+            >
+              <td class="py-3 pr-1 pl-3 text-center text-[11px] font-mono text-bone/45 tabular-nums">{seed}</td>
+              <td class="py-3 pr-3">
+                <span class="flex items-center gap-2.5">
+                  <WnbaCrest team={team} size={22} />
+                  <span class="font-medium text-bone">{team.name}</span>
+                  <span class="text-[10px] font-mono text-bone/40 tabular-nums">· {team.conference}</span>
+                </span>
+              </td>
+              <td class="py-3 px-2 text-right font-mono font-semibold text-bone tabular-nums">{row.wins}</td>
+              <td class="py-3 px-2 text-right font-mono text-bone/65 tabular-nums">{row.losses}</td>
+              <td class="py-3 px-2 text-right font-mono text-bone/80 tabular-nums">{pct(row)}</td>
+              <td class="py-3 px-2 text-right font-mono text-bone/45 tabular-nums hidden md:table-cell">{row.last_10 ?? '—'}</td>
+              <td class={`py-3 px-2 text-right font-mono font-semibold tabular-nums ${streakColorDark(row.streak)}`}>{row.streak ?? '—'}</td>
+              <td class={`py-3 pl-2 pr-2 text-right font-mono tabular-nums hidden md:table-cell ${(row.point_differential ?? 0) >= 0 ? 'text-neon' : 'text-lane-2'}`}>
+                {((row.point_differential ?? 0) >= 0 ? '+' : '') + (row.point_differential ?? 0).toFixed(1)}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+    <p class="mt-7 text-[11px] text-bone/45 flex items-center gap-2">
+      <span class="inline-block w-4 border-t-2 border-dashed border-neon/50"></span>
+      Playoff cutoff — top eight in each conference advance.
+    </p>
+  </div>
+</section>
+
+<script>
+  // Conference/Overall toggle — vanilla, ~30 lines, no React/no state lib.
+  const btnC = document.getElementById('btn-conference');
+  const btnO = document.getElementById('btn-overall');
+  const vC = document.getElementById('view-conference');
+  const vO = document.getElementById('view-overall');
+  const activeCls = 'px-3 py-1.5 rounded-sm transition-colors bg-lane text-bone whitespace-nowrap font-court font-black text-sm uppercase tracking-wider';
+  const inactiveCls = 'px-3 py-1.5 rounded-sm transition-colors text-bone/55 hover:text-bone whitespace-nowrap font-court font-black text-sm uppercase tracking-wider';
+  // Row navigation via data-href (onclick attributes not supported in Astro fragments)
+  document.querySelectorAll<HTMLTableRowElement>('tr[data-href]').forEach(tr => {
+    tr.addEventListener('click', () => { window.location.href = tr.dataset.href!; });
+  });
+  if (btnC && btnO && vC && vO) {
+    btnC.addEventListener('click', () => {
+      vO.classList.add('hidden'); vC.classList.remove('hidden');
+      btnC.className = activeCls; btnO.className = inactiveCls;
+      btnC.setAttribute('aria-pressed', 'true'); btnO.setAttribute('aria-pressed', 'false');
+    });
+    btnO.addEventListener('click', () => {
+      vC.classList.add('hidden'); vO.classList.remove('hidden');
+      btnO.className = activeCls; btnC.className = inactiveCls;
+      btnO.setAttribute('aria-pressed', 'true'); btnC.setAttribute('aria-pressed', 'false');
+    });
+  }
+</script>

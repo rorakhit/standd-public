@@ -8,4 +8,9 @@ export const team: WNBATeamConfig = {
   standingsKey: 'Phoenix Mercury',
   officialUrl: 'https://mercury.wnba.com/',
   ticketsUrl: 'https://mercury.wnba.com/tickets/',
+  short: 'PHX',
+  city: 'Phoenix',
+  shortName: 'Mercury',
+  colorAlt: '#FE5000',
+  conference: 'West',
 };

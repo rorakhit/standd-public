@@ -1,0 +1,81 @@
+---
+// wnba-redesign/astro/components/wnba/WnbaHero.astro
+//
+// Hero band — full-bleed ink black, giant condensed WNBA wordmark with the
+// "N" in lava red, status bar across the top, scoreboard meta strip across
+// the bottom separated by the court-line motif.
+
+interface Props {
+  /** Server-rendered timestamp string, formatted like "Tue, Jun 4 · 8:42 AM ET". */
+  lastUpdated: string;
+  /** Number of games on the upcoming week's slate. */
+  thisWeekGames: number;
+  /** "Week 6" / "Playoffs · Round 1" — current season phase label. */
+  seasonPhase: string;
+}
+const { lastUpdated, thisWeekGames, seasonPhase = 'Week 6' } = Astro.props;
+---
+<section class="relative bg-ink text-bone overflow-hidden">
+  <div class="relative max-w-wrap mx-auto px-6 pt-14 pb-10 md:pt-20 md:pb-14">
+    <div class="wnba-hero-W" aria-hidden="true">W</div>
+
+    {/* Top status bar */}
+    <div class="flex flex-wrap items-center gap-x-5 gap-y-2 mb-10 md:mb-14 text-[11px] font-bold uppercase tracking-[0.22em] text-bone/55">
+      <span>2026 Regular Season</span>
+      <span class="text-bone/25">|</span>
+      <span>{seasonPhase}</span>
+      <span class="text-bone/25 hidden sm:inline">|</span>
+      <span class="hidden sm:inline text-bone/55">Last updated · {lastUpdated}</span>
+    </div>
+
+    {/* Headline block */}
+    <div class="grid md:grid-cols-[auto_1fr] md:items-end gap-x-10 gap-y-6">
+      <h1 class="wnba-court-display text-bone text-[clamp(140px,22vw,320px)] mb-[-0.08em]">
+        <span class="block">W</span>
+        <span class="block ml-[0.06em]"><span class="text-lane">N</span>BA</span>
+      </h1>
+
+      <div class="md:pb-4 max-w-md">
+        <p class="text-xl md:text-2xl leading-snug text-pretty text-bone/85">
+          <span class="text-bone">Fifteen teams.</span> Two conferences. One title to chase — and we'll be here every night to call it.
+        </p>
+        <div class="mt-6 flex flex-wrap gap-2">
+          <a href="#standings" class="inline-flex items-center gap-2 bg-lane text-bone font-court font-black text-base uppercase tracking-wider px-5 py-2.5 rounded-sm hover:bg-lane-2 transition-colors whitespace-nowrap">
+            Open standings
+            <span aria-hidden="true" class="font-body text-base leading-none">→</span>
+          </a>
+          <a href="/wnba/how-to-watch" class="inline-flex items-center gap-2 bg-ink-2 hover:bg-ink-3 text-bone font-court font-black text-base uppercase tracking-wider px-5 py-2.5 rounded-sm transition-colors whitespace-nowrap">
+            How to watch
+          </a>
+        </div>
+      </div>
+    </div>
+
+    {/* Court-paint stripes */}
+    <div class="wnba-court-lines mt-12 mb-7"></div>
+
+    {/* Scoreboard meta strip */}
+    <dl class="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-5">
+      <div>
+        <dt class="text-[10px] font-bold uppercase tracking-[0.22em] text-bone/45">Teams</dt>
+        <dd class="wnba-court-display text-bone text-5xl mt-1">15</dd>
+        <dd class="font-mono text-[11px] text-bone/40 mt-1 tabular-nums">7 East · 8 West</dd>
+      </div>
+      <div>
+        <dt class="text-[10px] font-bold uppercase tracking-[0.22em] text-bone/45">Games / team</dt>
+        <dd class="wnba-court-display text-bone text-5xl mt-1">44</dd>
+        <dd class="font-mono text-[11px] text-bone/40 mt-1 tabular-nums">May — September</dd>
+      </div>
+      <div>
+        <dt class="text-[10px] font-bold uppercase tracking-[0.22em] text-bone/45">New in '26</dt>
+        <dd class="wnba-court-display text-lane text-5xl mt-1">03</dd>
+        <dd class="font-mono text-[11px] text-bone/40 mt-1 tabular-nums">Toronto · Portland · GSV</dd>
+      </div>
+      <div>
+        <dt class="text-[10px] font-bold uppercase tracking-[0.22em] text-bone/45">This week</dt>
+        <dd class="wnba-court-display text-neon text-5xl mt-1">{String(thisWeekGames).padStart(2, '0')}</dd>
+        <dd class="font-mono text-[11px] text-bone/40 mt-1 tabular-nums">Games on the slate</dd>
+      </div>
+    </dl>
+  </div>
+</section>

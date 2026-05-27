@@ -8,4 +8,10 @@ export const team: WNBATeamConfig = {
   standingsKey: 'Golden State Valkyries',
   officialUrl: 'https://valkyries.wnba.com/',
   ticketsUrl: 'https://valkyries.wnba.com/tickets/',
+  short: 'GSV',
+  city: 'Golden State',
+  shortName: 'Valkyries',
+  colorAlt: '#F5A8C5',
+  conference: 'West',
+  expansion: true,
 };

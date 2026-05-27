@@ -8,4 +8,9 @@ export const team: WNBATeamConfig = {
   standingsKey: 'Connecticut Sun',
   officialUrl: 'https://sun.wnba.com/',
   ticketsUrl: 'https://sun.wnba.com/tickets/',
+  short: 'CON',
+  city: 'Connecticut',
+  shortName: 'Sun',
+  colorAlt: '#0A2240',
+  conference: 'East',
 };

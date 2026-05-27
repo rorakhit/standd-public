@@ -1,0 +1,32 @@
+---
+// wnba-redesign/astro/components/wnba/WnbaCrest.astro
+//
+// The WNBA-page crest. There are no sourced WNBA badge URLs in the codebase
+// (per the design-system note), so we draw a typographic monogram inside a
+// rounded square: team color background + alt-color bottom rail + 3-letter
+// short code in Big Shoulders Display white.
+//
+// Used at sizes: 14 (player-card team chip), 22 (standings + slate ribbon),
+// 32 (minimal team card), 38 (detailed team card).
+
+import type { WNBATeamConfig } from '../../data/shared/types';
+
+interface Props {
+  team: WNBATeamConfig;
+  size?: number;
+}
+const { team, size = 22 } = Astro.props;
+
+const fontSize = Math.max(9, Math.round(size * 0.36));
+const railHeight = Math.max(2, Math.round(size * 0.10));
+---
+<span
+  class="inline-flex items-center justify-center rounded-sm flex-shrink-0 relative overflow-hidden"
+  style={`width:${size}px; height:${size}px; background:${team.color}; box-shadow: inset 0 -${railHeight}px 0 ${team.colorAlt};`}
+  aria-hidden="true"
+>
+  <span
+    class="font-court font-black"
+    style={`font-size:${fontSize}px; color:#fff; text-shadow:0 1px 0 rgba(0,0,0,0.20); letter-spacing:-0.04em;`}
+  >{team.short}</span>
+</span>

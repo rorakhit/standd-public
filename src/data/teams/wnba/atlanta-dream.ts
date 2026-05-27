@@ -8,4 +8,9 @@ export const team: WNBATeamConfig = {
   standingsKey: 'Atlanta Dream',
   officialUrl: 'https://dream.wnba.com/',
   ticketsUrl: 'https://dream.wnba.com/tickets/',
+  short: 'ATL',
+  city: 'Atlanta',
+  shortName: 'Dream',
+  colorAlt: '#1B2C5B',
+  conference: 'East',
 };

@@ -8,4 +8,10 @@ export const team: WNBATeamConfig = {
   standingsKey: 'Toronto Tempo',
   officialUrl: 'https://tempo.wnba.com/',
   ticketsUrl: 'https://tempo.wnba.com/tickets/',
+  short: 'TOR',
+  city: 'Toronto',
+  shortName: 'Tempo',
+  colorAlt: '#000000',
+  conference: 'East',
+  expansion: true,
 };
